@@ -248,6 +248,7 @@ START:                  ; first instruction of program
     
     
     
+<<<<<<< HEAD
     *************************************************************************************
     ******MOVEA*************************************************************************
     *********************************************************************************
@@ -314,6 +315,8 @@ START:                  ; first instruction of program
    
     
     
+=======
+>>>>>>> 43fc1e0b6ea40dc32228c219b998a579c0f157d5
     
     
     
@@ -331,7 +334,10 @@ START:                  ; first instruction of program
 
     END    START        ; last line of source
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 43fc1e0b6ea40dc32228c219b998a579c0f157d5
 *~Font name~Courier New~
 *~Font size~16~
 *~Tab type~1~
