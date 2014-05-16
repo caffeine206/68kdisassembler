@@ -10,6 +10,9 @@ end             EQU     $00FFFFFE
 
 START:          ORG     $1000
 
+start           LEA     greeting,A1         * Assign greeting to A1
+                MOVE.B  #14,D0              * Assign prompt task code to D0
+                TRAP    #15                 * Display greeting
 start_address   LEA     start_prompt,A1     * Assign starting address prompt to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display starting address prompt
@@ -17,6 +20,9 @@ start_address   LEA     start_prompt,A1     * Assign starting address prompt to 
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
                 JSR     validate            * Validate ASCII input
+                JSR     even_check          * Check if given address is odd
+                CMP.W   #-1,D3              * 
+                BEQ     start_address       * If odd, display an error and ask for new starting address
                 MOVE.L  #begin,D6           * Assign minimum address bound to D6
                 CMP.L   D6,D3               * Compare address to minimum bound
                 BLT     bound_error         * Error if address is below minimum
@@ -31,23 +37,29 @@ end_address     LEA     end_prompt,A1       * Assign ending address prompt to A1
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
                 JSR     validate            * Validate ASCII input
-                CMP.L   D6,D3               * Compare address to minimum bound
-                BLT     bound_error         * Error if address is below minimum
+                JSR     even_check          * Check if given address is odd
+                CMP.W   #-1,D3              * 
+                BEQ     end_address         * If odd, display an error and ask for new starting address
+                CMP.L   A5,D3               * Compare address to lower address
+                BLT     bound_error         * Error if address is below lower address
+                MOVE.L  #end,D6             * Assign maximum address bound to D6
                 CMP.L   D6,D3               * Compare address to maximum bound
                 BGT     bound_error         * Error if address is above maximum
                 MOVE.L  D3,D6               * Save the upper address into D6
                 SUB.L   A5,D6               * Calculate length of instructions
                 DIVU.W  #2,D6               * Calculate number of instructions
-                ANDI.L  #$0000FFFF,D6       * Remove remainder
-                       
+                ANDI.L  #$0000FFFF,D6       * Remove remainder                       
 
 *********************************************************************
 *********************************************************************
 *
-* VALIDATE: transforms ASCII input into a hexadecimal address
+* SUBROUTINES
 *
 *********************************************************************
 *********************************************************************
+*////////////////////////////////////////////////////////////////////
+*VALIDATE: transforms ASCII input into a hexadecimal address
+*////////////////////////////////////////////////////////////////////
 validate        MOVEQ   #$0,D5              * Clear D5 for null comparison
                 MOVEQ   #$0,D3              * Clear D3 for new data
                 CMP.B   D5,D1               * Null check on string
@@ -86,6 +98,24 @@ bound_error     LEA     input_error,A1      * Assign input error message into A1
                 MOVE.B  #14,D0              * Assign task code for message into D0
                 TRAP    #15                 * Display message
                 JMP     start_address       * Prompt for starting address again
+*////////////////////////////////////////////////////////////////////
+*even_check: Checks whether an address is even, returns an error message if odd.
+*////////////////////////////////////////////////////////////////////
+even_check      CLR.L   D1                  * Clear D1 for new address
+                MOVE.L  #$00000002,D2       * Assign value 2 into D2
+                MOVE.W  D3,D2               * Move address we want to check into D2
+                DIVU    D2,D1               * Divide the address by 2
+                SWAP    D1                  * Swap D1 to find the remainder
+                CMP.B   #$01,D1             * Check if there is a remainder in D1
+                BEQ     odd_error           * Branch to error if address is odd
+                RTS                         * Return
+                
+odd_error       LEA     not_even,A1         * Assign odd error message to A1
+                MOVE.B  #14,D0              * Assign prompt task code to D0
+                TRAP    #15                 * Display odd error message
+                NOT.L   D5                  * Assign D5's value to be -1
+                MOVE.L  D5,D3               * Assign the given address to -1
+                RTS                         * Return
 *********************************************************************
 *********************************************************************
 *
@@ -93,14 +123,19 @@ bound_error     LEA     input_error,A1      * Assign input error message into A1
 *
 *********************************************************************
 *********************************************************************
-start_prompt    DC.B    'Enter starting address: ($0 to $00FFFFFE)',0
-end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',0
-input_error     DC.B    'There was something wrong with the input',0
+CR              EQU     $0D                 * ASCII code for Carriage Return
+LF              EQU     $0A                 * ASCII code for Line Feed
+greeting        DC.B    'Welcome to EASY68K Disassembler!',CR,LF,0
+start_prompt    DC.B    'Enter starting address: ($0 to $00FFFFFE)',CR,LF,0
+end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
+input_error     DC.B    'There was something wrong with the input',CR,LF,0
+not_even        DC.B    'The specified address was odd',CR,LF,0
 start_input     DS.B    80
 end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
