@@ -6,10 +6,12 @@
 *-----------------------------------------------------------
     
 stack       EQU     $7000                   *Stack address
+buffer      EQU     $5000                   *Buffer address
 example     EQU     %1101111001100001       *madeup
 nop         EQU     %0100111001110001       *NOP
-moveb       EQU     %0001000000111100       *MOVE.B
+moveb       EQU     %0001000000000001       *MOVE.B
 shift       EQU     12                      *Shift 12 bits
+buf         DS.B    80
 
 CR      EQU     $0D                         ASCII code for Carriage Return
 LF      EQU     $0A                         ASCII code for Line Feed
@@ -24,6 +26,7 @@ START:                  ; first instruction of program
 * Word Data in D0
 
     LEA     stack,SP                        *Load the SP
+    LEA     buffer,A6                       *Load buffer address
     LEA     jmp_table,A0                    *Index into the table
     CLR.L   D0                              *Zero it
     MOVE.W  #moveb,D0                       *Move byte
@@ -81,9 +84,82 @@ EA_table
     
     
 code0000    STOP    #$2700
-code0001    
-    CMPI.B  #%00000000,D4                   *Compare Dest MODE
-    BEQ     Addressing_Dn                   *Branch to Dn
+code0001
+    MOVE.B  #'M',(A1)+
+    MOVE.B  #'O',(A1)+
+    MOVE.B  #'V',(A1)+
+    MOVE.B  #'E',(A1)+
+    MOVE.B  #'.',(A1)+
+    MOVE.B  #'B',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+    
+    *MOVE.B  #$00,(A1)                  *Terminator
+    
+
+
+    CLR.L   D0                          *Clear D0 for counter of EA loop
+
+EAMode
+    *Compare EAmode 0-7 and branch accordingly
+    CMP.B   #0,D3
+    BEQ     EAmode0
+    CMP.B   #1,D3
+    BEQ     EAmode1
+    CMP.B   #2,D3
+    BEQ     EAmode2
+    CMP.B   #3,D3
+    BEQ     EAmode3
+    CMP.B   #4,D3
+    BEQ     EAmode4
+    CMP.B   #5,D3
+    BEQ     EAmode5
+    CMP.B   #6,D3
+    BEQ     EAmode6
+    CMP.B   #7,D3
+    BEQ     EAmode7
+
+*EA, EA set up    
+EApart2
+    MOVE.B  D4,D3                           *Move Dest MODE to D3
+    MOVE.B  D5,D2                           *Move Dest REG to D2
+    MOVE.B  #',',(A1)+
+     
+    BRA     EAMode                          *Branch to EAMode      
+    
+    
+    
+EAmode0
+    MOVE.B  #'D',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA
+    
+Print    
+    MOVE.B  #$00,(A1)                       *Terminator
+    LEA     buf,A1
+    CLR.L   D0
+    MOVE.B  #13,D0
+    TRAP    #15
+    
+    RTS
+    *BRA     Done
+    
+EAmode1
+EAmode2
+EAmode3
+EAmode4
+EAmode5
+EAmode6
+EAmode7
+
 
 code0010    STOP    #$2700
 code0011    STOP    #$2700
@@ -99,16 +175,6 @@ code1100    STOP    #$2700
 code1101    STOP    #$2700
 code1110    STOP    #$2700
 code1111    STOP    #$2700
-
-Addressing_Dn
-    LEA     MESSAGE, A1                     *Load MESSAGE into address register A1
-    MOVE.B  #14, D0                         *Moves the number 14 into data register D0
-    TRAP    #15                             *Displays Message
-    
-    MOVE.B  #9, D0
-    TRAP    #15
-    
-    RTS
     
 Done
     LEA     BYE, A1                         *Load BYE into address register A1
@@ -123,6 +189,7 @@ Done
 
 
     END    START        ; last line of source
+
 
 
 
