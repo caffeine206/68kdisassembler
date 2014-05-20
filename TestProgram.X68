@@ -248,7 +248,7 @@ START:                  ; first instruction of program
     
     
     
-<<<<<<< HEAD
+
     *************************************************************************************
     ******MOVEA*************************************************************************
     *********************************************************************************
@@ -280,24 +280,24 @@ START:                  ; first instruction of program
     *********************************************************************************
     **word and long ONLY IN MOVEM -- SIGN EXTENSION -- SEE PG 232 MANUAL FOR MORE INFO
     
-    MOVEM.W      D3,A4                   *Move word data from D3 to A4
-    MOVEM.W      A3,A4                   *Move word data from D3 to A4
-    MOVEM.W      (A4),A4                 *Move word data from D3 to object in A4
-    MOVEM.W      (A4)+,A4                *Move word data from D3 to object in A4 and increase pointer by 1
-    MOVEM.W      -(A4),A4                *Move word data from D3 to object in A4 after decrease pointer by 1
-    MOVEM.W      $1234,A4                *Move word data from D3 to absolute address WORD
-    MOVEM.W      $12345678,A4            *Move word data from D3 to absolute address LONG WORD
-    MOVEM.W      #$55,A4                 *Move word data from D3 to immediate data $55            
-    
-    MOVEM.L      D3,A4                   *Move longword data from D3 to A4
-    MOVEM.L      A3,A4                   *Move longword data from D3 to A4
-    MOVEM.L      (A4),A4                 *Move longword data from D3 to object in A4
-    MOVEM.L      (A4)+,A4                *Move longword data from D3 to object in A4 and increase pointer by 1
-    MOVEM.L      -(A4),A4                *Move longword data from D3 to object in A4 after decrease pointer by 1
-    MOVEM.L      $1234,A4                *Move longword data from D3 to absolute address WORD
-    MOVEM.L      $12345678,A4            *Move longword data from D3 to absolute address LONG WORD
-    MOVEM.L      #$55,A4                 *Move longword data from D3 to immediate data $55            
-       
+*    MOVEM.W      D3,A4                   *Move word data from D3 to A4
+*    MOVEM.W      A3,A4                   *Move word data from D3 to A4
+*    MOVEM.W      (A4),A4                 *Move word data from D3 to object in A4
+*    MOVEM.W      (A4)+,A4                *Move word data from D3 to object in A4 and increase pointer by 1
+*    MOVEM.W      -(A4),A4                *Move word data from D3 to object in A4 after decrease pointer by 1
+*    MOVEM.W      $1234,A4                *Move word data from D3 to absolute address WORD
+*    MOVEM.W      $12345678,A4            *Move word data from D3 to absolute address LONG WORD
+*    MOVEM.W      #$55,A4                 *Move word data from D3 to immediate data $55            
+*    
+*    MOVEM.L      D3,A4                   *Move longword data from D3 to A4
+*    MOVEM.L      A3,A4                   *Move longword data from D3 to A4
+*    MOVEM.L      (A4),A4                 *Move longword data from D3 to object in A4
+*    MOVEM.L      (A4)+,A4                *Move longword data from D3 to object in A4 and increase pointer by 1
+*    MOVEM.L      -(A4),A4                *Move longword data from D3 to object in A4 after decrease pointer by 1
+*    MOVEM.L      $1234,A4                *Move longword data from D3 to absolute address WORD
+*    MOVEM.L      $12345678,A4            *Move longword data from D3 to absolute address LONG WORD
+*    MOVEM.L      #$55,A4                 *Move longword data from D3 to immediate data $55            
+*       
 
     
     
@@ -314,9 +314,7 @@ START:                  ; first instruction of program
     
    
     
-    
-=======
->>>>>>> 43fc1e0b6ea40dc32228c219b998a579c0f157d5
+
     
     
     
@@ -334,10 +332,9 @@ START:                  ; first instruction of program
 
     END    START        ; last line of source
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 43fc1e0b6ea40dc32228c219b998a579c0f157d5
+
+
 *~Font name~Courier New~
 *~Font size~16~
 *~Tab type~1~
