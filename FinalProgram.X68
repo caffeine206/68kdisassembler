@@ -13,16 +13,20 @@ START:          ORG     $1000
 start           LEA     greeting,A1         * Assign greeting to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display greeting
+                
 start_address   LEA     start_prompt,A1     * Assign starting address prompt to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display starting address prompt
+                
                 LEA     start_input,A1      * Assign start_input as address to store input
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
+                
                 JSR     validate            * Validate ASCII input
                 JSR     even_check          * Check if given address is odd
-                CMP.W   #-1,D3              * 
+                CMP.W   #-1,D3              * Check result of odd check
                 BEQ     start_address       * If odd, display an error and ask for new starting address
+                
                 MOVE.L  #begin,D6           * Assign minimum address bound to D6
                 CMP.L   D6,D3               * Compare address to minimum bound
                 BLT     bound_error         * Error if address is below minimum
@@ -30,25 +34,30 @@ start_address   LEA     start_prompt,A1     * Assign starting address prompt to 
                 CMP.L   D6,D3               * Compare address to maximum bound
                 BGT     bound_error         * Error if address is above maximum
                 MOVEA.L D3,A5               * Save the lower address into A5
+                
 end_address     LEA     end_prompt,A1       * Assign ending address prompt to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display ending address prompt
+                
                 LEA     end_input,A1        * Assign end_input as address to store input
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
+                
                 JSR     validate            * Validate ASCII input
                 JSR     even_check          * Check if given address is odd
-                CMP.W   #-1,D3              * 
+                CMP.W   #-1,D3              * Check result of odd check
                 BEQ     end_address         * If odd, display an error and ask for new starting address
+                
                 CMP.L   A5,D3               * Compare address to lower address
                 BLT     bound_error         * Error if address is below lower address
                 MOVE.L  #end,D6             * Assign maximum address bound to D6
                 CMP.L   D6,D3               * Compare address to maximum bound
                 BGT     bound_error         * Error if address is above maximum
                 MOVE.L  D3,D6               * Save the upper address into D6
-                SUB.L   A5,D6               * Calculate length of instructions
-                DIVU.W  #2,D6               * Calculate number of instructions
-                ANDI.L  #$0000FFFF,D6       * Remove remainder                       
+*                SUB.L   A5,D6               * Calculate length of instructions
+*                DIVU.W  #2,D6               * Calculate number of instructions
+*                ANDI.L  #$0000FFFF,D6       * Remove remainder   
+main            STOP    #$00002700          * Stop                
 
 *********************************************************************
 *********************************************************************
@@ -101,12 +110,12 @@ bound_error     LEA     input_error,A1      * Assign input error message into A1
 *////////////////////////////////////////////////////////////////////
 *even_check: Checks whether an address is even, returns an error message if odd.
 *////////////////////////////////////////////////////////////////////
-even_check      CLR.L   D1                  * Clear D1 for new address
-                MOVE.L  #$00000002,D2       * Assign value 2 into D2
+even_check      CLR.L   D2                  * Clear D2 for new address
+                MOVE.L  #$00000002,D1       * Assign value 2 into D1
                 MOVE.W  D3,D2               * Move address we want to check into D2
-                DIVU    D2,D1               * Divide the address by 2
-                SWAP    D1                  * Swap D1 to find the remainder
-                CMP.B   #$01,D1             * Check if there is a remainder in D1
+                DIVU    D1,D2               * Divide the address by 2
+                SWAP    D2                  * Swap D2 to find the remainder
+                CMP.B   #$01,D2             * Check if there is a remainder in D2
                 BEQ     odd_error           * Branch to error if address is odd
                 RTS                         * Return
                 
@@ -135,6 +144,8 @@ end_input       DS.B    80
 
 
     END    START        ; last line of source
+
+
 
 
 
