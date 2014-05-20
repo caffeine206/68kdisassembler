@@ -57,7 +57,11 @@ end_address     LEA     end_prompt,A1       * Assign ending address prompt to A1
 *                SUB.L   A5,D6               * Calculate length of instructions
 *                DIVU.W  #2,D6               * Calculate number of instructions
 *                ANDI.L  #$0000FFFF,D6       * Remove remainder   
-main            STOP    #$00002700          * Stop                
+
+main            LEA     end_message,A1      * Assign end message to A1
+                MOVE.B  #14,D0              * Assign prompt task code to D0
+                TRAP    #15                 * Display end message
+                STOP    #$00002700          * Stop                
 
 *********************************************************************
 *********************************************************************
@@ -75,6 +79,7 @@ validate        MOVEQ   #$0,D5              * Clear D5 for null comparison
                 BEQ     bound_error         * Error if null
                 CMPI    #$8,D1              * Character check on string
                 BGT     bound_error         * Error if more than 8 characters
+                
 translate       MOVE.B  (A1)+,D2            * Move next character into D2
                 CMP.B   D5,D2               * Null check on character
                 BEQ     result              * End of input if null
@@ -92,12 +97,16 @@ translate       MOVE.B  (A1)+,D2            * Move next character into D2
                 BLT     bound_error         * Error if character is below 48
                 SUBI.B  #48,D2              * Subtract 48 from ASCII value to get hexadecimal value
                 BRA     decoded             * Translation complete
+                
 lowercase       SUBI.B  #87,D2              * Subtract 87 from ASCII value to get hexadecimal value
                 BRA     decoded             * Translation complete
+                
 uppercase       SUBI.B  #55,D2              * Subtract 55 from ASCII value to get hexadecimal value
+
 decoded         ASL.L   #4,D3               * Clear the return location
                 ADD.B   D2,D3               * Move the resulting character into the return location
                 BRA     translate           * Check next character
+                
 result          RTS                         * Return
 *////////////////////////////////////////////////////////////////////
 *bound_error: The provided address was out of the valid range, print an error message and ask for
@@ -108,7 +117,8 @@ bound_error     LEA     input_error,A1      * Assign input error message into A1
                 TRAP    #15                 * Display message
                 JMP     start_address       * Prompt for starting address again
 *////////////////////////////////////////////////////////////////////
-*even_check: Checks whether an address is even, returns an error message if odd.
+*even_check: Checks whether an address is even, branches to error message if odd.  (Does not change 
+* address if even).
 *////////////////////////////////////////////////////////////////////
 even_check      CLR.L   D2                  * Clear D2 for new address
                 MOVE.L  #$00000002,D1       * Assign value 2 into D1
@@ -118,7 +128,9 @@ even_check      CLR.L   D2                  * Clear D2 for new address
                 CMP.B   #$01,D2             * Check if there is a remainder in D2
                 BEQ     odd_error           * Branch to error if address is odd
                 RTS                         * Return
-                
+*////////////////////////////////////////////////////////////////////
+*odd_error: The provided address was odd, so print an error and return a -1 for the address.
+*////////////////////////////////////////////////////////////////////
 odd_error       LEA     not_even,A1         * Assign odd error message to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display odd error message
@@ -139,11 +151,13 @@ start_prompt    DC.B    'Enter starting address: ($0 to $00FFFFFE)',CR,LF,0
 end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
 input_error     DC.B    'There was something wrong with the input',CR,LF,0
 not_even        DC.B    'The specified address was odd',CR,LF,0
+end_message     DC.B    'All done!  See you later!',CR,LF,0
 start_input     DS.B    80
 end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 
