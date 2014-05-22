@@ -1701,6 +1701,7 @@ str_SUBI	DC.B	'SUBI',$00
 str_SWAP	DC.B	'SWAP',$00
 
 	END	$1000		
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
