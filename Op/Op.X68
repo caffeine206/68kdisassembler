@@ -57,6 +57,9 @@ START:                  ; first instruction of program
     MOVE.B  #shift,D1                       *Shift 12 bits to the right 
     LSR.W   D1,D0                           *Move the bits
     
+    CLR.L   D1                              *Clear D1
+    MOVE.B  D0,D1                           *Copy 4 bits to D1
+    
     MULU    #6,D0                           *Form offset
     JSR     0(A0,D0)                        *Jump indirect with index
     BRA     Done
@@ -143,22 +146,149 @@ EAmode0
     BRA     EApart2                         *EA done once, go to second EA
     
 Print    
-    MOVE.B  #$00,(A1)                       *Terminator
-    LEA     buf,A1
-    CLR.L   D0
-    MOVE.B  #13,D0
-    TRAP    #15
+    MOVE.B  #$00,(A1)                       *Add Terminator
+    LEA     buf,A1                          *Load buffer into A1
+    CLR.L   D0                              *Clear D0
+    MOVE.B  #13,D0                          *Trap task 13
+    TRAP    #15                             *Call Trap 15
     
     RTS
     *BRA     Done
     
 EAmode1
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA
+
 EAmode2
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA
+
 EAmode3
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+    MOVE.B  #'+',(A1)+
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA
+
 EAmode4
+    MOVE.B  #'-',(A1)+
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA
+
 EAmode5
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'N',(A1)+
+    MOVE.B  #'V',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #'L',(A1)+
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'E',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'M',(A1)+
+    MOVE.B  #'O',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #'E',(A1)+
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA    
+ 
 EAmode6
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'N',(A1)+
+    MOVE.B  #'V',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #'L',(A1)+
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'E',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'M',(A1)+
+    MOVE.B  #'O',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #'E',(A1)+
+
+    ADD     #1,D0                           *Increase EA loop counter
+    
+    CMP.B   #2,D0                           *EA done twice?
+    BEQ     Print                           *Print
+    
+    BRA     EApart2                         *EA done once, go to second EA 
+
 EAmode7
+    CMP.B   #0,D2                           *WORD addressing mode
+    BEQ     ABSOLUTE_WORD
+    
+    CMP.B   #1,D2                           *LONG WORD addressing mode        
+    BEQ     ABSOlUTE_LONG                   
+    
+    CMP.B   #4,D2                           *IMMEDIATE DATA addressing mode
+    BEQ     IMMEDIATE_DATA
+
+ABSOLUTE_WORD
+    CLR.L   D0                              *Clear D0
+    MOVE.W  (A5)+,D0                        *Get next WORD from memory  
+    
+ABSOLUTE_LONG
+    CLR.L   D0                              *Clear D0
+    MOVE.L  (A5)+,D0                        *Get next LONG WORD from memory 
+
+IMMEDIATE_DATA
+    ANDI.W  #%0000000000000011,D1           *Get last 2 bits for size
+    
+    MOVE.B  #'#',(A1)+
+    
+    CMP.B   #3,D1                           *Is the size WORD
+    BEQ     ABSOLUTE_WORD
+    
+    CMP.B   #2,D1                           *Is the size LONG WORD
+    BEQ     ABSOLUTE_LONG
+
+    
 
 
 code0010    STOP    #$2700
@@ -189,6 +319,7 @@ Done
 
 
     END    START        ; last line of source
+
 
 
 
