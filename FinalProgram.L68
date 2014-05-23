@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.14.01
-Created On: 5/22/2014 3:45:58 PM
+Created On: 5/22/2014 6:12:43 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : 68K Disassembler
@@ -14,148 +14,212 @@ Created On: 5/22/2014 3:45:58 PM
 00000000                            10  
 00001000                            11  START:          ORG     $1000
 00001000                            12  
-00001000  43F9 00001130             13  start           LEA     greeting,A1         * Assign greeting to A1
+00001000  43F9 000011BA             13  start           LEA     greeting,A1         * Assign greeting to A1
 00001006  103C 000E                 14                  MOVE.B  #14,D0              * Assign prompt task code to D0
 0000100A  4E4F                      15                  TRAP    #15                 * Display greeting
 0000100C                            16                  
-0000100C  43F9 00001153             17  get_start       LEA     start_prompt,A1     * Assign starting address prompt to A1
+0000100C  43F9 000011DD             17  get_start       LEA     start_prompt,A1     * Assign starting address prompt to A1
 00001012  103C 000E                 18                  MOVE.B  #14,D0              * Assign prompt task code to D0
 00001016  4E4F                      19                  TRAP    #15                 * Display starting address prompt
 00001018                            20                  
-00001018  43F9 00001212             21                  LEA     start_input,A1      * Assign start_input as address to store input
+00001018  43F9 00001310             21                  LEA     start_input,A1      * Assign start_input as address to store input
 0000101E  103C 0002                 22                  MOVE.B  #2,D0               * Assign input task code to D0
 00001022  4E4F                      23                  TRAP    #15                 * Store user input in A1
 00001024                            24                  
-00001024  4EB9 00001094             25                  JSR     validate            * Validate ASCII input
-0000102A  4EB9 0000110A             26                  JSR     even_check          * Check if given address is odd
+00001024  4EB9 000010BC             25                  JSR     ascii_to_hex        * Translate ASCII input to HEX
+0000102A  4EB9 00001132             26                  JSR     even_check          * Check if given address is odd
 00001030  B67C FFFF                 27                  CMP.W   #-1,D3              * Check result of odd check
 00001034  67D6                      28                  BEQ     get_start           * If odd, display an error and ask for new starting address
 00001036                            29                  
 00001036  7A00                      30                  MOVE.L  #begin,D5           * Assign minimum address bound to D5
 00001038  B685                      31                  CMP.L   D5,D3               * Compare address to minimum bound
-0000103A  6D00 00BE                 32                  BLT     bound_error         * Error if address is below minimum
+0000103A  6D00 00E6                 32                  BLT     bound_error         * Error if address is below minimum
 0000103E  2A3C 00FFFFFE             33                  MOVE.L  #end,D5             * Assign maximum address bound to D5
 00001044  B685                      34                  CMP.L   D5,D3               * Compare address to maximum bound
-00001046  6E00 00B2                 35                  BGT     bound_error         * Error if address is above maximum
+00001046  6E00 00DA                 35                  BGT     bound_error         * Error if address is above maximum
 0000104A  2A43                      36                  MOVEA.L D3,A5               * Save the lower address into A5
 0000104C                            37                  
-0000104C  43F9 0000117F             38  get_end         LEA     end_prompt,A1       * Assign ending address prompt to A1
+0000104C  43F9 00001209             38  get_end         LEA     end_prompt,A1       * Assign ending address prompt to A1
 00001052  103C 000E                 39                  MOVE.B  #14,D0              * Assign prompt task code to D0
 00001056  4E4F                      40                  TRAP    #15                 * Display ending address prompt
 00001058                            41                  
-00001058  43F9 00001262             42                  LEA     end_input,A1        * Assign end_input as address to store input
+00001058  43F9 00001360             42                  LEA     end_input,A1        * Assign end_input as address to store input
 0000105E  103C 0002                 43                  MOVE.B  #2,D0               * Assign input task code to D0
 00001062  4E4F                      44                  TRAP    #15                 * Store user input in A1
 00001064                            45                  
-00001064  4EB9 00001094             46                  JSR     validate            * Validate ASCII input
-0000106A  4EB9 0000110A             47                  JSR     even_check          * Check if given address is odd
+00001064  4EB9 000010BC             46                  JSR     ascii_to_hex        * Translate ASCII input to HEX
+0000106A  4EB9 00001132             47                  JSR     even_check          * Check if given address is odd
 00001070  B67C FFFF                 48                  CMP.W   #-1,D3              * Check result of odd check
 00001074  67D6                      49                  BEQ     get_end             * If odd, display an error and ask for new starting address
 00001076                            50                  
 00001076  B68D                      51                  CMP.L   A5,D3               * Compare address to lower address
-00001078  6D00 0080                 52                  BLT     bound_error         * Error if address is below lower address
+00001078  6D00 00A8                 52                  BLT     bound_error         * Error if address is below lower address
 0000107C  B685                      53                  CMP.L   D5,D3               * Compare address to maximum bound
-0000107E  6E00 007A                 54                  BGT     bound_error         * Error if address is above maximum
+0000107E  6E00 00A2                 54                  BGT     bound_error         * Error if address is above maximum
 00001082  2C43                      55                  MOVEA.L D3,A6               * Save the upper address into A6
 00001084                            56  
-00001084  43F9 000011F6             57  main            LEA     end_message,A1      * Assign end message to A1
-0000108A  103C 000E                 58                  MOVE.B  #14,D0              * Assign prompt task code to D0
-0000108E  4E4F                      59                  TRAP    #15                 * Display end message
-00001090  4E72 2700                 60                  STOP    #$00002700          * Stop                
-00001094                            61  
-00001094                            62  ***************************************************************************************************
-00001094                            63  ***************************************************************************************************
-00001094                            64  *
-00001094                            65  * SUBROUTINES
-00001094                            66  *
-00001094                            67  ***************************************************************************************************
-00001094                            68  ***************************************************************************************************
-00001094                            69  *////////////////////////////////////////////////////////////////////////////////////////
-00001094                            70  *validate: transforms ASCII input into a hexadecimal address, returns error if invalid characters
-00001094                            71  *////////////////////////////////////////////////////////////////////////////////////////
-00001094  7C00                      72  validate        MOVEQ   #$0,D6              * Clear D6 for null comparison
-00001096  7600                      73                  MOVEQ   #$0,D3              * Clear D3 for new data
-00001098  B203                      74                  CMP.B   D3,D1               * Null check on string
-0000109A  6700 005E                 75                  BEQ     bound_error         * Error if null
-0000109E  0C41 0000                 76                  CMPI    #$0,D1              * Character check on string
-000010A2  6F00 0056                 77                  BLE     bound_error         * Error if less than 0
-000010A6  0C41 0008                 78                  CMPI    #$8,D1              * Character check on string
-000010AA  6E00 004E                 79                  BGT     bound_error         * Error if more than 8 characters
-000010AE                            80                  
-000010AE  1419                      81  translate       MOVE.B  (A1)+,D2            * Move next character into D2
-000010B0  B406                      82                  CMP.B   D6,D2               * Null check on character
-000010B2  6700 0044                 83                  BEQ     result              * End of input if null
-000010B6  B43C 0066                 84                  CMP.B   #102,D2             * Compare with 102 (highest character code)
-000010BA  6E00 003E                 85                  BGT     bound_error         * Error if character is higher than 102
-000010BE  B43C 0060                 86                  CMP.B   #96,D2              * Compare with 96 (lowest lowercase hex)
-000010C2  6E00 0036                 87                  BGT     bound_error         * Error if character is lowercase
-000010C6  B43C 0046                 88                  CMP.B   #70,D2              * Compare with 70 (highest uppercase hex)
-000010CA  6E00 002E                 89                  BGT     bound_error         * Error if character is between 70 and 96
-000010CE  B43C 0040                 90                  CMP.B   #64,D2              * Compare with 64 (lowest uppercase hex)
-000010D2  6E00 001A                 91                  BGT     uppercase           * Branch to uppercase if above 64
-000010D6  B43C 0039                 92                  CMP.B   #57,D2              * Compare with 57 (highest decimal number)
-000010DA  6E00 001E                 93                  BGT     bound_error         * Error if character is between 57 and 64
-000010DE  B43C 0030                 94                  CMP.B   #48,D2              * Compare with 48 (lowest decimal number)
-000010E2  6D00 0016                 95                  BLT     bound_error         * Error if character is below 48
-000010E6  0402 0030                 96                  SUBI.B  #48,D2              * Subtract 48 from ASCII value to get hexadecimal value
-000010EA  6000 0006                 97                  BRA     decoded             * Translation complete
-000010EE                            98                  
-000010EE  0402 0037                 99  uppercase       SUBI.B  #55,D2              * Subtract 55 from ASCII value to get hexadecimal value
-000010F2                           100  
-000010F2  E983                     101  decoded         ASL.L   #4,D3               * Clear the return location
-000010F4  D602                     102                  ADD.B   D2,D3               * Move the resulting character into the return location
-000010F6  60B6                     103                  BRA     translate           * Check next character
-000010F8                           104                  
-000010F8  4E75                     105  result          RTS                         * Return
-000010FA                           106  *////////////////////////////////////////////////////////////////////////////////////////
-000010FA                           107  *bound_error: The provided address was out of the valid range, print an error message and ask for
-000010FA                           108  * a new one.
-000010FA                           109  *////////////////////////////////////////////////////////////////////////////////////////
-000010FA  43F9 000011AB            110  bound_error     LEA     input_error,A1      * Assign input error message into A1
-00001100  103C 000E                111                  MOVE.B  #14,D0              * Assign task code for message into D0
-00001104  4E4F                     112                  TRAP    #15                 * Display message
-00001106  4EF8 100C                113                  JMP     get_start       * Prompt for starting address again
-0000110A                           114  *////////////////////////////////////////////////////////////////////////////////////////
-0000110A                           115  *even_check: Checks whether an address is even, branches to error message if odd.  (Does not change 
-0000110A                           116  * address if even).
-0000110A                           117  *////////////////////////////////////////////////////////////////////////////////////////
-0000110A  4282                     118  even_check      CLR.L   D2                  * Clear D2 for new address
-0000110C  7202                     119                  MOVE.L  #$00000002,D1       * Assign value 2 into D1
-0000110E  3403                     120                  MOVE.W  D3,D2               * Move address we want to check into D2
-00001110  84C1                     121                  DIVU    D1,D2               * Divide the address by 2
-00001112  4842                     122                  SWAP    D2                  * Swap D2 to find the remainder
-00001114  B43C 0001                123                  CMP.B   #$01,D2             * Check if there is a remainder in D2
-00001118  6700 0004                124                  BEQ     odd_error           * Branch to error if address is odd
-0000111C  4E75                     125                  RTS                         * Return
-0000111E                           126  *////////////////////////////////////////////////////////////////////////////////////////
-0000111E                           127  *odd_error: The provided address was odd, so print an error and return a -1 for the address.
-0000111E                           128  *////////////////////////////////////////////////////////////////////////////////////////
-0000111E  43F9 000011D6            129  odd_error       LEA     not_even,A1         * Assign odd error message to A1
-00001124  103C 000E                130                  MOVE.B  #14,D0              * Assign prompt task code to D0
-00001128  4E4F                     131                  TRAP    #15                 * Display odd error message
-0000112A  4686                     132                  NOT.L   D6                  * Assign D6's value to be -1
-0000112C  2606                     133                  MOVE.L  D6,D3               * Assign the given address to -1
-0000112E  4E75                     134                  RTS                         * Return
-00001130                           135  ***************************************************************************************************
-00001130                           136  ***************************************************************************************************
-00001130                           137  *
-00001130                           138  * VARIABLES
-00001130                           139  *
-00001130                           140  ***************************************************************************************************
-00001130                           141  ***************************************************************************************************
-00001130  =0000000D                142  CR              EQU     $0D                 * ASCII code for Carriage Return
-00001130  =0000000A                143  LF              EQU     $0A                 * ASCII code for Line Feed
-00001130= 57 65 6C 63 6F 6D ...    144  greeting        DC.B    'Welcome to EASY68K Disassembler!',CR,LF,0
-00001153= 45 6E 74 65 72 20 ...    145  start_prompt    DC.B    'Enter starting address: ($0 to $00FFFFFE)',CR,LF,0
-0000117F= 45 6E 74 65 72 20 ...    146  end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
-000011AB= 54 68 65 72 65 20 ...    147  input_error     DC.B    'There was something wrong with the input',CR,LF,0
-000011D6= 54 68 65 20 73 70 ...    148  not_even        DC.B    'The specified address was odd',CR,LF,0
-000011F6= 41 6C 6C 20 64 6F ...    149  end_message     DC.B    'All done!  See you later!',CR,LF,0
-00001212                           150  start_input     DS.B    80
-00001262                           151  end_input       DS.B    80
-000012B2                           152  
-000012B2                           153  
-000012B2                           154      END    START        ; last line of source
+00001084  4280                      57  main            CLR.L   D0
+00001086  4281                      58                  CLR.L   D1
+00001088  200D                      59                  MOVE.L  A5,D0
+0000108A  123C 0004                 60                  MOVE.B  #4,D1
+0000108E  227C 000012C0             61                  MOVE.L  #buffer,A1
+00001094  4EB9 00001158             62                  JSR     hex_to_ascii
+0000109A  12BC 0000                 63                  MOVE.B  #$00,(A1)
+0000109E  4280                      64                  CLR.L   D0
+000010A0  103C 000E                 65                  MOVE.B  #14,D0
+000010A4  43F9 000012C0             66                  LEA     buffer,A1
+000010AA  4E4F                      67                  TRAP    #15
+000010AC                            68                  
+000010AC  43F9 00001280             69                  LEA     end_message,A1      * Assign end message to A1
+000010B2  103C 000E                 70                  MOVE.B  #14,D0              * Assign prompt task code to D0
+000010B6  4E4F                      71                  TRAP    #15                 * Display end message
+000010B8  4E72 2700                 72                  STOP    #$00002700          * Stop                
+000010BC                            73  
+000010BC                            74  ***************************************************************************************************
+000010BC                            75  ***************************************************************************************************
+000010BC                            76  *
+000010BC                            77  * SUBROUTINES
+000010BC                            78  *
+000010BC                            79  ***************************************************************************************************
+000010BC                            80  ***************************************************************************************************
+000010BC                            81  *////////////////////////////////////////////////////////////////////////////////////////
+000010BC                            82  *ascii_to_hex: transforms ASCII input into a hexadecimal address, returns error if invalid characters
+000010BC                            83  *D1: ASCII parameter to be converted
+000010BC                            84  *D2: Internal data used for comparison
+000010BC                            85  *D3: Return data
+000010BC                            86  *D6: Internal data used for NULL comparison
+000010BC                            87  *////////////////////////////////////////////////////////////////////////////////////////
+000010BC  7C00                      88  ascii_to_hex    MOVEQ   #$0,D6              * Clear D6 for null comparison
+000010BE  7600                      89                  MOVEQ   #$0,D3              * Clear D3 for new data
+000010C0  B203                      90                  CMP.B   D3,D1               * Null check on string
+000010C2  6700 005E                 91                  BEQ     bound_error         * Error if null
+000010C6  0C41 0000                 92                  CMPI    #$0,D1              * Character check on string
+000010CA  6F00 0056                 93                  BLE     bound_error         * Error if less than 0
+000010CE  0C41 0008                 94                  CMPI    #$8,D1              * Character check on string
+000010D2  6E00 004E                 95                  BGT     bound_error         * Error if more than 8 characters
+000010D6                            96                  
+000010D6  1419                      97  translate       MOVE.B  (A1)+,D2            * Move next character into D2
+000010D8  B406                      98                  CMP.B   D6,D2               * Null check on character
+000010DA  6700 0044                 99                  BEQ     result              * End of input if null
+000010DE  B43C 0066                100                  CMP.B   #102,D2             * Compare with 102 (highest character code)
+000010E2  6E00 003E                101                  BGT     bound_error         * Error if character is higher than 102
+000010E6  B43C 0060                102                  CMP.B   #96,D2              * Compare with 96 (lowest lowercase hex)
+000010EA  6E00 0036                103                  BGT     bound_error         * Error if character is lowercase
+000010EE  B43C 0046                104                  CMP.B   #70,D2              * Compare with 70 (highest uppercase hex)
+000010F2  6E00 002E                105                  BGT     bound_error         * Error if character is between 70 and 96
+000010F6  B43C 0040                106                  CMP.B   #64,D2              * Compare with 64 (lowest uppercase hex)
+000010FA  6E00 001A                107                  BGT     uppercase           * Branch to uppercase if above 64
+000010FE  B43C 0039                108                  CMP.B   #57,D2              * Compare with 57 (highest decimal number)
+00001102  6E00 001E                109                  BGT     bound_error         * Error if character is between 57 and 64
+00001106  B43C 0030                110                  CMP.B   #48,D2              * Compare with 48 (lowest decimal number)
+0000110A  6D00 0016                111                  BLT     bound_error         * Error if character is below 48
+0000110E  0402 0030                112                  SUBI.B  #48,D2              * Subtract 48 from ASCII value to get hexadecimal value
+00001112  6000 0006                113                  BRA     decoded             * Translation complete
+00001116                           114                  
+00001116  0402 0037                115  uppercase       SUBI.B  #55,D2              * Subtract 55 from ASCII value to get hexadecimal value
+0000111A                           116  
+0000111A  E983                     117  decoded         ASL.L   #4,D3               * Clear the return location
+0000111C  D602                     118                  ADD.B   D2,D3               * Move the resulting character into the return location
+0000111E  60B6                     119                  BRA     translate           * Check next character
+00001120                           120                  
+00001120  4E75                     121  result          RTS                         * Return
+00001122                           122  *////////////////////////////////////////////////////////////////////////////////////////
+00001122                           123  *bound_error: The provided address was out of the valid range, print an error message and ask for
+00001122                           124  * a new one.
+00001122                           125  *////////////////////////////////////////////////////////////////////////////////////////
+00001122  43F9 00001235            126  bound_error     LEA     input_error,A1      * Assign input error message into A1
+00001128  103C 000E                127                  MOVE.B  #14,D0              * Assign task code for message into D0
+0000112C  4E4F                     128                  TRAP    #15                 * Display message
+0000112E  4EF8 100C                129                  JMP     get_start           * Prompt for starting address again
+00001132                           130  *////////////////////////////////////////////////////////////////////////////////////////
+00001132                           131  *even_check: Checks whether an address is even, branches to error message if odd.  (Does not change 
+00001132                           132  * address if even).
+00001132                           133  *////////////////////////////////////////////////////////////////////////////////////////
+00001132  4282                     134  even_check      CLR.L   D2                  * Clear D2 for new address
+00001134  7202                     135                  MOVE.L  #$00000002,D1       * Assign value 2 into D1
+00001136  3403                     136                  MOVE.W  D3,D2               * Move address we want to check into D2
+00001138  84C1                     137                  DIVU    D1,D2               * Divide the address by 2
+0000113A  4842                     138                  SWAP    D2                  * Swap D2 to find the remainder
+0000113C  B43C 0001                139                  CMP.B   #$01,D2             * Check if there is a remainder in D2
+00001140  6700 0004                140                  BEQ     odd_error           * Branch to error if address is odd
+00001144  4E75                     141                  RTS                         * Return
+00001146                           142  *////////////////////////////////////////////////////////////////////////////////////////
+00001146                           143  *odd_error: The provided address was odd, so print an error and return a -1 for the address.
+00001146                           144  *////////////////////////////////////////////////////////////////////////////////////////
+00001146  43F9 00001260            145  odd_error       LEA     not_even,A1         * Assign odd error message to A1
+0000114C  103C 000E                146                  MOVE.B  #14,D0              * Assign prompt task code to D0
+00001150  4E4F                     147                  TRAP    #15                 * Display odd error message
+00001152  4686                     148                  NOT.L   D6                  * Assign D6's value to be -1
+00001154  2606                     149                  MOVE.L  D6,D3               * Assign the given address to -1
+00001156  4E75                     150                  RTS                         * Return
+00001158                           151  *////////////////////////////////////////////////////////////////////////////////////////
+00001158                           152  *hex_to_ascii: Translates a given HEX value to ASCII for printing
+00001158                           153  *A1: Resulting HEX value
+00001158                           154  *D0: Value to be converted
+00001158                           155  *D1: Size - Number of bytes to be converted
+00001158                           156  *D2: Current character being processed (internal)
+00001158                           157  *D3: Loop counter
+00001158                           158  *////////////////////////////////////////////////////////////////////////////////////////
+00001158  0281 000000FF            159  hex_to_ascii    ANDI.L  #$000000FF,D1       * Isolate the size
+0000115E  B23C 0004                160                  CMP.B   #4,D1               * Compare the size to 4
+00001162  6E00 0048                161                  BGT     hta_error           * Error if the size is > 4
+00001166  B23C 0000                162                  CMP.B   #0,D1               * Compare the size to 0
+0000116A  6F00 0040                163                  BLE     hta_error           * Error if the size < 0
+0000116E  48E7 B000                164                  MOVEM.L D0/D2-D3,-(A7)      * Push the register data onto the stack
+00001172  E399                     165                  ROL.L   #1,D1               * Rotate left by 1 to multiply the size by 2
+00001174  2601                     166                  MOVE.L  D1,D3               * Save the counter into D3
+00001176                           167                  
+00001176  2400                     168  hta_loop        MOVE.L  D0,D2               * Copy data at D0 into D2
+00001178  0202 000F                169                  ANDI.B  #%00001111,D2       * Select the first ASCII character in D2
+0000117C  B43C 0009                170                  CMP.B   #9,D2               * Compare the character to 9
+00001180  6F00 000A                171                  BLE     hta_number          * Branch to hex number if <= 9
+00001184  0642 0037                172                  ADDI    #55,D2              * If letter, add 55 to make it an ASCII value
+00001188  6000 0006                173                  BRA     hta_continue        * Branch to stack operation
+0000118C                           174                  
+0000118C  0642 0030                175  hta_number      ADDI    #48,D2              * If number, add 48 to make it an ASCII value
+00001190                           176  
+00001190  1F02                     177  hta_continue    MOVE.B  D2,-(A7)            * Add the ASCII value to the stack
+00001192  E898                     178                  ROR.L   #4,D0               * Rotate right by 4 to get the next character
+00001194  5341                     179                  SUBI    #1,D1               * Subtract 1 from the counter
+00001196  B23C 0000                180                  CMP.B   #0,D1               * Compare the counter to 0
+0000119A  66DA                     181                  BNE     hta_loop            * Branch to convert the next character if counter is not 0
+0000119C                           182                  
+0000119C  12DF                     183  hta_result      MOVE.B  (A7)+,(A1)+         * Retrieve ASCII values from the stack and put them in A1
+0000119E  5343                     184                  SUBI    #1,D3               * Subtract 1 from the counter
+000011A0  B63C 0000                185                  CMP.B   #0,D3               * Compare the counter to 0
+000011A4  66F6                     186                  BNE     hta_result          * Branch to retrieve the next character if counter is not 0
+000011A6  4CDF 000D                187                  MOVEM.L (A7)+,D0/D2-D3      * Retrieve original data for the register
+000011AA                           188  
+000011AA  4E75                     189  hta_finish      RTS                         * Return
+000011AC                           190  *////////////////////////////////////////////////////////////////////////////////////////
+000011AC                           191  *odd_error: The provided address was odd, so print an error and return a -1 for the address.
+000011AC                           192  *////////////////////////////////////////////////////////////////////////////////////////
+000011AC  43F9 0000129C            193  hta_error       LEA     hta_error_msg,A1    * Assign hex to ascii error message into A1
+000011B2  103C 000E                194                  MOVE.B  #14,D0              * Assign task code for message into D0
+000011B6  4E4F                     195                  TRAP    #15                 * Display message
+000011B8  60F0                     196                  BRA     hta_finish          * Return
+000011BA                           197  ***************************************************************************************************
+000011BA                           198  ***************************************************************************************************
+000011BA                           199  *
+000011BA                           200  * VARIABLES
+000011BA                           201  *
+000011BA                           202  ***************************************************************************************************
+000011BA                           203  ***************************************************************************************************
+000011BA  =0000000D                204  CR              EQU     $0D                 * ASCII code for Carriage Return
+000011BA  =0000000A                205  LF              EQU     $0A                 * ASCII code for Line Feed
+000011BA= 57 65 6C 63 6F 6D ...    206  greeting        DC.B    'Welcome to EASY68K Disassembler!',CR,LF,0
+000011DD= 45 6E 74 65 72 20 ...    207  start_prompt    DC.B    'Enter starting address: ($0 to $00FFFFFE)',CR,LF,0
+00001209= 45 6E 74 65 72 20 ...    208  end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
+00001235= 54 68 65 72 65 20 ...    209  input_error     DC.B    'There was something wrong with the input',CR,LF,0
+00001260= 54 68 65 20 73 70 ...    210  not_even        DC.B    'The specified address was odd',CR,LF,0
+00001280= 41 6C 6C 20 64 6F ...    211  end_message     DC.B    'All done!  See you later!',CR,LF,0
+0000129C= 54 68 65 20 6E 75 ...    212  hta_error_msg   DC.B    'The number of bytes was incorrect',CR,LF,0
+000012C0                           213  buffer          DS.B    80
+00001310                           214  start_input     DS.B    80
+00001360                           215  end_input       DS.B    80
+000013B0                           216  
+000013B0                           217  
+000013B0                           218      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -164,27 +228,36 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+ASCII_TO_HEX        10BC
 BEGIN               0
-BOUND_ERROR         10FA
+BOUND_ERROR         1122
+BUFFER              12C0
 CR                  D
-DECODED             10F2
+DECODED             111A
 END                 FFFFFE
-END_INPUT           1262
-END_MESSAGE         11F6
-END_PROMPT          117F
-EVEN_CHECK          110A
+END_INPUT           1360
+END_MESSAGE         1280
+END_PROMPT          1209
+EVEN_CHECK          1132
 GET_END             104C
 GET_START           100C
-GREETING            1130
-INPUT_ERROR         11AB
+GREETING            11BA
+HEX_TO_ASCII        1158
+HTA_CONTINUE        1190
+HTA_ERROR           11AC
+HTA_ERROR_MSG       129C
+HTA_FINISH          11AA
+HTA_LOOP            1176
+HTA_NUMBER          118C
+HTA_RESULT          119C
+INPUT_ERROR         1235
 LF                  A
 MAIN                1084
-NOT_EVEN            11D6
-ODD_ERROR           111E
-RESULT              10F8
+NOT_EVEN            1260
+ODD_ERROR           1146
+RESULT              1120
 START               1000
-START_INPUT         1212
-START_PROMPT        1153
-TRANSLATE           10AE
-UPPERCASE           10EE
-VALIDATE            1094
+START_INPUT         1310
+START_PROMPT        11DD
+TRANSLATE           10D6
+UPPERCASE           1116
