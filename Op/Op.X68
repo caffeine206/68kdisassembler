@@ -273,9 +273,14 @@ ABSOLUTE_WORD
     CLR.L   D0                              *Clear D0
     MOVE.W  (A5)+,D0                        *Get next WORD from memory  
     
+    *Do conversion and add to buffer for printing
+    
 ABSOLUTE_LONG
     CLR.L   D0                              *Clear D0
     MOVE.L  (A5)+,D0                        *Get next LONG WORD from memory 
+
+    *Do conversion and add to buffer for printing
+
 
 IMMEDIATE_DATA
     ANDI.W  #%0000000000000011,D1           *Get last 2 bits for size
