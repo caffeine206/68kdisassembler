@@ -22,7 +22,7 @@ get_start       LEA     start_prompt,A1     * Assign starting address prompt to 
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
                 
-                JSR     validate            * Validate ASCII input
+                JSR     ascii_to_hex        * Translate ASCII input to HEX
                 JSR     even_check          * Check if given address is odd
                 CMP.W   #-1,D3              * Check result of odd check
                 BEQ     get_start           * If odd, display an error and ask for new starting address
@@ -43,7 +43,7 @@ get_end         LEA     end_prompt,A1       * Assign ending address prompt to A1
                 MOVE.B  #2,D0               * Assign input task code to D0
                 TRAP    #15                 * Store user input in A1
                 
-                JSR     validate            * Validate ASCII input
+                JSR     ascii_to_hex        * Translate ASCII input to HEX
                 JSR     even_check          * Check if given address is odd
                 CMP.W   #-1,D3              * Check result of odd check
                 BEQ     get_end             * If odd, display an error and ask for new starting address
@@ -54,7 +54,19 @@ get_end         LEA     end_prompt,A1       * Assign ending address prompt to A1
                 BGT     bound_error         * Error if address is above maximum
                 MOVEA.L D3,A6               * Save the upper address into A6
 
-main            LEA     end_message,A1      * Assign end message to A1
+main            CLR.L   D0
+                CLR.L   D1
+                MOVE.L  A5,D0
+                MOVE.B  #4,D1
+                MOVE.L  #buffer,A1
+                JSR     hex_to_ascii
+                MOVE.B  #$00,(A1)
+                CLR.L   D0
+                MOVE.B  #14,D0
+                LEA     buffer,A1
+                TRAP    #15
+                
+                LEA     end_message,A1      * Assign end message to A1
                 MOVE.B  #14,D0              * Assign prompt task code to D0
                 TRAP    #15                 * Display end message
                 STOP    #$00002700          * Stop                
@@ -67,10 +79,13 @@ main            LEA     end_message,A1      * Assign end message to A1
 ***************************************************************************************************
 ***************************************************************************************************
 *////////////////////////////////////////////////////////////////////////////////////////
-*validate: transforms ASCII input into a hexadecimal address, returns error if invalid characters
-*D1 is passed, D2, D3 and D6 are internal
+*ascii_to_hex: transforms ASCII input into a hexadecimal address, returns error if invalid characters
+*D1: ASCII parameter to be converted
+*D2: Internal data used for comparison
+*D3: Return data
+*D6: Internal data used for NULL comparison
 *////////////////////////////////////////////////////////////////////////////////////////
-validate        MOVEQ   #$0,D6              * Clear D6 for null comparison
+ascii_to_hex    MOVEQ   #$0,D6              * Clear D6 for null comparison
                 MOVEQ   #$0,D3              * Clear D3 for new data
                 CMP.B   D3,D1               * Null check on string
                 BEQ     bound_error         * Error if null
@@ -133,6 +148,52 @@ odd_error       LEA     not_even,A1         * Assign odd error message to A1
                 NOT.L   D6                  * Assign D6's value to be -1
                 MOVE.L  D6,D3               * Assign the given address to -1
                 RTS                         * Return
+*////////////////////////////////////////////////////////////////////////////////////////
+*hex_to_ascii: Translates a given HEX value to ASCII for printing
+*A1: Resulting HEX value
+*D0: Value to be converted
+*D1: Size - Number of bytes to be converted
+*D2: Current character being processed (internal)
+*D3: Loop counter
+*////////////////////////////////////////////////////////////////////////////////////////
+hex_to_ascii    ANDI.L  #$000000FF,D1       * Isolate the size
+                CMP.B   #4,D1               * Compare the size to 4
+                BGT     hta_error           * Error if the size is > 4
+                CMP.B   #0,D1               * Compare the size to 0
+                BLE     hta_error           * Error if the size < 0
+                MOVEM.L D0/D2-D3,-(A7)      * Push the register data onto the stack
+                ROL.L   #1,D1               * Rotate left by 1 to multiply the size by 2
+                MOVE.L  D1,D3               * Save the counter into D3
+                
+hta_loop        MOVE.L  D0,D2               * Copy data at D0 into D2
+                ANDI.B  #%00001111,D2       * Select the first ASCII character in D2
+                CMP.B   #9,D2               * Compare the character to 9
+                BLE     hta_number          * Branch to hex number if <= 9
+                ADDI    #55,D2              * If letter, add 55 to make it an ASCII value
+                BRA     hta_continue        * Branch to stack operation
+                
+hta_number      ADDI    #48,D2              * If number, add 48 to make it an ASCII value
+
+hta_continue    MOVE.B  D2,-(A7)            * Add the ASCII value to the stack
+                ROR.L   #4,D0               * Rotate right by 4 to get the next character
+                SUBI    #1,D1               * Subtract 1 from the counter
+                CMP.B   #0,D1               * Compare the counter to 0
+                BNE     hta_loop            * Branch to convert the next character if counter is not 0
+                
+hta_result      MOVE.B  (A7)+,(A1)+         * Retrieve ASCII values from the stack and put them in A1
+                SUBI    #1,D3               * Subtract 1 from the counter
+                CMP.B   #0,D3               * Compare the counter to 0
+                BNE     hta_result          * Branch to retrieve the next character if counter is not 0
+                MOVEM.L (A7)+,D0/D2-D3      * Retrieve original data for the register
+
+hta_finish      RTS                         * Return
+*////////////////////////////////////////////////////////////////////////////////////////
+*odd_error: The provided address was odd, so print an error and return a -1 for the address.
+*////////////////////////////////////////////////////////////////////////////////////////
+hta_error       LEA     hta_error_msg,A1    * Assign hex to ascii error message into A1
+                MOVE.B  #14,D0              * Assign task code for message into D0
+                TRAP    #15                 * Display message
+                BRA     hta_finish          * Return
 ***************************************************************************************************
 ***************************************************************************************************
 *
@@ -148,11 +209,14 @@ end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
 input_error     DC.B    'There was something wrong with the input',CR,LF,0
 not_even        DC.B    'The specified address was odd',CR,LF,0
 end_message     DC.B    'All done!  See you later!',CR,LF,0
+hta_error_msg   DC.B    'The number of bytes was incorrect',CR,LF,0
+buffer          DS.B    80
 start_input     DS.B    80
 end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 
