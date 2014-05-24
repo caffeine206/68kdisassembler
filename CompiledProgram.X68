@@ -155,7 +155,7 @@ jmp_table
 code0000    STOP    #$2700
 
 *////////////////////////////////////////////////////////////////////////////////////////
-*code0001: MOVE.B 
+*code0001: MOVE Byte
 *////////////////////////////////////////////////////////////////////////////////////////  
 code0001
     MOVE.B  #'M',(A1)+
@@ -185,19 +185,21 @@ code0001
     CMP.B   #1,D3                           *An not allowed
     BEQ     data_error
 
-    
     JSR     EAMode                          *Jump to EAMode
     
     BRA     Print
 
 *////////////////////////////////////////////////////////////////////////////////////////
-*code0001: MOVE.L 
+*code0001: MOVE Long
 *//////////////////////////////////////////////////////////////////////////////////////// 
 code0010    
     MOVE.B  #'M',(A1)+
     MOVE.B  #'O',(A1)+
     MOVE.B  #'V',(A1)+
     MOVE.B  #'E',(A1)+
+    
+    JSR     MOVEA_check                     *Check for MOVEA      
+
     MOVE.B  #'.',(A1)+
     MOVE.B  #'L',(A1)+
     MOVE.B  #' ',(A1)+
@@ -217,24 +219,23 @@ code0010
     CLR.L   D3
     MOVE.B  D4,D3                           *Get Destination MODE
     MOVE.B  D5,D2                           *Get Source REG
-    
-    CMP.B   #1,D3                           *An not allowed
-    BEQ     data_error
-
-    
+   
     JSR     EAMode                          *Jump to EAMode
     
     BRA     Print
 
 
 *////////////////////////////////////////////////////////////////////////////////////////
-*code0011: MOVE.W 
+*code0011: MOVE Word
 *//////////////////////////////////////////////////////////////////////////////////////// 
 code0011    
     MOVE.B  #'M',(A1)+
     MOVE.B  #'O',(A1)+
     MOVE.B  #'V',(A1)+
     MOVE.B  #'E',(A1)+
+    
+    JSR     MOVEA_check                     *Check for MOVEA
+    
     MOVE.B  #'.',(A1)+
     MOVE.B  #'W',(A1)+
     MOVE.B  #' ',(A1)+
@@ -255,10 +256,6 @@ code0011
     MOVE.B  D4,D3                           *Get Destination MODE
     MOVE.B  D5,D2                           *Get Source REG
     
-    CMP.B   #1,D3                           *An not allowed
-    BEQ     data_error
-
-    
     JSR     EAMode                          *Jump to EAMode
     
     BRA     Print
@@ -278,12 +275,34 @@ code1101    STOP    #$2700
 code1110    STOP    #$2700
 code1111    BRA     data_error
 
+*////////////////////////////////////////////////////////////////////////////////////////
+*MOVEA_check: check if MOVEA, then add 'A' to print buffer
+*D4: hold the Destination MODE for comparison
+*//////////////////////////////////////////////////////////////////////////////////////// 
+MOVEA_check
+    CMP.B   #1,D4                           
+    BEQ     is_MOVEA
+    RTS
 
+is_MOVEA
+    MOVE.B  'A',(A1)+
+    RTS
+
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*data_error: current WORD couldn't be decoded, print the WORD data
+*//////////////////////////////////////////////////////////////////////////////////////// 
 data_error
+                MOVE.B  #'D',(A1)+
+                MOVE.B  #'A',(A1)+
+                MOVE.B  #'T',(A1)+
+                MOVE.B  #'A',(A1)+
+                MOVE.B  #$9,(A1)+           * Add a tab
+                
                 CLR.L   D0
-                MOVE.W  current,D0
+                MOVE.W  current,D0          * Copy the WORD data to D0
                 CLR.L   D1
-                MOVE.B  #2,D1
+                MOVE.B  #2,D1               * Byte size is 2
                
                 JSR     hex_to_ascii
                 BRA     Print
@@ -602,6 +621,7 @@ end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 

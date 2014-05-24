@@ -234,6 +234,159 @@ START:                  ; first instruction of program
     MOVE.L      #$55555555,$1234        *Move long word data from #$55555555 to absolute address WORD
     MOVE.L      #$55555555,$12345678    *Move long word data from #$55555555 to absolute address LONG WORD
     *MOVE.L      #$55555555,#$55555555   *Move long word data from #$55555555 to immediate data $55555555
+    
+*////////////////////////////////////////////////////////////////////
+*MOVEA.W
+*////////////////////////////////////////////////////////////////////
+    
+    *MOVEA.W      D3,D4                   *Move word data from D3 to D4
+    MOVEA.W      D3,A4                   *Move word data from D3 to A4
+*    MOVEA.W      D3,(A4)                 *Move word data from D3 to object in A4
+*    MOVEA.W      D3,(A4)+                *Move word data from D3 to object in A4 and increase pointer by 1
+*    MOVEA.W      D3,-(A4)                *Move word data from D3 to object in A4 after decrease pointer by 1
+*    MOVEA.W      D3,$1234                *Move word data from D3 to absolute address WORD
+*    MOVEA.W      D3,$12345678            *Move word data from D3 to absolute address LONG WORD
+*    MOVEA.W      D3,#$5555               *Move word data from D3 to immediate data $5555 
+    
+    *MOVEA.W      A3,D4                   *Move word data from A3 to D4
+    MOVEA.W      A3,A4                   *Move word data from A3 to A4
+*    MOVEA.W      A3,(A4)                 *Move word data from A3 to object in A4
+*    MOVEA.W      A3,(A4)+                *Move word data from A3 to object in A4 and increase pointer by 1
+*    MOVEA.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
+*    MOVEA.W      A3,$1234                *Move word data from A3 to absolute address WORD
+*    MOVEA.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD
+*    MOVEA.W      A3,#$5555               *Move word data from A3 to immediate data $5555
+    
+    *MOVEA.W      (A3),D4                 *Move word data from (A3) to D4
+    MOVEA.W      (A3),A4                 *Move word data from (A3) to A4
+*    MOVEA.W      (A3),(A4)               *Move word data from (A3) to object in A4
+*    MOVEA.W      (A3),(A4)+              *Move word data from (A3) to object in A4 and increase pointer by 1
+*    MOVEA.W      (A3),-(A4)              *Move word data from (A3) to object in A4 after decrease pointer by 1
+*    MOVEA.W      (A3),$1234              *Move word data from (A3) to absolute address WORD
+*    MOVEA.W      (A3),$12345678          *Move word data from (A3) to absolute address LONG WORD
+*    MOVEA.W      (A3),#$5555             *Move word data from (A3) to immediate data $5555
+    
+    *MOVEA.W      (A3)+,D4                *Move word data from (A3)+ to D4
+    MOVEA.W      (A3)+,A4                *Move word data from (A3)+ to A4
+*    MOVEA.W      (A3)+,(A4)              *Move word data from (A3)+ to object in A4
+*    MOVEA.W      (A3)+,(A4)+             *Move word data from (A3)+ to object in A4 and increase pointer by 1
+*    MOVEA.W      (A3)+,-(A4)             *Move word data from (A3)+ to object in A4 after decrease pointer by 1
+*    MOVEA.W      (A3)+,$1234             *Move word data from (A3)+ to absolute address WORD
+*    MOVEA.W      (A3)+,$12345678         *Move word data from (A3)+ to absolute address LONG WORD
+*    MOVEA.W      (A3)+,#$5555            *Move word data from (A3)+ to immediate data $5555
+    
+    *MOVEA.W      -(A3),D4                *Move word data from -(A3) to D4
+    MOVEA.W      -(A3),A4                *Move word data from -(A3) to A4
+*    MOVEA.W      -(A3),(A4)              *Move word data from -(A3) to object in A4
+*    MOVEA.W      -(A3),(A4)+             *Move word data from -(A3) to object in A4 and increase pointer by 1
+*    MOVEA.W      -(A3),-(A4)             *Move word data from -(A3) to object in A4 after decrease pointer by 1
+*    MOVEA.W      -(A3),$1234             *Move word data from -(A3) to absolute address WORD
+*    MOVEA.W      -(A3),$12345678         *Move word data from -(A3) to absolute address LONG WORD
+*    MOVEA.W      -(A3),#$5555            *Move word data from -(A3) to immediate data $5555
+    
+    *MOVEA.W      $1234,D4                *Move word data from $1234 to D4
+    MOVEA.W      $1234,A4                *Move word data from $1234 to A4
+*    MOVEA.W      $1234,(A4)              *Move word data from $1234 to object in A4
+*    MOVEA.W      $1234,(A4)+             *Move word data from $1234 to object in A4 and increase pointer by 1
+*    MOVEA.W      $1234,-(A4)             *Move word data from $1234 to object in A4 after decrease pointer by 1
+*    MOVEA.W      $1234,$1234             *Move word data from $1234 to absolute address WORD
+*    MOVEA.W      $1234,$12345678         *Move word data from $1234 to absolute address LONG WORD
+*    MOVEA.W      $1234,#$5555            *Move word data from $1234 to immediate data $5555
+    
+    *MOVEA.W      $12345678,D4            *Move word data from $12345678 to D4
+    MOVEA.W      $12345678,A4            *Move word data from $12345678 to A4
+*    MOVEA.W      $12345678,(A4)          *Move word data from $12345678 to object in A4
+*    MOVEA.W      $12345678,(A4)+         *Move word data from $12345678 to object in A4 and increase pointer by 1
+*    MOVEA.W      $12345678,-(A4)         *Move word data from $12345678 to object in A4 after decrease pointer by 1
+*    MOVEA.W      $12345678,$1234         *Move word data from $12345678 to absolute address WORD
+*    MOVEA.W      $12345678,$12345678     *Move word data from $12345678 to absolute address LONG WORD
+*    MOVEA.W      $12345678,#$5555        *Move word data from $12345678 to immediate data $5555
+    
+    *MOVEA.W      #$5555,D4               *Move word data from #$5555 to D4
+    MOVEA.W      #$5555,A4               *Move word data from #$5555 to A4
+*    MOVEA.W      #$5555,(A4)             *Move word data from #$5555 to object in A4
+*    MOVEA.W      #$5555,(A4)+            *Move word data from #$5555 to object in A4 and increase pointer by 1
+*    MOVEA.W      #$5555,-(A4)            *Move word data from #$5555 to object in A4 after decrease pointer by 1
+*    MOVEA.W      #$5555,$1234            *Move word data from #$5555 to absolute address WORD
+*    MOVEA.W      #$5555,$12345678        *Move word data from #$5555 to absolute address LONG WORD
+*    MOVEA.W      #$5555,#$5555           *Move word data from #$5555 to immediate data $5555  
+
+*////////////////////////////////////////////////////////////////////
+*MOVEA.L
+*////////////////////////////////////////////////////////////////////
+    
+*    MOVEA.L      D3,D4                   *Move long word data from D3 to D4
+    MOVEA.L      D3,A4                   *Move long word data from D3 to A4
+*    MOVEA.L      D3,(A4)                 *Move long word data from D3 to object in A4
+*    MOVEA.L      D3,(A4)+                *Move long word data from D3 to object in A4 and increase pointer by 1
+*    MOVEA.L      D3,-(A4)                *Move long word data from D3 to object in A4 after decrease pointer by 1
+*    MOVEA.L      D3,$1234                *Move long word data from D3 to absolute address WORD
+*    MOVEA.L      D3,$12345678            *Move long word data from D3 to absolute address LONG WORD
+*    MOVEA.L      D3,#$55555555           *Move long word data from D3 to immediate data $55555555 
+   
+*    MOVEA.L      A3,D4                   *Move long word data from A3 to D4
+    MOVEA.L      A3,A4                   *Move long word data from A3 to A4
+*    MOVEA.L      A3,(A4)                 *Move long word data from A3 to object in A4
+*    MOVEA.L      A3,(A4)+                *Move long word data from A3 to object in A4 and increase pointer by 1
+*    MOVEA.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
+*    MOVEA.L      A3,$1234                *Move long word data from A3 to absolute address WORD
+*    MOVEA.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
+*    MOVEA.L      A3,#$55555555           *Move long word data from A3 to immediate data $55555555
+    
+*    MOVEA.L      (A3),D4                 *Move long word data from (A3) to D4
+    MOVEA.L      (A3),A4                 *Move long word data from (A3) to A4
+*    MOVEA.L      (A3),(A4)               *Move long word data from (A3) to object in A4
+*    MOVEA.L      (A3),(A4)+              *Move long word data from (A3) to object in A4 and increase pointer by 1
+*    MOVEA.L      (A3),-(A4)              *Move long word data from (A3) to object in A4 after decrease pointer by 1
+*    MOVEA.L      (A3),$1234              *Move long word data from (A3) to absolute address WORD
+*    MOVEA.L      (A3),$12345678          *Move long word data from (A3) to absolute address LONG WORD
+*    MOVEA.L      (A3),#$55555555         *Move long word data from (A3) to immediate data $55555555
+    
+*    MOVEA.L      (A3)+,D4                *Move long word data from (A3)+ to D4
+    MOVEA.L      (A3)+,A4                *Move long word data from (A3)+ to A4
+*    MOVEA.L      (A3)+,(A4)              *Move long word data from (A3)+ to object in A4
+*    MOVEA.L      (A3)+,(A4)+             *Move long word data from (A3)+ to object in A4 and increase pointer by 1
+*    MOVEA.L      (A3)+,-(A4)             *Move long word data from (A3)+ to object in A4 after decrease pointer by 1
+*    MOVEA.L      (A3)+,$1234             *Move long word data from (A3)+ to absolute address WORD
+*    MOVEA.L      (A3)+,$12345678         *Move long word data from (A3)+ to absolute address LONG WORD
+*    MOVEA.L      (A3)+,#$55555555        *Move long word data from (A3)+ to immediate data $55555555
+    
+*    MOVEA.L      -(A3),D4                *Move long word data from -(A3) to D4
+    MOVEA.L      -(A3),A4                *Move long word data from -(A3) to A4
+*    MOVEA.L      -(A3),(A4)              *Move long word data from -(A3) to object in A4
+*    MOVEA.L      -(A3),(A4)+             *Move long word data from -(A3) to object in A4 and increase pointer by 1
+*    MOVEA.L      -(A3),-(A4)             *Move long word data from -(A3) to object in A4 after decrease pointer by 1
+*    MOVEA.L      -(A3),$1234             *Move long word data from -(A3) to absolute address WORD
+*    MOVEA.L      -(A3),$12345678         *Move long word data from -(A3) to absolute address LONG WORD
+*    MOVEA.L      -(A3),#$55555555        *Move long word data from -(A3) to immediate data $55555555
+    
+*    MOVEA.L      $1234,D4                *Move long word data from $1234 to D4
+    MOVEA.L      $1234,A4                *Move long word data from $1234 to A4
+*    MOVEA.L      $1234,(A4)              *Move long word data from $1234 to object in A4
+*    MOVEA.L      $1234,(A4)+             *Move long word data from $1234 to object in A4 and increase pointer by 1
+*    MOVEA.L      $1234,-(A4)             *Move long word data from $1234 to object in A4 after decrease pointer by 1
+*    MOVEA.L      $1234,$1234             *Move long word data from $1234 to absolute address WORD
+*    MOVEA.L      $1234,$12345678         *Move long word data from $1234 to absolute address LONG WORD
+*    MOVEA.L      $1234,#$55555555        *Move long word data from $1234 to immediate data $55555555
+    
+*    MOVEA.L      $12345678,D4            *Move long word data from $12345678 to D4
+    MOVEA.L      $12345678,A4            *Move long word data from $12345678 to A4
+*    MOVEA.L      $12345678,(A4)          *Move long word data from $12345678 to object in A4
+*    MOVEA.L      $12345678,(A4)+         *Move long word data from $12345678 to object in A4 and increase pointer by 1
+*    MOVEA.L      $12345678,-(A4)         *Move long word data from $12345678 to object in A4 after decrease pointer by 1
+*    MOVEA.L      $12345678,$1234         *Move long word data from $12345678 to absolute address WORD
+*    MOVEA.L      $12345678,$12345678     *Move long word data from $12345678 to absolute address LONG WORD
+*    MOVEA.L      $12345678,#$55555555    *Move long word data from $12345678 to immediate data $55555555
+    
+*    MOVEA.L      #$55555555,D4           *Move long word data from #$55555555 to D4
+    MOVEA.L      #$55555555,A4           *Move long word data from #$55555555 to A4
+*    MOVEA.L      #$55555555,(A4)         *Move long word data from #$55555555 to object in A4
+*    MOVEA.L      #$55555555,(A4)+        *Move long word data from #$55555555 to object in A4 and increase pointer by 1
+*    MOVEA.L      #$55555555,-(A4)        *Move long word data from #$55555555 to object in A4 after decrease pointer by 1
+*    MOVEA.L      #$55555555,$1234        *Move long word data from #$55555555 to absolute address WORD
+*    MOVEA.L      #$55555555,$12345678    *Move long word data from #$55555555 to absolute address LONG WORD
+*    MOVEA.L      #$55555555,#$55555555   *Move long word data from #$55555555 to immediate data $55555555 
+
 
 
     SIMHALT             ; halt simulator
@@ -241,6 +394,7 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
