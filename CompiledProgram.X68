@@ -59,57 +59,48 @@ get_end         LEA     end_prompt,A1       * Assign ending address prompt to A1
                 BGT     bound_error         * Error if address is above maximum
                 MOVE.L  D3,D6               * Save the upper address into D6
                 
-                CLR.L   D2
-                CLR.L   D3
-                CLR.L   D5
+                CLR.L   D2                  * Clear D2
+                CLR.L   D3                  * Clear D3
+                CLR.L   D5                  * Clear D5
                 
 
-main            CLR.L   D0
-                CLR.L   D1
-                MOVE.L  A6,D0
-                MOVE.B  #4,D1
-                MOVE.L  #buffer,A1
-                JSR     hex_to_ascii
-                MOVE.B  #$9,(A1)+
+main            CLR.L   D0                  * Clear D0
+                CLR.L   D1                  * Clear D1
+                MOVE.L  A6,D0               * Get current memory pointer in D0
+                MOVE.B  #4,D1               * Size for address is 4 bytes
+                MOVE.L  #buffer,A1          * Set A1 to point to the print buffer
+                JSR     hex_to_ascii        * Translate hex to ascii
+                MOVE.B  #$9,(A1)+           * Add a tab
                 
-                BRA     op_code
+                BRA     op_code             * Begin decode 
                 
-Print    
-    *MOVE.B  #$00,(A1)                       *Add Terminator
-    *LEA     buf,A1                          *Load buffer into A1
-    *CLR.L   D0                              *Clear D0
-    *MOVE.B  #13,D0                          *Trap task 13
-    *TRAP    #15                             *Call Trap 15
-    
-    *RTS
-    *BRA     Done                
+Print           
+                MOVE.B  #$00,(A1)            * Add terminator              
+                CLR.L   D0                   * Clear D0   
+                MOVE.B  #13,D0               * Load Trap task number 13 for printing
+                LEA     buffer,A1            * Load print buffer into A1 
+                TRAP    #15                  * Print the buffer
                 
-                *CLR.L   D0
-                *MOVE.W  (A6)+,D0
-                *CLR.L   D1
-                *MOVE.B  #2,D1
-                
-                *JSR     hex_to_ascii
-                
-                MOVE.B  #$00,(A1)
-                CLR.L   D0
-                MOVE.B  #13,D0
-                LEA     buffer,A1
-                TRAP    #15
-                
-                CMP.L   A6,D6
-                BLE     end_check
-                BRA     main
-                
+                CMP.L   A6,D6                * Compare current memory pointer with ending address 
+                BLE     end_check            * Less than equal zero, reach the end
+                BRA     main                 * Go to next memory
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*op_code: get the data from current memory pointer, advance the memory pointer, separate 
+*         the bits, and jump to the corresponding op_code decoding
+*D0: Internal 
+*D1: Internal
+*D2: Store 3 bits for Source REGISTER
+*D3: Store 3 bits for Source MODE
+*D4: Store 3 bits for Destination MODE
+*D5: Store 3 bits for Destination REGISTER
+*current: Store the WORD data
+*////////////////////////////////////////////////////////////////////////////////////////                
 op_code         LEA     jmp_table,A0                    *Index into the table
                 CLR.L   D0                              *Zero it
                 
-                MOVE.W  (A6)+,current
-                
-                MOVE.W  current,D0
-                
-                
-                
+                MOVE.W  (A6)+,current                   *Get WORD and advance memory pointer                
+                MOVE.W  current,D0                      *Copy WORD to D0            
                 MOVE.W  D0,D1                           *Copy Word data to D1
                 MOVEM.L D0,-(SP)                        *Copy Word data to the stack
     
@@ -162,6 +153,10 @@ jmp_table
     JMP     code1111                        *Special/Reserved
     
 code0000    STOP    #$2700
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*code0001: MOVE.B 
+*////////////////////////////////////////////////////////////////////////////////////////  
 code0001
     MOVE.B  #'M',(A1)+
     MOVE.B  #'O',(A1)+
@@ -174,200 +169,103 @@ code0001
     MOVE.B  #' ',(A1)+
     MOVE.B  #' ',(A1)+
     
-    CLR.L   D0                          *Clear D0 for counter of EA loop
-
-EAMode
-    *Compare EAmode 0-7 and branch accordingly
-    CMP.B   #0,D3
-    BEQ     EAmode0
-    CMP.B   #1,D3
-    BEQ     EAmode1
-    CMP.B   #2,D3
-    BEQ     EAmode2
-    CMP.B   #3,D3
-    BEQ     EAmode3
-    CMP.B   #4,D3
-    BEQ     EAmode4
-    CMP.B   #5,D3
-    BEQ     EAmode5
-    CMP.B   #6,D3
-    BEQ     EAmode6
-    CMP.B   #7,D3
-    BEQ     EAmode7
-
-*EA, EA set up    
-EApart2
-    MOVE.B  D4,D3                           *Move Dest MODE to D3
-    MOVE.B  D5,D2                           *Move Dest REG to D2
+    CLR.L   D0                              *Clear D0
+    MOVE.B  #1,D0                           *size is 1 byte
+    
+       
+    JSR     EAMode                          *Jump to EAMode
+    
     MOVE.B  #',',(A1)+
-     
-    BRA     EAMode                          *Branch to EAMode      
     
+    CLR.L   D2
+    CLR.L   D3
+    MOVE.B  D4,D3                           *Get Destination MODE
+    MOVE.B  D5,D2                           *Get Source REG
     
-    
-EAmode0
-    MOVE.B  #'D',(A1)+                  
-    ADD     #$30,D2                         *Convert REG# to ASCII
-    MOVE.B  D2,(A1)+                        *Add to buffer
+    CMP.B   #1,D3                           *An not allowed
+    BEQ     data_error
 
-    ADD     #1,D0                           *Increase EA loop counter
     
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
+    JSR     EAMode                          *Jump to EAMode
     
-    BRA     EApart2                         *EA done once, go to second EA    
-    
-EAmode1
-    MOVE.B  #'A',(A1)+                  
-    ADD     #$30,D2                         *Convert REG# to ASCII
-    MOVE.B  D2,(A1)+                        *Add to buffer
+    BRA     Print
 
-    ADD     #1,D0                           *Increase EA loop counter
-    
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA
-
-EAmode2
-    MOVE.B  #'(',(A1)+
-    MOVE.B  #'A',(A1)+                  
-    ADD     #$30,D2                         *Convert REG# to ASCII
-    MOVE.B  D2,(A1)+                        *Add to buffer
-    MOVE.B  #')',(A1)+
-
-    ADD     #1,D0                           *Increase EA loop counter
-    
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA
-
-EAmode3
-    MOVE.B  #'(',(A1)+
-    MOVE.B  #'A',(A1)+                  
-    ADD     #$30,D2                         *Convert REG# to ASCII
-    MOVE.B  D2,(A1)+                        *Add to buffer
-    MOVE.B  #')',(A1)+
-    MOVE.B  #'+',(A1)+
-
-    ADD     #1,D0                           *Increase EA loop counter
-    
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA
-
-EAmode4
-    MOVE.B  #'-',(A1)+
-    MOVE.B  #'(',(A1)+
-    MOVE.B  #'A',(A1)+                  
-    ADD     #$30,D2                         *Convert REG# to ASCII
-    MOVE.B  D2,(A1)+                        *Add to buffer
-    MOVE.B  #')',(A1)+
-
-    ADD     #1,D0                           *Increase EA loop counter
-    
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA
-
-EAmode5
-    MOVE.B  #'I',(A1)+
-    MOVE.B  #'N',(A1)+
-    MOVE.B  #'V',(A1)+
-    MOVE.B  #'A',(A1)+
-    MOVE.B  #'L',(A1)+
-    MOVE.B  #'I',(A1)+
-    MOVE.B  #'D',(A1)+
-    MOVE.B  #' ',(A1)+
-    MOVE.B  #'E',(A1)+
-    MOVE.B  #'A',(A1)+
-    MOVE.B  #' ',(A1)+
+*////////////////////////////////////////////////////////////////////////////////////////
+*code0001: MOVE.L 
+*//////////////////////////////////////////////////////////////////////////////////////// 
+code0010    
     MOVE.B  #'M',(A1)+
     MOVE.B  #'O',(A1)+
-    MOVE.B  #'D',(A1)+
-    MOVE.B  #'E',(A1)+
-
-    ADD     #1,D0                           *Increase EA loop counter
-    
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA    
- 
-EAmode6
-    MOVE.B  #'I',(A1)+
-    MOVE.B  #'N',(A1)+
     MOVE.B  #'V',(A1)+
-    MOVE.B  #'A',(A1)+
-    MOVE.B  #'L',(A1)+
-    MOVE.B  #'I',(A1)+
-    MOVE.B  #'D',(A1)+
-    MOVE.B  #' ',(A1)+
     MOVE.B  #'E',(A1)+
-    MOVE.B  #'A',(A1)+
+    MOVE.B  #'.',(A1)+
+    MOVE.B  #'L',(A1)+
     MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    
+    CLR.L   D0                              *Clear D0
+    MOVE.B  #4,D0                           *size is 4 bytes
+    
+       
+    JSR     EAMode                          *Jump to EAMode
+    
+    MOVE.B  #',',(A1)+
+    
+    CLR.L   D2
+    CLR.L   D3
+    MOVE.B  D4,D3                           *Get Destination MODE
+    MOVE.B  D5,D2                           *Get Source REG
+    
+    CMP.B   #1,D3                           *An not allowed
+    BEQ     data_error
+
+    
+    JSR     EAMode                          *Jump to EAMode
+    
+    BRA     Print
+
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*code0011: MOVE.W 
+*//////////////////////////////////////////////////////////////////////////////////////// 
+code0011    
     MOVE.B  #'M',(A1)+
     MOVE.B  #'O',(A1)+
-    MOVE.B  #'D',(A1)+
+    MOVE.B  #'V',(A1)+
     MOVE.B  #'E',(A1)+
-
-    ADD     #1,D0                           *Increase EA loop counter
+    MOVE.B  #'.',(A1)+
+    MOVE.B  #'W',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #' ',(A1)+
     
-    CMP.B   #2,D0                           *EA done twice?
-    BEQ     Print                           *Print
-    
-    BRA     EApart2                         *EA done once, go to second EA 
-
-EAmode7
-    CMP.B   #0,D2                           *WORD addressing mode
-    BEQ     ABSOLUTE_WORD
-    
-    CMP.B   #1,D2                           *LONG WORD addressing mode        
-    BEQ     ABSOlUTE_LONG                   
-    
-    CMP.B   #4,D2                           *IMMEDIATE DATA addressing mode
-    BEQ     IMMEDIATE_DATA
-
-ABSOLUTE_WORD
     CLR.L   D0                              *Clear D0
-    MOVE.W  (A5)+,D0                        *Get next WORD from memory
-    CLR.L   D1
-    MOVE.B  #2,D1  
+    MOVE.B  #2,D0                           *size is 2 bytes
     
-    JSR     hex_to_ascii
-    BRA     print
+       
+    JSR     EAMode                          *Jump to EAMode
     
+    MOVE.B  #',',(A1)+
     
-ABSOLUTE_LONG
-    CLR.L   D0                              *Clear D0
-    MOVE.L  (A5)+,D0                        *Get next LONG WORD from memory
-
-    CLR.L   D1
-    MOVE.B  #4,D1  
+    CLR.L   D2
+    CLR.L   D3
+    MOVE.B  D4,D3                           *Get Destination MODE
+    MOVE.B  D5,D2                           *Get Source REG
     
-    JSR     hex_to_ascii 
-    BRA     print
-
-IMMEDIATE_DATA
-    ANDI.W  #%0000000000000011,D1           *Get last 2 bits for size
-    
-    MOVE.B  #'#',(A1)+
-    
-    CMP.B   #3,D1                           *Is the size WORD
-    BEQ     ABSOLUTE_WORD
-    
-    CMP.B   #2,D1                           *Is the size LONG WORD
-    BEQ     ABSOLUTE_LONG
+    CMP.B   #1,D3                           *An not allowed
+    BEQ     data_error
 
     
+    JSR     EAMode                          *Jump to EAMode
+    
+    BRA     Print
 
 
-code0010    STOP    #$2700
-code0011    STOP    #$2700
 code0100    STOP    #$2700
+
 code0101    STOP    #$2700
 code0110    STOP    #$2700
 code0111    STOP    #$2700
@@ -406,6 +304,166 @@ end_check
 *
 ***************************************************************************************************
 ***************************************************************************************************
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*EAMode: take in the 6 bits EA and branch to the corresponding EA mode
+*D0: byte size for immediate data
+*D3: the 3 bits EA MODE
+*D4: the 3 bits EA REG
+*//////////////////////////////////////////////////////////////////////////////////////// 
+EAMode
+    CMP.B   #0,D3
+    BEQ     EAmode0
+    CMP.B   #1,D3
+    BEQ     EAmode1
+    CMP.B   #2,D3
+    BEQ     EAmode2
+    CMP.B   #3,D3
+    BEQ     EAmode3
+    CMP.B   #4,D3
+    BEQ     EAmode4
+    CMP.B   #5,D3
+    BEQ     EAmode5
+    CMP.B   #6,D3
+    BEQ     EAmode6
+    CMP.B   #7,D3
+    BEQ     EAmode7    
+      
+EAmode0
+    MOVE.B  #'D',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+
+    RTS    
+    
+EAmode1
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    
+    RTS
+
+EAmode2
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+
+    RTS
+
+EAmode3
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+    MOVE.B  #'+',(A1)+
+
+    RTS
+
+EAmode4
+    MOVE.B  #'-',(A1)+
+    MOVE.B  #'(',(A1)+
+    MOVE.B  #'A',(A1)+                  
+    ADD     #$30,D2                         *Convert REG# to ASCII
+    MOVE.B  D2,(A1)+                        *Add to buffer
+    MOVE.B  #')',(A1)+
+
+    RTS
+
+EAmode5
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'N',(A1)+
+    MOVE.B  #'V',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #'L',(A1)+
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'E',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'M',(A1)+
+    MOVE.B  #'O',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #'E',(A1)+
+
+    RTS    
+ 
+EAmode6
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'N',(A1)+
+    MOVE.B  #'V',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #'L',(A1)+
+    MOVE.B  #'I',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'E',(A1)+
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #' ',(A1)+
+    MOVE.B  #'M',(A1)+
+    MOVE.B  #'O',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #'E',(A1)+
+
+    RTS
+
+EAmode7
+    CMP.B   #0,D2                           *WORD addressing mode
+    BEQ     get_word  
+  
+    CMP.B   #1,D2                           *LONG WORD addressing mode        
+    BEQ     get_long                   
+    
+    CMP.B   #4,D2                           *IMMEDIATE DATA addressing mode
+    BEQ     IMMEDIATE_DATA
+
+get_byte
+    MOVE.B  #'$',(A1)+    
+    CLR.L   D0                              *Clear D0
+    MOVE.W  (A6)+,D0                        *Get next WORD from memory
+    CLR.L   D1                              *Clear D1
+    MOVE.B  #1,D1                           *Byte size is 1  
+    
+    JSR     hex_to_ascii
+    
+    RTS
+
+get_word
+    MOVE.B  #'$',(A1)+    
+    CLR.L   D0                              *Clear D0
+    MOVE.W  (A6)+,D0                        *Get next WORD from memory
+    CLR.L   D1                              *Clear D1
+    MOVE.B  #2,D1                           *Byte size is 2  
+    
+    JSR     hex_to_ascii
+    
+    RTS
+    
+    
+get_long
+    MOVE.B  #'$',(A1)+
+    CLR.L   D0                              *Clear D0
+    MOVE.L  (A6)+,D0                        *Get next LONG WORD from memory
+    CLR.L   D1                              *Clear D1
+    MOVE.B  #4,D1                           *Byte size is 4
+    
+    JSR     hex_to_ascii 
+
+    RTS
+
+immediate_data    
+    MOVE.B  #'#',(A1)+
+    CMP.B   #2,D0                           *Is the size WORD
+    BEQ     get_word    
+    CMP.B   #4,D0                           *Is the size LONG WORD
+    BEQ     get_long
+    CMP.B   #1,D0                           *Is the size BYTE
+    BEQ     get_byte
+
+
 *////////////////////////////////////////////////////////////////////////////////////////
 *ascii_to_hex: transforms ASCII input into a hexadecimal address, returns error if invalid characters
 *D1: ASCII parameter to be converted
@@ -544,6 +602,7 @@ end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 

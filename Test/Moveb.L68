@@ -1,0 +1,256 @@
+00008000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.14.01
+Created On: 5/24/2014 10:21:28 AM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00008000                             7      ORG    $8000
+00008000                             8  START:                  ; first instruction of program
+00008000                             9  
+00008000                            10  *////////////////////////////////////////////////////////////////////
+00008000                            11  *MOVE.B
+00008000                            12  *////////////////////////////////////////////////////////////////////
+00008000                            13  
+00008000  1803                      14      MOVE.B      D3,D4                   *Move byte data from D3 to D4
+00008002                            15      *MOVE.B      D3,A4                   *Move byte data from D3 to A4
+00008002  1883                      16      MOVE.B      D3,(A4)                 *Move byte data from D3 to object in A4
+00008004  18C3                      17      MOVE.B      D3,(A4)+                *Move byte data from D3 to object in A4 and increase pointer by 1
+00008006  1903                      18      MOVE.B      D3,-(A4)                *Move byte data from D3 to object in A4 after decrease pointer by 1
+00008008  11C3 1234                 19      MOVE.B      D3,$1234                *Move byte data from D3 to absolute address WORD
+0000800C  13C3 12345678             20      MOVE.B      D3,$12345678            *Move byte data from D3 to absolute address LONG WORD
+00008012                            21      *MOVE.B      D3,#$55                 *Move byte data from D3 to immediate data $55                
+00008012                            22      
+00008012                            23      *MOVE.B      A3,D4                   *Move byte data from A3 to D4
+00008012                            24      *MOVE.B      A3,A4                   *Move byte data from A3 to A4
+00008012                            25      *MOVE.B      A3,(A4)                 *Move byte data from A3 to object in A4
+00008012                            26      *MOVE.B      A3,(A4)+                *Move byte data from A3 to object in A4 and increase pointer by 1
+00008012                            27      *MOVE.B      A3,-(A4)                *Move byte data from A3 to object in A4 after decrease pointer by 1
+00008012                            28      *MOVE.B      A3,$1234                *Move byte data from A3 to absolute address WORD
+00008012                            29      *MOVE.B      A3,$12345678            *Move byte data from A3 to absolute address LONG WORD
+00008012                            30      *MOVE.B      A3,#$55                 *Move byte data from A3 to immediate data $55
+00008012                            31      
+00008012  1813                      32      MOVE.B      (A3),D4                 *Move byte data from (A3) to D4
+00008014                            33      *MOVE.B      (A3),A4                 *Move byte data from (A3) to A4
+00008014  1893                      34      MOVE.B      (A3),(A4)               *Move byte data from (A3) to object in A4
+00008016  18D3                      35      MOVE.B      (A3),(A4)+              *Move byte data from (A3) to object in A4 and increase pointer by 1
+00008018  1913                      36      MOVE.B      (A3),-(A4)              *Move byte data from (A3) to object in A4 after decrease pointer by 1
+0000801A  11D3 1234                 37      MOVE.B      (A3),$1234              *Move byte data from (A3) to absolute address WORD
+0000801E  13D3 12345678             38      MOVE.B      (A3),$12345678          *Move byte data from (A3) to absolute address LONG WORD
+00008024                            39      *MOVE.B      (A3),#$55               *Move byte data from (A3) to immediate data $55
+00008024                            40      
+00008024  181B                      41      MOVE.B      (A3)+,D4                *Move byte data from (A3)+ to D4
+00008026                            42      *MOVE.B      (A3)+,A4                *Move byte data from (A3)+ to A4
+00008026  189B                      43      MOVE.B      (A3)+,(A4)              *Move byte data from (A3)+ to object in A4
+00008028  18DB                      44      MOVE.B      (A3)+,(A4)+             *Move byte data from (A3)+ to object in A4 and increase pointer by 1
+0000802A  191B                      45      MOVE.B      (A3)+,-(A4)             *Move byte data from (A3)+ to object in A4 after decrease pointer by 1
+0000802C  11DB 1234                 46      MOVE.B      (A3)+,$1234             *Move byte data from (A3)+ to absolute address WORD
+00008030  13DB 12345678             47      MOVE.B      (A3)+,$12345678         *Move byte data from (A3)+ to absolute address LONG WORD
+00008036                            48      *MOVE.B      (A3)+,#$55              *Move byte data from (A3)+ to immediate data $55
+00008036                            49      
+00008036  1823                      50      MOVE.B      -(A3),D4                *Move byte data from -(A3) to D4
+00008038                            51      *MOVE.B      -(A3),A4                *Move byte data from -(A3) to A4
+00008038  18A3                      52      MOVE.B      -(A3),(A4)              *Move byte data from -(A3) to object in A4
+0000803A  18E3                      53      MOVE.B      -(A3),(A4)+             *Move byte data from -(A3) to object in A4 and increase pointer by 1
+0000803C  1923                      54      MOVE.B      -(A3),-(A4)             *Move byte data from -(A3) to object in A4 after decrease pointer by 1
+0000803E  11E3 1234                 55      MOVE.B      -(A3),$1234             *Move byte data from -(A3) to absolute address WORD
+00008042  13E3 12345678             56      MOVE.B      -(A3),$12345678         *Move byte data from -(A3) to absolute address LONG WORD
+00008048                            57      *MOVE.B      -(A3),#$55              *Move byte data from -(A3) to immediate data $55
+00008048                            58      
+00008048  1838 1234                 59      MOVE.B      $1234,D4                *Move byte data from $1234 to D4
+0000804C                            60      *MOVE.B      $1234,A4                *Move byte data from $1234 to A4
+0000804C  18B8 1234                 61      MOVE.B      $1234,(A4)              *Move byte data from $1234 to object in A4
+00008050  18F8 1234                 62      MOVE.B      $1234,(A4)+             *Move byte data from $1234 to object in A4 and increase pointer by 1
+00008054  1938 1234                 63      MOVE.B      $1234,-(A4)             *Move byte data from $1234 to object in A4 after decrease pointer by 1
+00008058  11F8 1234 1234            64      MOVE.B      $1234,$1234             *Move byte data from $1234 to absolute address WORD
+0000805E  13F8 1234 12345678        65      MOVE.B      $1234,$12345678         *Move byte data from $1234 to absolute address LONG WORD
+00008066                            66      *MOVE.B      $1234,#$55              *Move byte data from $1234 to immediate data $55
+00008066                            67      
+00008066  1839 12345678             68      MOVE.B      $12345678,D4            *Move byte data from $12345678 to D4
+0000806C                            69      *MOVE.B      $12345678,A4            *Move byte data from $12345678 to A4
+0000806C  18B9 12345678             70      MOVE.B      $12345678,(A4)          *Move byte data from $12345678 to object in A4
+00008072  18F9 12345678             71      MOVE.B      $12345678,(A4)+         *Move byte data from $12345678 to object in A4 and increase pointer by 1
+00008078  1939 12345678             72      MOVE.B      $12345678,-(A4)         *Move byte data from $12345678 to object in A4 after decrease pointer by 1
+0000807E  11F9 12345678 1234        73      MOVE.B      $12345678,$1234         *Move byte data from $12345678 to absolute address WORD
+00008086  13F9 12345678 12345678    74      MOVE.B      $12345678,$12345678     *Move byte data from $12345678 to absolute address LONG WORD
+00008090                            75      *MOVE.B      $12345678,#$55          *Move byte data from $12345678 to immediate data $55
+00008090                            76      
+00008090  183C 0055                 77      MOVE.B      #$55,D4                 *Move byte data from #$55 to D4
+00008094                            78      *MOVE.B      #$55,A4                 *Move byte data from #$55 to A4
+00008094  18BC 0055                 79      MOVE.B      #$55,(A4)               *Move byte data from #$55 to object in A4
+00008098  18FC 0055                 80      MOVE.B      #$55,(A4)+              *Move byte data from #$55 to object in A4 and increase pointer by 1
+0000809C  193C 0055                 81      MOVE.B      #$55,-(A4)              *Move byte data from #$55 to object in A4 after decrease pointer by 1
+000080A0  11FC 0055 1234            82      MOVE.B      #$55,$1234              *Move byte data from #$55 to absolute address WORD
+000080A6  13FC 0055 12345678        83      MOVE.B      #$55,$12345678          *Move byte data from #$55 to absolute address LONG WORD
+000080AE                            84      *MOVE.B      #$55,#$55               *Move byte data from #$55 to immediate data $55
+000080AE                            85  
+000080AE                            86  *////////////////////////////////////////////////////////////////////
+000080AE                            87  *MOVE.W
+000080AE                            88  *////////////////////////////////////////////////////////////////////    
+000080AE                            89  
+000080AE  3803                      90      MOVE.W      D3,D4                   *Move word data from D3 to D4
+000080B0                            91      *MOVE.W      D3,A4                   *Move word data from D3 to A4
+000080B0  3883                      92      MOVE.W      D3,(A4)                 *Move word data from D3 to object in A4
+000080B2  38C3                      93      MOVE.W      D3,(A4)+                *Move word data from D3 to object in A4 and increase pointer by 1
+000080B4  3903                      94      MOVE.W      D3,-(A4)                *Move word data from D3 to object in A4 after decrease pointer by 1
+000080B6  31C3 1234                 95      MOVE.W      D3,$1234                *Move word data from D3 to absolute address WORD
+000080BA  33C3 12345678             96      MOVE.W      D3,$12345678            *Move word data from D3 to absolute address LONG WORD
+000080C0                            97      *MOVE.W      D3,#$5555               *Move word data from D3 to immediate data $5555 
+000080C0                            98      
+000080C0  380B                      99      MOVE.W      A3,D4                   *Move word data from A3 to D4
+000080C2                           100      *MOVE.W      A3,A4                   *Move word data from A3 to A4
+000080C2  388B                     101      MOVE.W      A3,(A4)                 *Move word data from A3 to object in A4
+000080C4  38CB                     102      MOVE.W      A3,(A4)+                *Move word data from A3 to object in A4 and increase pointer by 1
+000080C6  390B                     103      MOVE.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
+000080C8  31CB 1234                104      MOVE.W      A3,$1234                *Move word data from A3 to absolute address WORD
+000080CC  33CB 12345678            105      MOVE.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD
+000080D2                           106      *MOVE.W      A3,#$5555               *Move word data from A3 to immediate data $5555
+000080D2                           107      
+000080D2  3813                     108      MOVE.W      (A3),D4                 *Move word data from (A3) to D4
+000080D4                           109      *MOVE.W      (A3),A4                 *Move word data from (A3) to A4
+000080D4  3893                     110      MOVE.W      (A3),(A4)               *Move word data from (A3) to object in A4
+000080D6  38D3                     111      MOVE.W      (A3),(A4)+              *Move word data from (A3) to object in A4 and increase pointer by 1
+000080D8  3913                     112      MOVE.W      (A3),-(A4)              *Move word data from (A3) to object in A4 after decrease pointer by 1
+000080DA  31D3 1234                113      MOVE.W      (A3),$1234              *Move word data from (A3) to absolute address WORD
+000080DE  33D3 12345678            114      MOVE.W      (A3),$12345678          *Move word data from (A3) to absolute address LONG WORD
+000080E4                           115      *MOVE.W      (A3),#$5555             *Move word data from (A3) to immediate data $5555
+000080E4                           116      
+000080E4  381B                     117      MOVE.W      (A3)+,D4                *Move word data from (A3)+ to D4
+000080E6                           118      *MOVE.W      (A3)+,A4                *Move word data from (A3)+ to A4
+000080E6  389B                     119      MOVE.W      (A3)+,(A4)              *Move word data from (A3)+ to object in A4
+000080E8  38DB                     120      MOVE.W      (A3)+,(A4)+             *Move word data from (A3)+ to object in A4 and increase pointer by 1
+000080EA  391B                     121      MOVE.W      (A3)+,-(A4)             *Move word data from (A3)+ to object in A4 after decrease pointer by 1
+000080EC  31DB 1234                122      MOVE.W      (A3)+,$1234             *Move word data from (A3)+ to absolute address WORD
+000080F0  33DB 12345678            123      MOVE.W      (A3)+,$12345678         *Move word data from (A3)+ to absolute address LONG WORD
+000080F6                           124      *MOVE.W      (A3)+,#$5555            *Move word data from (A3)+ to immediate data $5555
+000080F6                           125      
+000080F6  3823                     126      MOVE.W      -(A3),D4                *Move word data from -(A3) to D4
+000080F8                           127      *MOVE.W      -(A3),A4                *Move word data from -(A3) to A4
+000080F8  38A3                     128      MOVE.W      -(A3),(A4)              *Move word data from -(A3) to object in A4
+000080FA  38E3                     129      MOVE.W      -(A3),(A4)+             *Move word data from -(A3) to object in A4 and increase pointer by 1
+000080FC  3923                     130      MOVE.W      -(A3),-(A4)             *Move word data from -(A3) to object in A4 after decrease pointer by 1
+000080FE  31E3 1234                131      MOVE.W      -(A3),$1234             *Move word data from -(A3) to absolute address WORD
+00008102  33E3 12345678            132      MOVE.W      -(A3),$12345678         *Move word data from -(A3) to absolute address LONG WORD
+00008108                           133      *MOVE.W      -(A3),#$5555            *Move word data from -(A3) to immediate data $5555
+00008108                           134      
+00008108  3838 1234                135      MOVE.W      $1234,D4                *Move word data from $1234 to D4
+0000810C                           136      *MOVE.W      $1234,A4                *Move word data from $1234 to A4
+0000810C  38B8 1234                137      MOVE.W      $1234,(A4)              *Move word data from $1234 to object in A4
+00008110  38F8 1234                138      MOVE.W      $1234,(A4)+             *Move word data from $1234 to object in A4 and increase pointer by 1
+00008114  3938 1234                139      MOVE.W      $1234,-(A4)             *Move word data from $1234 to object in A4 after decrease pointer by 1
+00008118  31F8 1234 1234           140      MOVE.W      $1234,$1234             *Move word data from $1234 to absolute address WORD
+0000811E  33F8 1234 12345678       141      MOVE.W      $1234,$12345678         *Move word data from $1234 to absolute address LONG WORD
+00008126                           142      *MOVE.W      $1234,#$5555            *Move word data from $1234 to immediate data $5555
+00008126                           143      
+00008126  3839 12345678            144      MOVE.W      $12345678,D4            *Move word data from $12345678 to D4
+0000812C                           145      *MOVE.W      $12345678,A4            *Move word data from $12345678 to A4
+0000812C  38B9 12345678            146      MOVE.W      $12345678,(A4)          *Move word data from $12345678 to object in A4
+00008132  38F9 12345678            147      MOVE.W      $12345678,(A4)+         *Move word data from $12345678 to object in A4 and increase pointer by 1
+00008138  3939 12345678            148      MOVE.W      $12345678,-(A4)         *Move word data from $12345678 to object in A4 after decrease pointer by 1
+0000813E  31F9 12345678 1234       149      MOVE.W      $12345678,$1234         *Move word data from $12345678 to absolute address WORD
+00008146  33F9 12345678 12345678   150      MOVE.W      $12345678,$12345678     *Move word data from $12345678 to absolute address LONG WORD
+00008150                           151      *MOVE.W      $12345678,#$5555        *Move word data from $12345678 to immediate data $5555
+00008150                           152      
+00008150  383C 5555                153      MOVE.W      #$5555,D4               *Move word data from #$5555 to D4
+00008154                           154      *MOVE.W      #$5555,A4               *Move word data from #$5555 to A4
+00008154  38BC 5555                155      MOVE.W      #$5555,(A4)             *Move word data from #$5555 to object in A4
+00008158  38FC 5555                156      MOVE.W      #$5555,(A4)+            *Move word data from #$5555 to object in A4 and increase pointer by 1
+0000815C  393C 5555                157      MOVE.W      #$5555,-(A4)            *Move word data from #$5555 to object in A4 after decrease pointer by 1
+00008160  31FC 5555 1234           158      MOVE.W      #$5555,$1234            *Move word data from #$5555 to absolute address WORD
+00008166  33FC 5555 12345678       159      MOVE.W      #$5555,$12345678        *Move word data from #$5555 to absolute address LONG WORD
+0000816E                           160      *MOVE.W      #$5555,#$5555           *Move word data from #$5555 to immediate data $5555
+0000816E                           161      
+0000816E                           162  *////////////////////////////////////////////////////////////////////
+0000816E                           163  *MOVE.L
+0000816E                           164  *////////////////////////////////////////////////////////////////////
+0000816E                           165  
+0000816E  2803                     166      MOVE.L      D3,D4                   *Move long word data from D3 to D4
+00008170                           167      *MOVE.L      D3,A4                   *Move long word data from D3 to A4
+00008170  2883                     168      MOVE.L      D3,(A4)                 *Move long word data from D3 to object in A4
+00008172  28C3                     169      MOVE.L      D3,(A4)+                *Move long word data from D3 to object in A4 and increase pointer by 1
+00008174  2903                     170      MOVE.L      D3,-(A4)                *Move long word data from D3 to object in A4 after decrease pointer by 1
+00008176  21C3 1234                171      MOVE.L      D3,$1234                *Move long word data from D3 to absolute address WORD
+0000817A  23C3 12345678            172      MOVE.L      D3,$12345678            *Move long word data from D3 to absolute address LONG WORD
+00008180                           173      *MOVE.L      D3,#$55555555           *Move long word data from D3 to immediate data $55555555 
+00008180                           174      
+00008180  280B                     175      MOVE.L      A3,D4                   *Move long word data from A3 to D4
+00008182                           176      *MOVE.L      A3,A4                   *Move long word data from A3 to A4
+00008182  288B                     177      MOVE.L      A3,(A4)                 *Move long word data from A3 to object in A4
+00008184  28CB                     178      MOVE.L      A3,(A4)+                *Move long word data from A3 to object in A4 and increase pointer by 1
+00008186  290B                     179      MOVE.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
+00008188  21CB 1234                180      MOVE.L      A3,$1234                *Move long word data from A3 to absolute address WORD
+0000818C  23CB 12345678            181      MOVE.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
+00008192                           182      *MOVE.L      A3,#$55555555           *Move long word data from A3 to immediate data $55555555
+00008192                           183      
+00008192  2813                     184      MOVE.L      (A3),D4                 *Move long word data from (A3) to D4
+00008194                           185      *MOVE.L      (A3),A4                 *Move long word data from (A3) to A4
+00008194  2893                     186      MOVE.L      (A3),(A4)               *Move long word data from (A3) to object in A4
+00008196  28D3                     187      MOVE.L      (A3),(A4)+              *Move long word data from (A3) to object in A4 and increase pointer by 1
+00008198  2913                     188      MOVE.L      (A3),-(A4)              *Move long word data from (A3) to object in A4 after decrease pointer by 1
+0000819A  21D3 1234                189      MOVE.L      (A3),$1234              *Move long word data from (A3) to absolute address WORD
+0000819E  23D3 12345678            190      MOVE.L      (A3),$12345678          *Move long word data from (A3) to absolute address LONG WORD
+000081A4                           191      *MOVE.L      (A3),#$55555555         *Move long word data from (A3) to immediate data $55555555
+000081A4                           192      
+000081A4  281B                     193      MOVE.L      (A3)+,D4                *Move long word data from (A3)+ to D4
+000081A6                           194      *MOVE.L      (A3)+,A4                *Move long word data from (A3)+ to A4
+000081A6  289B                     195      MOVE.L      (A3)+,(A4)              *Move long word data from (A3)+ to object in A4
+000081A8  28DB                     196      MOVE.L      (A3)+,(A4)+             *Move long word data from (A3)+ to object in A4 and increase pointer by 1
+000081AA  291B                     197      MOVE.L      (A3)+,-(A4)             *Move long word data from (A3)+ to object in A4 after decrease pointer by 1
+000081AC  21DB 1234                198      MOVE.L      (A3)+,$1234             *Move long word data from (A3)+ to absolute address WORD
+000081B0  23DB 12345678            199      MOVE.L      (A3)+,$12345678         *Move long word data from (A3)+ to absolute address LONG WORD
+000081B6                           200      *MOVE.L      (A3)+,#$55555555        *Move long word data from (A3)+ to immediate data $55555555
+000081B6                           201      
+000081B6  2823                     202      MOVE.L      -(A3),D4                *Move long word data from -(A3) to D4
+000081B8                           203      *MOVE.L      -(A3),A4                *Move long word data from -(A3) to A4
+000081B8  28A3                     204      MOVE.L      -(A3),(A4)              *Move long word data from -(A3) to object in A4
+000081BA  28E3                     205      MOVE.L      -(A3),(A4)+             *Move long word data from -(A3) to object in A4 and increase pointer by 1
+000081BC  2923                     206      MOVE.L      -(A3),-(A4)             *Move long word data from -(A3) to object in A4 after decrease pointer by 1
+000081BE  21E3 1234                207      MOVE.L      -(A3),$1234             *Move long word data from -(A3) to absolute address WORD
+000081C2  23E3 12345678            208      MOVE.L      -(A3),$12345678         *Move long word data from -(A3) to absolute address LONG WORD
+000081C8                           209      *MOVE.L      -(A3),#$55555555        *Move long word data from -(A3) to immediate data $55555555
+000081C8                           210      
+000081C8  2838 1234                211      MOVE.L      $1234,D4                *Move long word data from $1234 to D4
+000081CC                           212      *MOVE.L      $1234,A4                *Move long word data from $1234 to A4
+000081CC  28B8 1234                213      MOVE.L      $1234,(A4)              *Move long word data from $1234 to object in A4
+000081D0  28F8 1234                214      MOVE.L      $1234,(A4)+             *Move long word data from $1234 to object in A4 and increase pointer by 1
+000081D4  2938 1234                215      MOVE.L      $1234,-(A4)             *Move long word data from $1234 to object in A4 after decrease pointer by 1
+000081D8  21F8 1234 1234           216      MOVE.L      $1234,$1234             *Move long word data from $1234 to absolute address WORD
+000081DE  23F8 1234 12345678       217      MOVE.L      $1234,$12345678         *Move long word data from $1234 to absolute address LONG WORD
+000081E6                           218      *MOVE.L      $1234,#$55555555        *Move long word data from $1234 to immediate data $55555555
+000081E6                           219      
+000081E6  2839 12345678            220      MOVE.L      $12345678,D4            *Move long word data from $12345678 to D4
+000081EC                           221      *MOVE.L      $12345678,A4            *Move long word data from $12345678 to A4
+000081EC  28B9 12345678            222      MOVE.L      $12345678,(A4)          *Move long word data from $12345678 to object in A4
+000081F2  28F9 12345678            223      MOVE.L      $12345678,(A4)+         *Move long word data from $12345678 to object in A4 and increase pointer by 1
+000081F8  2939 12345678            224      MOVE.L      $12345678,-(A4)         *Move long word data from $12345678 to object in A4 after decrease pointer by 1
+000081FE  21F9 12345678 1234       225      MOVE.L      $12345678,$1234         *Move long word data from $12345678 to absolute address WORD
+00008206  23F9 12345678 12345678   226      MOVE.L      $12345678,$12345678     *Move long word data from $12345678 to absolute address LONG WORD
+00008210                           227      *MOVE.L      $12345678,#$55555555    *Move long word data from $12345678 to immediate data $55555555
+00008210                           228      
+00008210  283C 55555555            229      MOVE.L      #$55555555,D4           *Move long word data from #$55555555 to D4
+00008216                           230      *MOVE.L      #$55555555,A4           *Move long word data from #$55555555 to A4
+00008216  28BC 55555555            231      MOVE.L      #$55555555,(A4)         *Move long word data from #$55555555 to object in A4
+0000821C  28FC 55555555            232      MOVE.L      #$55555555,(A4)+        *Move long word data from #$55555555 to object in A4 and increase pointer by 1
+00008222  293C 55555555            233      MOVE.L      #$55555555,-(A4)        *Move long word data from #$55555555 to object in A4 after decrease pointer by 1
+00008228  21FC 55555555 1234       234      MOVE.L      #$55555555,$1234        *Move long word data from #$55555555 to absolute address WORD
+00008230  23FC 55555555 12345678   235      MOVE.L      #$55555555,$12345678    *Move long word data from #$55555555 to absolute address LONG WORD
+0000823A                           236      *MOVE.L      #$55555555,#$55555555   *Move long word data from #$55555555 to immediate data $55555555
+0000823A                           237  
+0000823A                           238  
+0000823A  FFFF FFFF                239      SIMHALT             ; halt simulator
+0000823E                           240  
+0000823E                           241  * Put variables and constants here
+0000823E                           242  
+0000823E                           243      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               8000
