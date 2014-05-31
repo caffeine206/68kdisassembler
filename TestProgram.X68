@@ -2422,7 +2422,7 @@ START:          ORG     $1000
 *    EOR.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
 *    EOR.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word
 *    EOR.L      #$55555555,#$55555555   *EOR long word data from #$55555555 to immediate data $55555555
-*********************************************************************
+
 
 **********************************************************************
 **
@@ -2430,234 +2430,209 @@ START:          ORG     $1000
 **
 **********************************************************************
 **********************************************************************
-*
-**////////////////////////////////////////////////////////////////////
-**LSR.B
-**////////////////////////////////////////////////////////////////////
-*
-*    LSR.B      D3,D4                   *LSR byte data from D3 to D4
-*    LSR.B      D3,A4                   *LSR byte data from D3 to A4
-*    LSR.B      D3,(A4)                 *LSR byte data from D3 to object in A4
-*    LSR.B      D3,(A4)+                *LSR byte data from D3 to object in A4 and increase pointer by 1
-*    LSR.B      D3,-(A4)                *LSR byte data from D3 to object in A4 after decrease pointer by 1
-*    LSR.B      D3,$1234                *LSR byte data from D3 to absolute address WORD
-*    LSR.B      D3,$12345678            *LSR byte data from D3 to absolute address LONG WORD
-*    LSR.B      D3,#$55                 *LSR byte data from D3 to immediate data $55                
-*    
-*    LSR.B      A3,D4                   *LSR byte data from A3 to D4
-*    LSR.B      A3,A4                   *LSR byte data from A3 to A4
-*    LSR.B      A3,(A4)                 *LSR byte data from A3 to object in A4
-*    LSR.B      A3,(A4)+                *LSR byte data from A3 to object in A4 and increase pointer by 1
-*    LSR.B      A3,-(A4)                *LSR byte data from A3 to object in A4 after decrease pointer by 1
-*    LSR.B      A3,$1234                *LSR byte data from A3 to absolute address WORD
-*    LSR.B      A3,$12345678            *LSR byte data from A3 to absolute address LONG WORD
-*    LSR.B      A3,#$55                 *LSR byte data from A3 to immediate data $55
-*    
-*    LSR.B      (A3),D4                 *LSR byte data from (A3) to D4
-*    LSR.B      (A3),A4                 *LSR byte data from (A3) to A4
-*    LSR.B      (A3),(A4)               *LSR byte data from (A3) to object in A4
-*    LSR.B      (A3),(A4)+              *LSR byte data from (A3) to object in A4 and increase pointer by 1
-*    LSR.B      (A3),-(A4)              *LSR byte data from (A3) to object in A4 after decrease pointer by 1
-*    LSR.B      (A3),$1234              *LSR byte data from (A3) to absolute address WORD
-*    LSR.B      (A3),$12345678          *LSR byte data from (A3) to absolute address LONG WORD
-*    LSR.B      (A3),#$55               *LSR byte data from (A3) to immediate data $55
-*    
-*    LSR.B      (A3)+,D4                *LSR byte data from (A3)+ to D4
-*    LSR.B      (A3)+,A4                *LSR byte data from (A3)+ to A4
-*    LSR.B      (A3)+,(A4)              *LSR byte data from (A3)+ to object in A4
-*    LSR.B      (A3)+,(A4)+             *LSR byte data from (A3)+ to object in A4 and increase pointer by 1
-*    LSR.B      (A3)+,-(A4)             *LSR byte data from (A3)+ to object in A4 after decrease pointer by 1
-*    LSR.B      (A3)+,$1234             *LSR byte data from (A3)+ to absolute address WORD
-*    LSR.B      (A3)+,$12345678         *LSR byte data from (A3)+ to absolute address LONG WORD
-*    LSR.B      (A3)+,#$55              *LSR byte data from (A3)+ to immediate data $55
-*    
-*    LSR.B      -(A3),D4                *LSR byte data from -(A3) to D4
-*    LSR.B      -(A3),A4                *LSR byte data from -(A3) to A4
-*    LSR.B      -(A3),(A4)              *LSR byte data from -(A3) to object in A4
-*    LSR.B      -(A3),(A4)+             *LSR byte data from -(A3) to object in A4 and increase pointer by 1
-*    LSR.B      -(A3),-(A4)             *LSR byte data from -(A3) to object in A4 after decrease pointer by 1
-*    LSR.B      -(A3),$1234             *LSR byte data from -(A3) to absolute address WORD
-*    LSR.B      -(A3),$12345678         *LSR byte data from -(A3) to absolute address LONG WORD
-*    LSR.B      -(A3),#$55              *LSR byte data from -(A3) to immediate data $55
-*    
-*    LSR.B      $1234,D4                *LSR byte data from $1234 to D4
-*    LSR.B      $1234,A4                *LSR byte data from $1234 to A4
-*    LSR.B      $1234,(A4)              *LSR byte data from $1234 to object in A4
-*    LSR.B      $1234,(A4)+             *LSR byte data from $1234 to object in A4 and increase pointer by 1
-*    LSR.B      $1234,-(A4)             *LSR byte data from $1234 to object in A4 after decrease pointer by 1
-*    LSR.B      $1234,$1234             *LSR byte data from $1234 to absolute address WORD
-*    LSR.B      $1234,$12345678         *LSR byte data from $1234 to absolute address LONG WORD
-*    LSR.B      $1234,#$55              *LSR byte data from $1234 to immediate data $55
-*    
-*    LSR.B      $12345678,D4            *LSR byte data from $12345678 to D4
-*    LSR.B      $12345678,A4            *LSR byte data from $12345678 to A4
-*    LSR.B      $12345678,(A4)          *LSR byte data from $12345678 to object in A4
-*    LSR.B      $12345678,(A4)+         *LSR byte data from $12345678 to object in A4 and increase pointer by 1
-*    LSR.B      $12345678,-(A4)         *LSR byte data from $12345678 to object in A4 after decrease pointer by 1
-*    LSR.B      $12345678,$1234         *LSR byte data from $12345678 to absolute address WORD
-*    LSR.B      $12345678,$12345678     *LSR byte data from $12345678 to absolute address LONG WORD
-*    LSR.B      $12345678,#$55          *LSR byte data from $12345678 to immediate data $55
-*    
-*    LSR.B      #$55,D4                 *LSR byte data from #$55 to D4
-*    LSR.B      #$55,A4                 *LSR byte data from #$55 to A4
-*    LSR.B      #$55,(A4)               *LSR byte data from #$55 to object in A4
-*    LSR.B      #$55,(A4)+              *LSR byte data from #$55 to object in A4 and increase pointer by 1
-*    LSR.B      #$55,-(A4)              *LSR byte data from #$55 to object in A4 after decrease pointer by 1
-*    LSR.B      #$55,$1234              *LSR byte data from #$55 to absolute address WORD
-*    LSR.B      #$55,$12345678          *LSR byte data from #$55 to absolute address LONG WORD
-*    LSR.B      #$55,#$55               *LSR byte data from #$55 to immediate data $55
-*
-**////////////////////////////////////////////////////////////////////
-**LSR.W
-**////////////////////////////////////////////////////////////////////    
-*
-*    LSR.W      D3,D4                   *LSR WORD data from D3 to D4
-*    LSR.W      D3,A4                   *LSR WORD data from D3 to A4
-*    LSR.W      D3,(A4)                 *LSR WORD data from D3 to object in A4
-*    LSR.W      D3,(A4)+                *LSR WORD data from D3 to object in A4 and increase pointer by 1
-*    LSR.W      D3,-(A4)                *LSR WORD data from D3 to object in A4 after decrease pointer by 1
-*    LSR.W      D3,$1234                *LSR WORD data from D3 to absolute address WORD
-*    LSR.W      D3,$12345678            *LSR WORD data from D3 to absolute address LONG WORD
-*    LSR.W      D3,#$5555               *LSR WORD data from D3 to immediate data $5555 
-*    
-*    LSR.W      A3,D4                   *LSR WORD data from A3 to D4
-*    LSR.W      A3,A4                   *LSR WORD data from A3 to A4
-*    LSR.W      A3,(A4)                 *LSR WORD data from A3 to object in A4
-*    LSR.W      A3,(A4)+                *LSR WORD data from A3 to object in A4 and increase pointer by 1
-*    LSR.W      A3,-(A4)                *LSR WORD data from A3 to object in A4 after decrease pointer by 1
-*    LSR.W      A3,$1234                *LSR WORD data from A3 to absolute address WORD
-*    LSR.W      A3,$12345678            *LSR WORD data from A3 to absolute address LONG WORD
-*    LSR.W      A3,#$5555               *LSR WORD data from A3 to immediate data $5555
-*    
-*    LSR.W      (A3),D4                 *LSR WORD data from (A3) to D4
-*    LSR.W      (A3),A4                 *LSR WORD data from (A3) to A4
-*    LSR.W      (A3),(A4)               *LSR WORD data from (A3) to object in A4
-*    LSR.W      (A3),(A4)+              *LSR WORD data from (A3) to object in A4 and increase pointer by 1
-*    LSR.W      (A3),-(A4)              *LSR WORD data from (A3) to object in A4 after decrease pointer by 1
-*    LSR.W      (A3),$1234              *LSR WORD data from (A3) to absolute address WORD
-*    LSR.W      (A3),$12345678          *LSR WORD data from (A3) to absolute address LONG WORD
-*    LSR.W      (A3),#$5555             *LSR WORD data from (A3) to immediate data $5555
-*    
-*    LSR.W      (A3)+,D4                *LSR WORD data from (A3)+ to D4
-*    LSR.W      (A3)+,A4                *LSR WORD data from (A3)+ to A4
-*    LSR.W      (A3)+,(A4)              *LSR WORD data from (A3)+ to object in A4
-*    LSR.W      (A3)+,(A4)+             *LSR WORD data from (A3)+ to object in A4 and increase pointer by 1
-*    LSR.W      (A3)+,-(A4)             *LSR WORD data from (A3)+ to object in A4 after decrease pointer by 1
-*    LSR.W      (A3)+,$1234             *LSR WORD data from (A3)+ to absolute address WORD
-*    LSR.W      (A3)+,$12345678         *LSR WORD data from (A3)+ to absolute address LONG WORD
-*    LSR.W      (A3)+,#$5555            *LSR WORD data from (A3)+ to immediate data $5555
-*    
-*    LSR.W      -(A3),D4                *LSR WORD data from -(A3) to D4
-*    LSR.W      -(A3),A4                *LSR WORD data from -(A3) to A4
-*    LSR.W      -(A3),(A4)              *LSR WORD data from -(A3) to object in A4
-*    LSR.W      -(A3),(A4)+             *LSR WORD data from -(A3) to object in A4 and increase pointer by 1
-*    LSR.W      -(A3),-(A4)             *LSR WORD data from -(A3) to object in A4 after decrease pointer by 1
-*    LSR.W      -(A3),$1234             *LSR WORD data from -(A3) to absolute address WORD
-*    LSR.W      -(A3),$12345678         *LSR WORD data from -(A3) to absolute address LONG WORD
-*    LSR.W      -(A3),#$5555            *LSR WORD data from -(A3) to immediate data $5555
-*    
-*    LSR.W      $1234,D4                *LSR WORD data from $1234 to D4
-*    LSR.W      $1234,A4                *LSR WORD data from $1234 to A4
-*    LSR.W      $1234,(A4)              *LSR WORD data from $1234 to object in A4
-*    LSR.W      $1234,(A4)+             *LSR WORD data from $1234 to object in A4 and increase pointer by 1
-*    LSR.W      $1234,-(A4)             *LSR WORD data from $1234 to object in A4 after decrease pointer by 1
-*    LSR.W      $1234,$1234             *LSR WORD data from $1234 to absolute address WORD
-*    LSR.W      $1234,$12345678         *LSR WORD data from $1234 to absolute address LONG WORD
-*    LSR.W      $1234,#$5555            *LSR WORD data from $1234 to immediate data $5555
-*    
-*    LSR.W      $12345678,D4            *LSR WORD data from $12345678 to D4
-*    LSR.W      $12345678,A4            *LSR WORD data from $12345678 to A4
-*    LSR.W      $12345678,(A4)          *LSR WORD data from $12345678 to object in A4
-*    LSR.W      $12345678,(A4)+         *LSR WORD data from $12345678 to object in A4 and increase pointer by 1
-*    LSR.W      $12345678,-(A4)         *LSR WORD data from $12345678 to object in A4 after decrease pointer by 1
-*    LSR.W      $12345678,$1234         *LSR WORD data from $12345678 to absolute address WORD
-*    LSR.W      $12345678,$12345678     *LSR WORD data from $12345678 to absolute address LONG WORD
-*    LSR.W      $12345678,#$5555        *LSR WORD data from $12345678 to immediate data $5555
-*    
-*    LSR.W      #$5555,D4               *LSR WORD data from #$5555 to D4
-*    LSR.W      #$5555,A4               *LSR WORD data from #$5555 to A4
-*    LSR.W      #$5555,(A4)             *LSR WORD data from #$5555 to object in A4
-*    LSR.W      #$5555,(A4)+            *LSR WORD data from #$5555 to object in A4 and increase pointer by 1
-*    LSR.W      #$5555,-(A4)            *LSR WORD data from #$5555 to object in A4 after decrease pointer by 1
-*    LSR.W      #$5555,$1234            *LSR WORD data from #$5555 to absolute address WORD
-*    LSR.W      #$5555,$12345678        *LSR WORD data from #$5555 to absolute address LONG WORD
-*    LSR.W      #$5555,#$5555           *LSR WORD data from #$5555 to immediate data $5555
-*    
-**////////////////////////////////////////////////////////////////////
-**LSR.L
-**////////////////////////////////////////////////////////////////////
-*
-*    LSR.L      D3,D4                   *LSR long worddata from D3 to D4
-*    LSR.L      D3,A4                   *LSR long word data from D3 to A4
-*    LSR.L      D3,(A4)                 *LSR long word data from D3 to object in A4
-*    LSR.L      D3,(A4)+                *LSR long word data from D3 to object in A4 and increase pointer by 1
-*    LSR.L      D3,-(A4)                *LSR long word data from D3 to object in A4 after decrease pointer by 1
-*    LSR.L      D3,$1234                *LSR long word data from D3 to absolute address word
-*    LSR.L      D3,$12345678            *LSR long word data from D3 to absolute address LONG word
-*    LSR.L      D3,#$55555555           *LSR long word data from D3 to immediate data $55555555 
-*    
-*    LSR.L      A3,D4                   *LSR long word data from A3 to D4
-*    LSR.L      A3,A4                   *LSR long word data from A3 to A4
-*    LSR.L      A3,(A4)                 *LSR long word data from A3 to object in A4
-*    LSR.L      A3,(A4)+                *LSR long word data from A3 to object in A4 and increase pointer by 1
-*    LSR.L      A3,-(A4)                *LSR long word data from A3 to object in A4 after decrease pointer by 1
-*    LSR.L      A3,$1234                *LSR long word data from A3 to absolute address word
-*    LSR.L      A3,$12345678            *LSR long word data from A3 to absolute address LONG word
-*    LSR.L      A3,#$55555555           *LSR long word data from A3 to immediate data $55555555
-*    
-*    LSR.L      (A3),D4                 *LSR long word data from (A3) to D4
-*    LSR.L      (A3),A4                 *LSR long word data from (A3) to A4
-*    LSR.L      (A3),(A4)               *LSR long word data from (A3) to object in A4
-*    LSR.L      (A3),(A4)+              *LSR long word data from (A3) to object in A4 and increase pointer by 1
-*    LSR.L      (A3),-(A4)              *LSR long word data from (A3) to object in A4 after decrease pointer by 1
-*    LSR.L      (A3),$1234              *LSR long word data from (A3) to absolute address word
-*    LSR.L      (A3),$12345678          *LSR long word data from (A3) to absolute address LONG word
-*    LSR.L      (A3),#$55555555         *LSR long word data from (A3) to immediate data $55555555
-*    
-*    LSR.L      (A3)+,D4                *LSR long word data from (A3)+ to D4
-*    LSR.L      (A3)+,A4                *LSR long word data from (A3)+ to A4
-*    LSR.L      (A3)+,(A4)              *LSR long word data from (A3)+ to object in A4
-*    LSR.L      (A3)+,(A4)+             *LSR long word data from (A3)+ to object in A4 and increase pointer by 1
-*    LSR.L      (A3)+,-(A4)             *LSR long word data from (A3)+ to object in A4 after decrease pointer by 1
-*    LSR.L      (A3)+,$1234             *LSR long word data from (A3)+ to absolute address word
-*    LSR.L      (A3)+,$12345678         *LSR long word data from (A3)+ to absolute address LONG word
-*    LSR.L      (A3)+,#$55555555        *LSR long word data from (A3)+ to immediate data $55555555
-*    
-*    LSR.L      -(A3),D4                *LSR long word data from -(A3) to D4
-*    LSR.L      -(A3),A4                *LSR long word data from -(A3) to A4
-*    LSR.L      -(A3),(A4)              *LSR long word data from -(A3) to object in A4
-*    LSR.L      -(A3),(A4)+             *LSR long word data from -(A3) to object in A4 and increase pointer by 1
-*    LSR.L      -(A3),-(A4)             *LSR long word data from -(A3) to object in A4 after decrease pointer by 1
-*    LSR.L      -(A3),$1234             *LSR long word data from -(A3) to absolute address word
-*    LSR.L      -(A3),$12345678         *LSR long word data from -(A3) to absolute address LONG word
-*    LSR.L      -(A3),#$55555555        *LSR long word data from -(A3) to immediate data $55555555
-*    
-*    LSR.L      $1234,D4                *LSR long word data from $1234 to D4
-*    LSR.L      $1234,A4                *LSR long word data from $1234 to A4
-*    LSR.L      $1234,(A4)              *LSR long word data from $1234 to object in A4
-*    LSR.L      $1234,(A4)+             *LSR long word data from $1234 to object in A4 and increase pointer by 1
-*    LSR.L      $1234,-(A4)             *LSR long word data from $1234 to object in A4 after decrease pointer by 1
-*    LSR.L      $1234,$1234             *LSR long word data from $1234 to absolute address word
-*    LSR.L      $1234,$12345678         *LSR long word data from $1234 to absolute address LONG word
-*    LSR.L      $1234,#$55555555        *LSR long word data from $1234 to immediate data $55555555
-*    
-*    LSR.L      $12345678,D4            *LSR long word data from $12345678 to D4
-*    LSR.L      $12345678,A4            *LSR long word data from $12345678 to A4
-*    LSR.L      $12345678,(A4)          *LSR long word data from $12345678 to object in A4
-*    LSR.L      $12345678,(A4)+         *LSR long word data from $12345678 to object in A4 and increase pointer by 1
-*    LSR.L      $12345678,-(A4)         *LSR long word data from $12345678 to object in A4 after decrease pointer by 1
-*    LSR.L      $12345678,$1234         *LSR long word data from $12345678 to absolute address word
-*    LSR.L      $12345678,$12345678     *LSR long word data from $12345678 to absolute address LONG word
-*    LSR.L      $12345678,#$55555555    *LSR long word data from $12345678 to immediate data $55555555
-*    
-*    LSR.L      #$55555555,D4           *LSR long word data from #$55555555 to D4
-*    LSR.L      #$55555555,A4           *LSR long word data from #$55555555 to A4
-*    LSR.L      #$55555555,(A4)         *LSR long word data from #$55555555 to object in A4
-*    LSR.L      #$55555555,(A4)+        *LSR long word data from #$55555555 to object in A4 and increase pointer by 1
-*    LSR.L      #$55555555,-(A4)        *LSR long word data from #$55555555 to object in A4 after decrease pointer by 1
-*    LSR.L      #$55555555,$1234        *LSR long word data from #$55555555 to absolute address word
-*    LSR.L      #$55555555,$12345678    *LSR long word data from #$55555555 to absolute address LONG word
-*    LSR.L      #$55555555,#$55555555   *LSR long word data from #$55555555 to immediate data $55555555
+
+    LSR.B       #1,D0
+    LSR.B       D1,D0
+    
+    LSR.W       #1,D0
+    LSR.W       D1,D0
+    LSR.W       (A1)
+    LSR.W       (A1)+
+    LSR.W       -(A1)
+    LSR.W       $1234
+    LSR.W       $55555555
+    
+    LSR.L       #1,D0
+    LSR.L       D1,D0
+    
+**********************************************************************
+**
+**LSL
+**
+**********************************************************************
+**********************************************************************
+    LSL.B       #1,D0
+    LSL.B       D1,D0
+    
+    LSL.W       #1,D0
+    LSL.W       D1,D0
+    LSL.W       (A1)
+    LSL.W       (A1)+
+    LSL.W       -(A1)
+    LSL.W       $1234
+    LSL.W       $55555555
+    
+    LSL.L       #1,D0
+    LSL.L       D1,D0
+
+**********************************************************************
+**
+**ASR
+**
+**********************************************************************
+**********************************************************************
+
+    ASR.B       #1,D0
+    ASR.B       D1,D0
+    
+    ASR.W       #1,D0
+    ASR.W       D1,D0
+    ASR.W       (A1)
+    ASR.W       (A1)+
+    ASR.W       -(A1)
+    ASR.W       $1234
+    ASR.W       $55555555
+    
+    ASR.L       #1,D0
+    ASR.L       D1,D0
+    
+**********************************************************************
+**
+**ASL
+**
+**********************************************************************
+**********************************************************************
+
+    ASL.B       #1,D0
+    ASL.B       D1,D0
+    
+    ASL.W       #1,D0
+    ASL.W       D1,D0
+    ASL.W       (A1)
+    ASL.W       (A1)+
+    ASL.W       -(A1)
+    ASL.W       $1234
+    ASL.W       $55555555
+    
+    ASL.L       #1,D0
+    ASL.L       D1,D0
+    
+**********************************************************************
+**
+**ROR
+**
+**********************************************************************
+**********************************************************************
+    ROR.B       #1,D0
+    ROR.B       D1,D0
+    
+    ROR.W       #1,D0
+    ROR.W       D1,D0
+    ROR.W       (A1)
+    ROR.W       (A1)+
+    ROR.W       -(A1)
+    ROR.W       $1234
+    ROR.W       $55555555
+    
+    ROR.L       #1,D0
+    ROR.L       D1,D0
+    
+**********************************************************************
+**
+**ROL
+**
+**********************************************************************
+**********************************************************************
+
+    ROL.B       #1,D0
+    ROL.B       D1,D0
+    
+    ROL.W       #1,D0
+    ROL.W       D1,D0
+    ROL.W       (A1)
+    ROL.W       (A1)+
+    ROL.W       -(A1)
+    ROL.W       $1234
+    ROL.W       $55555555
+    
+    ROL.L       #1,D0
+    ROL.L       D1,D0
+    
+**********************************************************************
+**
+**BCLR
+**
+**********************************************************************
+**********************************************************************
+    
+    BCLR.L       #1,D0
+    BCLR.L       D1,D0
+
+**********************************************************************
+**
+**CMP.B
+**
+**********************************************************************
+**********************************************************************
+*////////////////////////////////////////////////////////////////////
+*CMP.B
+*////////////////////////////////////////////////////////////////////
+
+    CMP.B      D3,D4                   *Move byte data from D3 to D4
+    CMP.B      (A3),D4                 *Move byte data from (A3) to D4  
+    CMP.B      (A3)+,D4                *Move byte data from (A3)+ to D4
+    CMP.B      -(A3),D4                *Move byte data from -(A3) to D4
+    CMP.B      $1234,D4                *Move byte data from $1234 to D4
+    CMP.B      $12345678,D4            *Move byte data from $12345678 to D4
+    CMP.B      #$55,D4                 *Move byte data from #$55 to D4
+
+*////////////////////////////////////////////////////////////////////
+*CMP.W
+*////////////////////////////////////////////////////////////////////    
+
+    CMP.W      D3,D4                   *Move word data from D3 to D4    
+    CMP.W      A3,D4                   *Move word data from A3 to D4    
+    CMP.W      (A3),D4                 *Move word data from (A3) to D4    
+    CMP.W      (A3)+,D4                *Move word data from (A3)+ to D4    
+    CMP.W      -(A3),D4                *Move word data from -(A3) to D4    
+    CMP.W      $1234,D4                *Move word data from $1234 to D4   
+    CMP.W      $12345678,D4            *Move word data from $12345678 to D4   
+    CMP.W      #$5555,D4               *Move word data from #$5555 to D4
+    
+*////////////////////////////////////////////////////////////////////
+*CMP.L
+*////////////////////////////////////////////////////////////////////
+
+    CMP.L      D3,D4                   *Move long word data from D3 to D4
+    CMP.L      A3,D4                   *Move long word data from A3 to D4
+    CMP.L      (A3),D4                 *Move long word data from (A3) to D4
+    CMP.L      (A3)+,D4                *Move long word data from (A3)+ to D4
+    CMP.L      -(A3),D4                *Move long word data from -(A3) to D4
+    CMP.L      $1234,D4                *Move long word data from $1234 to D4
+    CMP.L      $12345678,D4            *Move long word data from $12345678 to D4
+    CMP.L      #$55555555,D4           *Move long word data from #$55555555 to D4
+
+    
+**********************************************************************
+**
+**CMPI
+**
+**********************************************************************
+**********************************************************************
+
+    CMPI.B      #$55,D4                 *EOR byte data from #$55 to D4
+    CMPI.B      #$55,(A4)               *EOR byte data from #$55 to object in A4
+    CMPI.B      #$55,(A4)+              *EOR byte data from #$55 to object in A4 and increase pointer by 1
+    CMPI.B      #$55,-(A4)              *EOR byte data from #$55 to object in A4 after decrease pointer by 1
+    CMPI.B      #$55,$1234              *EOR byte data from #$55 to absolute address WEORD
+    CMPI.B      #$55,$12345678          *EOR byte data from #$55 to absolute address LONG WEORD
+
+    
+    CMPI.W      #$5555,D4               *EOR wEORd data from #$5555 to D4
+    CMPI.W      #$5555,(A4)             *EOR wEORd data from #$5555 to object in A4
+    CMPI.W      #$5555,(A4)+            *EOR wEORd data from #$5555 to object in A4 and increase pointer by 1
+    CMPI.W      #$5555,-(A4)            *EOR wEORd data from #$5555 to object in A4 after decrease pointer by 1
+    CMPI.W      #$5555,$1234            *EOR wEORd data from #$5555 to absolute address WEORD
+    CMPI.W      #$5555,$12345678        *EOR wEORd data from #$5555 to absolute address LONG WEORD 
+    
+    CMPI.L      #$55555555,D4           *EOR long word data from #$55555555 to D4
+    CMPI.L      #$55555555,(A4)         *EOR long word data from #$55555555 to object in A4
+    CMPI.L      #$55555555,(A4)+        *EOR long word data from #$55555555 to object in A4 and increase pointer by 1
+    CMPI.L      #$55555555,-(A4)        *EOR long word data from #$55555555 to object in A4 after decrease pointer by 1
+    CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
+    CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word
+   
+
 
 
 SIMHALT             ; halt simulator
@@ -2671,7 +2646,8 @@ SIMHALT             ; halt simulator
 
 
 
+
 *~Font name~Courier New~
-*~Font size~16~
+*~Font size~12~
 *~Tab type~1~
 *~Tab size~4~
