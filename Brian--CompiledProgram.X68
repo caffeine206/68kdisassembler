@@ -271,7 +271,24 @@ code1001    STOP    #$2700
 code1010    STOP    #$2700
 code1011    STOP    #$2700
 code1100    STOP    #$2700
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*code1101: ADD  (SIZE BASED ON OPMODE) 
+*ADDRESSING MODE DETERMINED BY EA FIELD
+*D2:EFFECTIVE ADDRESS REGISTER
+*D3:EFFECTIVE ADDRESS MODE
+*
+*D4:OPMODE
+*D5:REGISTER**ANY OF THE DIGHT DATA REGISTERS (D0-D7)
+*IF EA SPECIFIED IS AN ADDRESS REGISTER ONLY WORD AND LONG MAY BE USED
+*/////////////////////////////////////////////////////////////////////////////////
 code1101    STOP    #$2700
+    MOVE.B  #'A',(A1)+
+    MOVE.B  #'D',(A1)+
+    MOVE.B  #'D',(A1)+
+
+    JSR     ADDA_check                     *Check for ADDA
+
 code1110    STOP    #$2700
 code1111    BRA     data_error
 
@@ -284,10 +301,24 @@ MOVEA_check
     BEQ     is_MOVEA
     RTS
 
+;;;;;;;;;;;;;;;;;note that destination register must me an address reg
 is_MOVEA
     MOVE.B  'A',(A1)+
     RTS
 
+*////////////////////////////////////////////////////////////////////////////////////////
+*ADDA_check: check if ADDA, then add 'A' to print buffer
+*D4: hold the Destination MODE for comparison
+*//////////////////////////////////////////////////////////////////////////////////////// 
+ADDA_check
+    CMP.B   #1,D4                           
+    BEQ     is_ADDA
+    RTS
+
+;;;;;;;;;;;;;;;;;note that destination register must me an address reg
+is_ADDA
+    MOVE.B  'A',(A1)+
+    RTS
 
 *////////////////////////////////////////////////////////////////////////////////////////
 *data_error: current WORD couldn't be decoded, print the WORD data
@@ -346,7 +377,8 @@ EAMode
     CMP.B   #6,D3
     BEQ     EAmode6
     CMP.B   #7,D3
-    BEQ     EAmode7    
+    BEQ     EAmode7
+*******************We should handle a bad ea mode somehow else it will go into eamode0
       
 EAmode0
     MOVE.B  #'D',(A1)+                  
@@ -621,6 +653,7 @@ end_input       DS.B    80
 
 
     END    START        ; last line of source
+
 
 
 
