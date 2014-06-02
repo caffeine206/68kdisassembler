@@ -2632,7 +2632,20 @@ START:          ORG     $1000
     CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
     CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word
    
-
+**********************************************************************
+**
+**BCC, BRA, JSR, RTS
+**
+**********************************************************************
+**********************************************************************
+    
+    BCS         SOMEWHERE
+    BGE         SOMEWHERE
+    BLT         SOMEWHERE
+    BVC         SOMEWHERE
+    BRA         SOMEWHERE
+    JSR         SOMEWHERE
+    RTS         SOMEWHERE
 
 
 SIMHALT             ; halt simulator
@@ -2640,6 +2653,7 @@ SIMHALT             ; halt simulator
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

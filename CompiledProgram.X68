@@ -74,16 +74,34 @@ main            CLR.L   D0                  * Clear D0
                 
                 BRA     op_code             * Begin decode 
                 
-Print           
-                MOVE.B  #$00,(A1)            * Add terminator              
-                CLR.L   D0                   * Clear D0   
-                MOVE.B  #13,D0               * Load Trap task number 13 for printing
-                LEA     buffer,A1            * Load print buffer into A1 
-                TRAP    #15                  * Print the buffer
+rerun_check     LEA     rerun_message,A1    * Assign rerun message to A1
+                MOVE.B  #14,D0              * Assign prompt task code to D0
+                TRAP    #15                 * Display rerun message
                 
-                CMP.L   A6,D6                * Compare current memory pointer with ending address 
-                BLE     end_check            * Less than equal zero, reach the end
-                BRA     main                 * Go to next memory
+                LEA     rerun_input,A1      * Assign rerun input to A1
+                MOVE.B  #2,D0               * Assign prompt task code to D0
+                TRAP    #15                 * Store user input in A1
+                
+                CMP.B   #$79,(A1)           * Compare to lowercase y
+                BEQ     get_start           * If equal, branch to get starting address again
+                
+end_program     LEA     end_message,A1      * Assign end message to A1
+                MOVE.B  #14,D0              * Assign prompt task code to D0
+                TRAP    #15                 * Display end message
+                STOP    #$00002700          * Stop        
+
+*////////////////////////////////////////////////////////////////////////////////////////
+*print: 
+*////////////////////////////////////////////////////////////////////////////////////////               
+print           MOVE.B  #$00,(A1)           * Add terminator              
+                CLR.L   D0                  * Clear D0   
+                MOVE.B  #13,D0              * Load Trap task number 13 for printing
+                LEA     buffer,A1           * Load print buffer into A1 
+                TRAP    #15                 * Print the buffer
+                
+                CMP.L   A6,D6               * Compare current memory pointer with ending address 
+                BLE     end_check           * Less than equal zero, reach the end
+                BRA     main                * Go to next memory
 
 *////////////////////////////////////////////////////////////////////////////////////////
 *op_code: get the data from current memory pointer, advance the memory pointer, separate 
@@ -187,7 +205,7 @@ code0001
 
     JSR     EAMode                          *Jump to EAMode
     
-    BRA     Print
+    BRA     print
 
 *////////////////////////////////////////////////////////////////////////////////////////
 *code0001: MOVE Long
@@ -292,8 +310,7 @@ is_MOVEA
 *////////////////////////////////////////////////////////////////////////////////////////
 *data_error: current WORD couldn't be decoded, print the WORD data
 *//////////////////////////////////////////////////////////////////////////////////////// 
-data_error
-                MOVE.B  #'D',(A1)+
+data_error      MOVE.B  #'D',(A1)+
                 MOVE.B  #'A',(A1)+
                 MOVE.B  #'T',(A1)+
                 MOVE.B  #'A',(A1)+
@@ -305,16 +322,7 @@ data_error
                 MOVE.B  #2,D1               * Byte size is 2
                
                 JSR     hex_to_ascii
-                BRA     Print
-
-
-    
-end_check       
-                
-                LEA     end_message,A1      * Assign end message to A1
-                MOVE.B  #14,D0              * Assign prompt task code to D0
-                TRAP    #15                 * Display end message
-                STOP    #$00002700          * Stop                
+                BRA     Print        
 
 ***************************************************************************************************
 ***************************************************************************************************
@@ -599,6 +607,28 @@ hta_error       LEA     hta_error_msg,A1    * Assign hex to ascii error message 
                 MOVE.B  #14,D0              * Assign task code for message into D0
                 TRAP    #15                 * Display message
                 RTS                         * Return
+*////////////////////////////////////////////////////////////////////////////////////////
+*page_check: Increment the page counter and see if we have filled an entire output page yet.  
+* If so, prompt the user to press "enter" to continue.
+*////////////////////////////////////////////////////////////////////////////////////////
+page_check      LEA     page_counter,A2     * Assign the page counter to A2
+                ADD.B   #1,(A2)             * Increment page counter
+                CMP.B   #30,(A2)            * Compare A2 to the line per page limit
+                BGT     next_page           * Branch to the next page if lines exceed 30
+                RTS                         * Return
+                
+*////////////////////////////////////////////////////////////////////////////////////////
+*next_page: Reset the page counter and prompt the user to press "enter" to continue
+*////////////////////////////////////////////////////////////////////////////////////////
+next_page       LEA     press_enter,A1      * Load the press enter message prompt
+                MOVE.B  #0,(A2)             * Reset the page_counter
+                MOVE.B  #2,D0               * Assign input task code to D0
+                TRAP    #15                 * Display enter message prompt
+                
+                LEA     enter_prompt,A1     * Save user input into A1
+                MOVE.L  #2,D0               * Copy the user input to D0
+                TRAP    #15                 * Save the user input
+                RTS                         * Return
 ***************************************************************************************************
 ***************************************************************************************************
 *
@@ -615,12 +645,19 @@ input_error     DC.B    'There was something wrong with the input',CR,LF,0
 not_even        DC.B    'The specified address was odd',CR,LF,0
 end_message     DC.B    'All done!  See you later!',CR,LF,0
 hta_error_msg   DC.B    'The number of bytes was incorrect',CR,LF,0
+press_enter     DC.B    'ENTER to continue',CR,LF,0
+rerun_message   DC.B    'Run the program again? (y/n)',CR,LF,0
+page_counter    DC.B    0
+rerun_input     DS.B    80
+enter_prompt    DS.B    80
 buffer          DS.B    80
 start_input     DS.B    80
 end_input       DS.B    80
 
 
     END    START        ; last line of source
+
+
 
 
 
