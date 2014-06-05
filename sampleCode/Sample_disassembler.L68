@@ -1,0 +1,1923 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.14.01
+Created On: 5/31/2014 2:13:35 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Program    : Final Project
+00000000                             3  * Written by : Brad Seefeld, Jared, Matt Lindquist
+00000000                             4  * Date       : 5/27/09
+00000000                             5  * Description: Dissasembler
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  
+00000000  =00000001                  8  task1       EQU $01     * Output string at A1 without CRLF
+00000000  =00000002                  9  task2       EQU $02     * Read the string into A1
+00000000  =0000000D                 10  task13      EQU $0D
+00000000  =0000000E                 11  task14      EQU $0E     * Output to screen without line break at end
+00000000  =00001000                 12  START       EQU $00001000
+00000000  =00001032                 13  STOP        EQU $00001032   
+00000000  =000A0000                 14  stack       EQU $000A0000   *Where the stack pointer will be initialized to
+00000000  =0000000F                 15  NMASK       EQU %00001111
+00000000                            16  
+00000000  =00000000                 17  min_addr    EQU $00000000   * The given addresses must be greater than this value.
+00000000  =FFFFFFFF                 18  max_addr    EQU $FFFFFFFF   * The given addresses must be less than this value.
+00000000  =0000001E                 19  scrn_lines  EQU 30
+00000000                            20  
+00000000                            21  **********************************************************************************************
+00000000                            22  * List of registers being used
+00000000                            23  *
+00000000                            24  * A0 = Pointer to the next location in memory to process
+00000000                            25  * A2 = Pointer to the last location in memory to process
+00000000                            26  * A5 = Pointer to the end of the "good" string
+00000000                            27  * A6 = Pointer to the end of the "bad" string
+00000000                            28  * D7 = Error code (if non-zero)
+00000000                            29  **********************************************************************************************
+00000000                            30  
+00001000                            31      ORG $1000
+00001000  4FF9 000A0000             32      LEA stack,SP    * initialize the stack pointer
+00001006                            33      
+00001006                            34  WELCOME
+00001006  103C 000D                 35      MOVE.B  #task13, D0 * Load task number into D0
+0000100A  43F9 00002340             36      LEA welcome0,A1 * Get the address of the string.
+00001010  4E4F                      37      TRAP    #15     * Show message
+00001012                            38      
+00001012  43F9 00002374             39      LEA welcome1,A1 * Get the address of the string.
+00001018  4E4F                      40      TRAP    #15     * Show message
+0000101A                            41      
+0000101A  43F9 00002340             42      LEA welcome0, A1    * Display stars again
+00001020  4E4F                      43      TRAP    #15
+00001022                            44      
+00001022  43F9 00002399             45      LEA str_empty, A1
+00001028  4E4F                      46      TRAP    #15
+0000102A                            47      
+0000102A                            48  PRMT_START
+0000102A                            49      * Prompt the user for the starting address
+0000102A  103C 000E                 50      MOVE.B  #task14, D0 * Load task number into D0
+0000102E  43F9 0000239A             51          LEA str_prompt1, A1 * Get address of string
+00001034  4E4F                      52          TRAP    #15             * Prompt for starting address
+00001036                            53  
+00001036                            54      * Get the input from the user
+00001036  103C 0002                 55      MOVE.B  #task2, D0  * Change mode to allow user to enter input
+0000103A  43F9 00001FB0             56      LEA user_input, A1  * Load the pointer to the location where the user input will be saved
+00001040  4E4F                      57          TRAP    #15     * Prompt for input (start addr)
+00001042                            58                      * A1 stores a pointer to the beginning of the info.
+00001042                            59                      * D1 stores length
+00001042                            60  
+00001042                            61      * Convert the input
+00001042  4EB9 00001EE8             62          JSR ASCIITOHEX  * convert the entered value to an address value. It will be in D3      
+00001048                            63  
+00001048                            64      * Process the returned data
+00001048  B2BC 00000000             65      CMP.L   #0, D1      * Check to see if we returned an error when converting the start value
+0000104E  6600 014A                 66      BNE ERROR_HANDLER   * Go to error handler
+00001052  2043                      67          MOVE.L  D3, A0      * Move the converted value to A0
+00001054                            68          
+00001054                            69          * Ensure it is even boundary
+00001054  2008                      70          MOVE.L  A0,D0       * Get A0 ready for change
+00001056  0280 FFFFFFFE             71      ANDI.L  #$FFFFFFFE,D0   * Convert to even number
+0000105C  2040                      72      MOVEA.L D0,A0       * Put it back
+0000105E                            73  
+0000105E                            74      * Make sure start is >= min value
+0000105E  123C 0003                 75      MOVE.B  #$03, D1    * Load the error number in D1 (in case there is an error)
+00001062  B1FC 00000000             76      CMP.L   #min_addr, A0   * Check to see if A0 <= minimim_value 
+00001068  6D00 0130                 77      BLT ERROR_HANDLER   * Go to error handler
+0000106C                            78  
+0000106C                            79  PRMT_END
+0000106C                            80      * Prompt the user for the ending address.
+0000106C  103C 000E                 81      MOVE.B  #task14, D0 * Load new task number
+00001070  43F9 000023C8             82          LEA str_prompt2, A1 * Prompt for end addr.
+00001076  4E4F                      83          TRAP    #15     * Prompt
+00001078                            84          
+00001078  103C 0002                 85          MOVE.B  #task2, D0  * Change mode to allow user to enter input
+0000107C  43F9 00001FB0             86      LEA user_input, A1  * Load the pointer to the location where the user input will be saved
+00001082  4E4F                      87          TRAP    #15     * Prompt for input (end addr)
+00001084                            88          
+00001084  6100 0E62                 89          BSR ASCIITOHEX  * Convert entered info into an address
+00001088                            90  
+00001088                            91      * Process the returned data
+00001088  B2BC 00000000             92      CMP.L   #0, D1      * Check to see if we returned an error when converting the start value
+0000108E  6600 010A                 93      BNE ERROR_HANDLER   * Go to error handler
+00001092  2643                      94          MOVE.L  D3, A3      * Move the converted value to A2
+00001094                            95  
+00001094                            96      * Make sure end is <= max value
+00001094  123C 0004                 97      MOVE.B  #$04, D1    * Load the error number in D1 (in case there is an error)
+00001098  B7FC FFFFFFFF             98      CMP.L   #max_addr, A3   * Check to see if A2 > max_value 
+0000109E  6D00 00FA                 99      BLT ERROR_HANDLER   * Go to error handler
+000010A2                           100        
+000010A2                           101      * Make sure start and end are valid
+000010A2  598B                     102      SUBQ.L  #4, A3      * Subtract 2 (bytes) from A6
+000010A4  123C 0002                103      MOVE.B  #$02, D1    * Load the error number in D1 (in case there is an error)
+000010A8  B1CB                     104      CMP.L   A3, A0      * Check to see if A5 < (A6 - 2): This will ensure that we have at least 1 WORD to process
+000010AA  6E00 00EE                105      BGT ERROR_HANDLER   * Go to error handler
+000010AE  588B                     106      ADDQ.L  #4, A3      * Add 2 (bytes) back to A6
+000010B0                           107      
+000010B0                           108  * Begin decoding program in memory.
+000010B0                           109  DECODE
+000010B0  1C3C 0000                110      MOVE.B  #0, D6      * setup counter, this is the number of lines we have decoded to this screen
+000010B4                           111  
+000010B4                           112  DECODE_LOOP
+000010B4  4BF9 000020B0            113      LEA str_good,A5 * init the pointer for the good string
+000010BA  4DF9 000021B0            114      LEA str_bad,A6  * init the pointer for the bad string
+000010C0  1AB8 0000                115      MOVE.B  $00,(A5)    
+000010C4  1CB8 0000                116      MOVE.B  $00,(A6)
+000010C8                           117      
+000010C8                           118      * Print the current memory location before doing any disassembly
+000010C8  2008                     119      MOVE.L  A0, D0      * Move the memory address to D0 (this is the data we want to convert)
+000010CA  7204                     120      MOVE.L  #4, D1      * We will need to convert the entire LONG (4 bytes)
+000010CC  227C 00001FB0            121      MOVE.L  #user_input, A1 * Set A1 to point to the string where we will save the data
+000010D2  4EB9 00001F62            122      JSR HEXTOASCII  * Convert the numbers into ascii
+000010D8  12FC 0009                123      MOVE.B  #$9,(A1)+   * Insert a tab
+000010DC  103C 000E                124      MOVE.B  #task14, D0 * Load new task number
+000010E0  43F9 00001FB0            125          LEA user_input, A1  * Load message
+000010E6  4E4F                     126      TRAP    #15     * Print memory location with tab.
+000010E8                           127      
+000010E8                           128      * Start building the good & bad strings (memory location)
+000010E8                           129      * Get the next instruction and attempt to decode 
+000010E8  4280                     130      CLR.L   D0      * Clear D0  
+000010EA  3018                     131      MOVE.W  (A0)+,D0    * Move the data pointed to by A0 (WORD) into D0 (this it the data we want to convert)
+000010EC  4EB9 000011F6            132      JSR OPCODE
+000010F2                           133  
+000010F2                           134      * Print the results
+000010F2  BE3C 0000                135      CMP.B   #0,D7       * Check for errors
+000010F6  6600 0050                136      BNE PRINT_BAD   * If there was an error, print the "bad" string (otherwise we'll print the "good" string)
+000010FA  103C 000D                137      MOVE.B  #task13,D0  * Load new task number
+000010FE                           138      
+000010FE                           139      * TODO: Print memory location and tab space
+000010FE                           140  
+000010FE  43F9 000020B0            141          LEA str_good,A1 * Load the string 
+00001104  4E4F                     142          TRAP    #15     * Print the string
+00001106                           143      
+00001106                           144  DECODE_DONE
+00001106                           145  
+00001106                           146      * Finished processing the instruction
+00001106  B7C8                     147      CMP.L   A0,A3       * Have we passed the end or where we were supposed to test?
+00001108  6D00 002E                148      BLT QUIT        * Go to the end if we're finished
+0000110C                           149      
+0000110C                           150      * clear strings to prevent re-print
+0000110C                           151      
+0000110C                           152      * check if we have filled a whole screen
+0000110C  5206                     153      ADDQ.B  #1, D6      * increment counter
+0000110E  BC3C 001E                154      CMP.B   #scrn_lines, D6 * check if we have filled the screen
+00001112  6C00 0004                155      BGE DECODE_SCN_FULL * we have filled the screen
+00001116                           156      
+00001116  609C                     157      BRA DECODE_LOOP * Otherwise continue processing
+00001118                           158      
+00001118                           159  DECODE_SCN_FULL         * A screen worth of output has been printed, prompt user for when ready
+00001118                           160      
+00001118  1C3C 0000                161      MOVE.B  #0, D6      * Reset counter
+0000111C  103C 000E                162      MOVE.B  #task14, D0 * Load new task number
+00001120  43F9 000023F6            163      LEA str_scrnfull,A1 * Load the string
+00001126  4E4F                     164      TRAP    #15     * Print the message
+00001128                           165      
+00001128                           166      * Prompt user to <enter>
+00001128  103C 0002                167      MOVE.B  #task2, D0  * Load new task number
+0000112C  43F9 00001FB0            168      LEA user_input,A1   * We dont want user to over-ride anything in memory
+00001132  4E4F                     169      TRAP    #15     * Prompt for user input
+00001134  6000 FF7E                170      BRA DECODE_LOOP * Go back to decoding
+00001138                           171  
+00001138  103C 000E                172  QUIT    MOVE.B  #task14,D0
+0000113C  43F9 00002412            173      LEA str_finito,A1
+00001142  4E4F                     174      TRAP    #15
+00001144  4E72 2700                175      STOP    #$2700      *quit out of the program/code
+00001148                           176  
+00001148                           177  PRINT_BAD
+00001148                           178      * Update the bad string with the current instruction/data (WORD)
+00001148  45F9 000021B0            179      LEA str_bad,A2  * init the pointer for the bad string
+0000114E  43F9 0000246D            180      LEA str_unknown,A1  * prep the string
+00001154  4EB9 00001EC8            181      JSR STRCPY      * Call STRCPY
+0000115A  240A                     182      MOVE.L  A2,D2       * copy the memory address of the end of the string to D2
+0000115C  0482 000021B0            183      SUB.L   #str_bad,D2 * get the length of the good string
+00001162  0482 0000000A            184      SUBI.L  #10,D2      * subtract 8 from the length (should give us a negative number)
+00001168  C4FC FFFF                185      MULU    #-1,D2      * multiply by -1 to make positive
+0000116C                           186  PAD_MORE
+0000116C  14FC 0020                187      MOVE.B  #$20,(A2)+  * Add a space
+00001170  51CA FFFA                188      DBF D2,PAD_MORE * While D2 > 0 keep padding the string with spaces
+00001174  14FC 0024                189      MOVE.B  #$24,(A2)+  * Add a "$" 
+00001178  7202                     190      MOVE.L  #2, D1      * We will need to convert the entire LONG (4 bytes)
+0000117A  224A                     191      MOVE.L  A2, A1      * Set A1 to point to the string where we will save the data
+0000117C  4EB9 00001F62            192      JSR HEXTOASCII  * Convert the numbers into ascii
+00001182  2449                     193      MOVE.L  A1, A2      * Update the string pointer
+00001184  14FC 0000                194      MOVE.B  #$00,(A2)+  * end the string
+00001188                           195  
+00001188                           196      * Print the string
+00001188  103C 000D                197      MOVE.B  #task13,D0  * Load new task number
+0000118C  227C 000021B0            198          MOVE.L  #str_bad,A1 * Load the string 
+00001192  4E4F                     199          TRAP    #15     * Print the string
+00001194  6000 FF70                200          BRA DECODE_DONE * Continue
+00001198                           201  
+00001198                           202  TEST
+00001198  4E75                     203      RTS
+0000119A                           204  
+0000119A                           205  **********************************************************************************************
+0000119A                           206  * ERROR_HANDLER - Display some error message based on the condition of the error.
+0000119A                           207  *           After such error has been displayed, the program will return
+0000119A                           208  *           to prompt the user for the starting address.
+0000119A                           209  *      
+0000119A                           210  * D1 = Error code
+0000119A                           211  *
+0000119A                           212  
+0000119A                           213  ERROR_HANDLER
+0000119A  B23C 0001                214      CMP.B   #$01, D1    * Compare D1 with the next known error 
+0000119E  6700 0024                215      BEQ ERROR_01    * Load error01 if we found a match
+000011A2                           216  
+000011A2  B23C 0002                217      CMP.B   #$02, D1    * Compare D1 with the next known error
+000011A6  6700 0026                218      BEQ ERROR_02    * Load error02 if we found a match
+000011AA                           219      
+000011AA  B23C 0003                220      CMP.B   #$03, D1    * Compare D1 with the next known error
+000011AE  6700 0028                221      BEQ ERROR_03    * Load error03 if we found a match
+000011B2                           222  
+000011B2  B23C 0004                223      CMP.B   #$04, D1    * Compare D1 with the next known error
+000011B6  6700 002A                224      BEQ ERROR_04    * Load error03 if we found a match
+000011BA                           225  
+000011BA                           226      * If we didnt find a match, load up the default error message
+000011BA  43F9 000022B0            227      LEA str_error00, A1 * Load the error string into A1
+000011C0  6000 002A                228      BRA ERROR_DISPLAY   * Go back to the start of the program (since we don't know what the error was)
+000011C4                           229      
+000011C4                           230  ERROR_01    * Value entered was invalid
+000011C4  43F9 000022BF            231      LEA str_error01, A1 * Load the error string into A1
+000011CA  6000 0020                232      BRA ERROR_DISPLAY   * Display the error message
+000011CE                           233      
+000011CE                           234  ERROR_02    * Start >= (End - 4)
+000011CE  43F9 000022DA            235      LEA str_error02, A1 * Load the error string into A1
+000011D4  6000 0016                236      BRA ERROR_DISPLAY   * Display the error message
+000011D8                           237      
+000011D8                           238  ERROR_03    * Start < Min
+000011D8  43F9 00002301            239      LEA str_error03, A1 * Load the error string into A1
+000011DE  6000 000C                240      BRA ERROR_DISPLAY   * Display the error message
+000011E2                           241      
+000011E2                           242  ERROR_04    * Start < Min
+000011E2  43F9 00002321            243      LEA str_error04, A1 * Load the error string into A1
+000011E8  6000 0002                244      BRA ERROR_DISPLAY   * Display the error message
+000011EC                           245      
+000011EC                           246  ERROR_DISPLAY
+000011EC  103C 000D                247      MOVE.B  #task13, D0 * Load task 13
+000011F0  4E4F                     248      TRAP    #15     * call TRAP 15
+000011F2  6000 FE36                249      BRA     PRMT_START  * Go back to the beginning
+000011F6                           250      
+000011F6                           251  **********************************************************************************************
+000011F6                           252  **********************************************************************************************
+000011F6                           253  * OPCODE 
+000011F6                           254  * This function takes a WORD (in D0) and attempts to decode the assembly language instruction.
+000011F6                           255  * The decoded information is added to the string pointed to by A5.  If there is any EA information
+000011F6                           256  * found the DECODEEA function is called.  If an error is encountered a non-zero value will be 
+000011F6                           257  * returned in D7.
+000011F6                           258  *
+000011F6                           259  * A0 = Pointer to the next location in memory
+000011F6                           260  * A5 = Pointer to the end of the "good" string
+000011F6                           261  * D0 = The next opcode to process
+000011F6                           262  * D7 = Error Code (if non-zero) that is returned
+000011F6                           263  *
+000011F6                           264  * Internally:
+000011F6                           265  * D1 = scratch space
+000011F6                           266  * D2 = scratch space
+000011F6                           267  * D3 = Register bits
+000011F6                           268  * D4 = Mode, Dn/An, Size
+000011F6                           269  * D5 = EA bits
+000011F6                           270  
+000011F6                           271  OPCODE
+000011F6  48E7 7E78                272      MOVEM.L A1-A4/D1-D6,-(A7)   * Push register data onto the stack so we can restore it at the end
+000011FA  4287                     273      CLR.L   D7          * Clear the error code 
+000011FC  43F9 00001224            274      LEA OPCODE_JMPTABLE,A1  * Load up the jump table
+00001202  4EB9 00001AF8            275      JSR OPCODE_DECODE_GET   * Break out the OPCode (only useful if the OPCode is standard)
+00001208  4281                     276      CLR.L   D1          * Clear the temp register
+0000120A  2200                     277      MOVE.L  D0,D1           * Copy the opcode into the temp register
+0000120C  143C 000C                278      MOVE.B  #12,D2          * Copy 12 into D2
+00001210  E469                     279      LSR.W   D2,D1           * Left shift D1 by the number of bits in D2
+00001212  C2FC 0006                280      MULU    #6,D1           * Multiple D1 by 6
+00001216  4EB1 1000                281      JSR 00(A1,D1)       * Jumps to the decoder for each type of OPCode (first 4 bits)
+0000121A                           282      
+0000121A                           283  OPCODE_DONE
+0000121A  4CDF 1E7E                284      MOVEM.L (A7)+,A1-A4/D1-D6   * Pop register data off the stack and restore it 
+0000121E  1AFC 0000                285      MOVE.B  #$00,(A5)+      * Terminate the "good" string
+00001222  4E75                     286      RTS
+00001224                           287  
+00001224                           288  OPCODE_JMPTABLE     
+00001224  4EF9 00001284            289      JMP code0000    * Bit manipulation/MOVEP/Immediate
+0000122A  4EF9 0000131A            290      JMP code0001    * Move Byte
+00001230  4EF9 00001328            291      JMP code0010    * Move Long
+00001236  4EF9 0000134E            292      JMP code0011    * Move Word
+0000123C  4EF9 00001374            293      JMP code0100    * Miscellaneous
+00001242  4EF9 0000154A            294      JMP code0101    * ADDQ/SUBQ/Scc/DBcc
+00001248  4EF9 00001550            295      JMP code0110    * BSR, BRA, Bcc
+0000124E  4EF9 000015F8            296      JMP code0111    * MOVEQ
+00001254  4EF9 000015FE            297      JMP code1000    * OR/DIV/SBCD
+0000125A  4EF9 00001612            298      JMP code1001    * SUB/SUBX
+00001260  4EF9 00001654            299      JMP code1010    * Unassigned
+00001266  4EF9 0000165A            300      JMP code1011    * CMP/EOR
+0000126C  4EF9 000016BA            301      JMP code1100    * AND/MUL/ABCD/EXG
+00001272  4EF9 00001712            302      JMP code1101    * ADD/ADDA/ADDX
+00001278  4EF9 00001754            303      JMP code1110    * Shift/Rotate
+0000127E  4EF9 000018E6            304      JMP code1111    * Special/Reserved
+00001284                           305  
+00001284                           306  **********************************************************************************************
+00001284                           307  
+00001284                           308  * Bit manipulation/MOVEP/Immediate
+00001284                           309  code0000
+00001284                           310      * Check for ADDI
+00001284  3200                     311      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001286  43F9 0000247B            312      LEA str_ADDI,A1     * prep the string
+0000128C  883C 0010                313      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+00001290  0241 FF00                314      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+00001294  B27C 0600                315      CMP.W   #%0000011000000000,D1   * Check to see if this is a ADDI
+00001298  6700 0652                316      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000129C                           317  
+0000129C                           318      * Check for ANDI
+0000129C  3200                     319      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000129E  43F9 00002484            320      LEA str_ANDI,A1     * prep the string
+000012A4  883C 0010                321      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+000012A8  0241 FF00                322      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+000012AC  B27C 0200                323      CMP.W   #%0000001000000000,D1   * Check to see if this is a ANDI
+000012B0  6700 063A                324      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000012B4                           325  
+000012B4                           326      * Check for CMPI
+000012B4  3200                     327      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000012B6  43F9 000024A2            328      LEA str_CMPI,A1     * prep the string
+000012BC  883C 0010                329      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+000012C0  0241 FF00                330      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+000012C4  B27C 0C00                331      CMP.W   #%0000110000000000,D1   * Check to see if this is a CMPI
+000012C8  6700 0622                332      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000012CC                           333  
+000012CC                           334      * Check for EORI
+000012CC  3200                     335      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000012CE  43F9 000024A2            336      LEA str_CMPI,A1     * prep the string
+000012D4  883C 0010                337      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+000012D8  0241 FF00                338      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+000012DC  B27C 0A00                339      CMP.W   #%0000101000000000,D1   * Check to see if this is an EORI
+000012E0  6700 060A                340      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000012E4                           341  
+000012E4                           342      * Check for ORI
+000012E4  3200                     343      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000012E6  43F9 000024ED            344      LEA str_ORI,A1      * prep the string
+000012EC  883C 0010                345      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+000012F0  0241 FF00                346      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+000012F4  B27C 0000                347      CMP.W   #%0000000000000000,D1   * Check to see if this is an ORI
+000012F8  6700 05F2                348      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000012FC                           349  
+000012FC                           350      * Check for SUBI
+000012FC  3200                     351      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000012FE  43F9 00002506            352      LEA str_SUBI,A1     * prep the string
+00001304  883C 0010                353      OR.B    #%00010000,D4       * Set to mode3 (Data,EA) 
+00001308  0241 FF00                354      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+0000130C  B27C 0400                355      CMP.W   #%0000010000000000,D1   * Check to see if this is an SUBI
+00001310  6700 05DA                356      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001314                           357  
+00001314  1E3C 0001                358      MOVE.B  #$01,D7         * Set error code because we were unable to decode the intruction
+00001318  4E75                     359      RTS
+0000131A                           360  
+0000131A                           361  * Move Byte
+0000131A                           362  code0001
+0000131A                           363      * Check for MOVE (default)
+0000131A  43F9 000024CD            364      LEA str_MOVE,A1     * prep the string
+00001320  183C 0030                365      MOVE.B  #%00110000,D4       * set size and mode
+00001324  6000 05C6                366      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001328                           367      
+00001328                           368  * Move Long
+00001328                           369  code0010    
+00001328                           370      * Check for MOVEA
+00001328  3200                     371      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000132A  43F9 000024D2            372      LEA str_MOVEA,A1        * prep the string
+00001330  183C 0002                373      MOVE.B  #%00000010,D4       * set size and mode
+00001334  0241 F1C0                374      ANDI.W  #%1111000111000000,D1   * Isolate bits 8-15
+00001338  B27C 2040                375      CMP.W   #%0010000001000000,D1   * Check to see if this is an MOVEA
+0000133C  6700 05AE                376      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001340                           377  
+00001340                           378      * Check for MOVE (default)
+00001340  43F9 000024CD            379      LEA str_MOVE,A1     * prep the string
+00001346  183C 0032                380      MOVE.B  #%00110010,D4       * set size and mode
+0000134A  6000 05A0                381      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000134E                           382      
+0000134E                           383  * Move Word
+0000134E                           384  code0011    
+0000134E                           385      * Check for MOVEA
+0000134E  3200                     386      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001350  43F9 000024D2            387      LEA str_MOVEA,A1        * prep the string
+00001356  183C 0001                388      MOVE.B  #%00000001,D4       * set size and mode
+0000135A  0241 F1C0                389      ANDI.W  #%1111000111000000,D1   * Isolate bits 8-15
+0000135E  B27C 3040                390      CMP.W   #%0011000001000000,D1   * Check to see if this is an MOVEA
+00001362  6700 0588                391      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001366                           392  
+00001366                           393      * Check for MOVE (default)
+00001366  43F9 000024CD            394      LEA str_MOVE,A1     * prep the string
+0000136C  183C 0031                395      MOVE.B  #%00110001,D4       * set size and mode
+00001370  6000 057A                396      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001374                           397      
+00001374                           398  * Miscellaneous 
+00001374                           399  code0100
+00001374                           400      * Check for all instructions that have a valid size to start with
+00001374                           401  
+00001374                           402      * Check for CLR
+00001374  3200                     403      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001376  43F9 00002495            404      LEA str_CLR,A1      * prep the string
+0000137C  883C 0028                405      OR.B    #%00101000,D4       * Set to mode6 (EA) 
+00001380  0241 FF00                406      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+00001384  B27C 4200                407      CMP.W   #%0100001000000000,D1   * Check to see if this is a CLR
+00001388  6700 0562                408      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000138C                           409  
+0000138C                           410      * Check for NEG
+0000138C  3200                     411      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000138E  43F9 000024DE            412      LEA str_NEG,A1      * prep the string
+00001394  0204 0003                413      ANDI.B  #%00000011,D4       * isolate the size
+00001398  0004 0028                414      ORI.B   #%00101000,D4       * set to mode6 (EA)
+0000139C  0241 FF00                415      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+000013A0  B27C 4400                416      CMP.W   #%0100010000000000,D1   * Check to see if this is a NEG
+000013A4  6700 0546                417      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000013A8                           418  
+000013A8                           419      * Check for NOT
+000013A8  3200                     420      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000013AA  43F9 000024E6            421      LEA str_NOT,A1      * prep the string
+000013B0  0204 0003                422      ANDI.B  #%00000011,D4       * isolate size
+000013B4  883C 0028                423      OR.B    #%00101000,D4       * Set to mode6 (EA) 
+000013B8  0241 FF00                424      ANDI.W  #%1111111100000000,D1   * Isolate bits 6-15
+000013BC  B27C 4600                425      CMP.W   #%0100011000000000,D1   * Check to see if this is a NOT
+000013C0  6700 052A                426      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000013C4                           427  
+000013C4                           428      * Check for all instructions that do not have a valid size to start with
+000013C4                           429  
+000013C4                           430      * Check for JMP
+000013C4  3200                     431      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000013C6  43F9 000024B9            432      LEA str_JMP,A1      * prep the string
+000013CC  183C 002B                433      MOVE.B  #%00101011,D4       * Set to mode6 (EA) 
+000013D0  0241 FFC0                434      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+000013D4  B27C 4EC0                435      CMP.W   #%0100111011000000,D1   * Check to see if this is a JMP
+000013D8  6700 0512                436      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000013DC                           437  
+000013DC                           438      * Check for JSR
+000013DC  3200                     439      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000013DE  43F9 000024BD            440      LEA str_JSR,A1      * prep the string
+000013E4  183C 002B                441      MOVE.B  #%00101011,D4       * Set to mode6 (EA) 
+000013E8  0241 FFC0                442      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+000013EC  B27C 4E80                443      CMP.W   #%0100111010000000,D1   * Check to see if this is a JSR
+000013F0  6700 04FA                444      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000013F4                           445  
+000013F4                           446      * Check for LEA
+000013F4  3200                     447      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000013F6  43F9 000024C1            448      LEA str_LEA,A1      * prep the string
+000013FC  183C 0003                449      MOVE.B  #%00000011,D4       * Set to mode1 (EA,Rn) 
+00001400  0241 F1C0                450      ANDI.W  #%1111000111000000,D1   * Isolate bits 6-15
+00001404  B27C 41C0                451      CMP.W   #%0100000111000000,D1   * Check to see if this is a LEA
+00001408  6700 04E2                452      BEQ OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000140C                           453  
+0000140C                           454      * Check for MOVEM
+0000140C  3200                     455      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000140E  43F9 000024D8            456      LEA str_MOVEM,A1        * prep the string
+00001414  183C 0001                457      MOVE.B  #%00000001,D4       * set the size
+00001418  0241 FFC0                458      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+0000141C  B27C 4880                459      CMP.W   #%0100100010000000,D1   * Check to see if this is a MOVEM.W (RegList,EA)
+00001420  6700 0078                460      BEQ OPCODE_DECODE_MOVEM1    * fix
+00001424  183C 0002                461      MOVE.B  #%00000010,D4       * set the size
+00001428  0241 FFC0                462      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+0000142C  B27C 48C0                463      CMP.W   #%0100100011000000,D1   * Check to see if this is a MOVEM.L (RegList,EA)
+00001430  6700 0068                464      BEQ OPCODE_DECODE_MOVEM1    * fix
+00001434  183C 0001                465      MOVE.B  #%00000001,D4       * set the size
+00001438  0241 FFC0                466      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+0000143C  B27C 4C80                467      CMP.W   #%0100110010000000,D1   * Check to see if this is a MOVEM.W (EA,Reglist)
+00001440  6700 0082                468      BEQ OPCODE_DECODE_MOVEM2    * fix
+00001444  183C 0002                469      MOVE.B  #%00000010,D4       * set the size
+00001448  0241 FFC0                470      ANDI.W  #%1111111111000000,D1   * Isolate bits 6-15
+0000144C  B27C 4CC0                471      CMP.W   #%0100110011000000,D1   * Check to see if this is a MOVEM.L (EA,Reglist)
+00001450  6700 0072                472      BEQ OPCODE_DECODE_MOVEM2    * fix
+00001454                           473  
+00001454                           474      * Check for NOP
+00001454  43F9 000024E2            475      LEA str_NOP,A1      * prep the string
+0000145A  B07C 4E71                476      CMP.W   #%0100111001110001,D0   * Check to see if this is a NOP
+0000145E  6700 068C                477      BEQ OPCODE_DECODE_TYPEB * decode the rest of the instruction
+00001462                           478  
+00001462                           479      * Check for RTS
+00001462  43F9 000024F9            480      LEA str_RTS,A1      * prep the string
+00001468  B07C 4E75                481      CMP.W   #%0100111001110101,D0   * Check to see if this is a RTS
+0000146C  6700 067E                482      BEQ OPCODE_DECODE_TYPEB * decode the rest of the instruction
+00001470                           483  
+00001470                           484      * Check for SWAP
+00001470  3200                     485      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001472  43F9 0000250B            486      LEA str_SWAP,A1     * prep the string
+00001478  0241 FFF8                487      ANDI.W  #%1111111111111000,D1   * Isolate bits 
+0000147C  B27C 4840                488      CMP.W   #%0100100001000000,D1   * Check to see if this is a SWAP
+00001480  6700 0008                489      BEQ OPCODE_DECODE_FIX_SWAP  * decode the rest of the instruction
+00001484                           490  
+00001484  1E3C 0001                491      MOVE.B  #$01,D7         * Set error code because we were unable to decode the intruction
+00001488  4E75                     492      RTS
+0000148A                           493      
+0000148A                           494  OPCODE_DECODE_FIX_SWAP
+0000148A  4283                     495      CLR.L   D3
+0000148C  183C 0046                496      MOVE.B  #%01000110,D4       * set the size & mode
+00001490  1605                     497      MOVE.B  D5,D3           * copy D3 to D5 (this has the register bits)
+00001492  0203 0007                498      ANDI.B  #%00000111,D3       * isolate bits
+00001496  6000 0454                499      BRA OPCODE_DECODE_TYPEA 
+0000149A                           500  
+0000149A                           501  OPCODE_DECODE_MOVEM1
+0000149A                           502      * Update the "good" string
+0000149A  244D                     503      MOVE.L  A5,A2           * Setup the "good" string as the DST
+0000149C  4EB9 00001EC8            504      JSR STRCPY          * Call STRCPY
+000014A2  2A4A                     505      MOVE.L  A2,A5           * Update the string pointer
+000014A4                           506      * Process the register list
+000014A4  4EB9 00001B36            507      JSR     OPCODE_PAD      * align the string for the next column
+000014AA  3218                     508      MOVE.W  (A0)+,D1        * Read in the register list
+000014AC  183C 0001                509      MOVE.B  #%00000001,D4       * Set to size = word
+000014B0  760F                     510      MOVE.L  #15,D3          * setup the counter     
+000014B2  4EB9 000014EE            511      JSR OPCODE_DECODE_MOVEM_POST
+000014B8  1AFC 002C                512      MOVE.B  #$2C,(A5)+      * Add a ","
+000014BC                           513      * get the EA
+000014BC  4EB9 00001B52            514      JSR EADECODE
+000014C2  4E75                     515      RTS
+000014C4                           516  
+000014C4                           517  OPCODE_DECODE_MOVEM2
+000014C4                           518      * Update the "good" string
+000014C4  244D                     519      MOVE.L  A5,A2           * Setup the "good" string as the DST
+000014C6  4EB9 00001EC8            520      JSR STRCPY          * Call STRCPY
+000014CC  2A4A                     521      MOVE.L  A2,A5           * Update the string pointer
+000014CE                           522      * get the EA
+000014CE  4EB9 00001B36            523      JSR     OPCODE_PAD      * align the string for the next column
+000014D4  4EB9 00001B52            524      JSR EADECODE
+000014DA  1AFC 002C                525      MOVE.B  #$2C,(A5)+      * Add a ","
+000014DE                           526      * Process the register list
+000014DE  3218                     527      MOVE.W  (A0)+,D1        * Read in the register list
+000014E0  183C 0001                528      MOVE.B  #%00000001,D4       * Set to size = word
+000014E4  760F                     529      MOVE.L  #15,D3          * setup the counter     
+000014E6  4EB9 0000151C            530      JSR OPCODE_DECODE_MOVEM_PRE
+000014EC  4E75                     531      RTS
+000014EE                           532      
+000014EE                           533  OPCODE_DECODE_MOVEM_POST
+000014EE  3401                     534      MOVE.W  D1,D2               * Make a copy of the register list
+000014F0  0242 0001                535      ANDI.W  #1,D2               * check the 1st bit
+000014F4  6700 001C                536      BEQ OPCODE_DECODE_MOVEM_POST_X  * if the bit = false then don't print it 
+000014F8                           537      * otherwise we print
+000014F8  45F9 0000244D            538      LEA str_movem_post,A2       * load a pointer to the array
+000014FE  2403                     539      MOVE.L  D3,D2               * copy D3
+00001500  C4FC 0002                540      MULU    #2,D2               * multiply the count by 2 (since there are 2 bytes per)
+00001504  1AF2 2000                541      MOVE.B  00(A2,D2),(A5)+         * get the first byte
+00001508  528A                     542      ADDQ.L  #1,A2               * increment the pointer
+0000150A  1AF2 2000                543      MOVE.B  00(A2,D2),(A5)+         * Get the second byte
+0000150E  1AFC 002F                544      MOVE.B  #$2F,(A5)+          * Add a "/"
+00001512                           545  OPCODE_DECODE_MOVEM_POST_X
+00001512  E259                     546      ROR.W   #1,D1               * shift the bits to the right 
+00001514  51CB FFD8                547      DBF D3,OPCODE_DECODE_MOVEM_POST * keep processing until we've checked every Rn
+00001518  538D                     548      SUBQ.L  #1,A5               * get rid of the trailing "/"
+0000151A  4E75                     549      RTS
+0000151C                           550  
+0000151C                           551  OPCODE_DECODE_MOVEM_PRE
+0000151C  3401                     552      MOVE.W  D1,D2               * Make a copy of the register list
+0000151E  0242 0001                553      ANDI.W  #1,D2               * check the 1st bit
+00001522  6700 001C                554      BEQ OPCODE_DECODE_MOVEM_PRE_X   * if the bit = false then don't print it 
+00001526                           555      * otherwise we print
+00001526  45F9 0000242D            556      LEA str_movem_pre,A2        * load a pointer to the array
+0000152C  2403                     557      MOVE.L  D3,D2               * copy D3
+0000152E  C4FC 0002                558      MULU    #2,D2               * multiply the count by 2 (since there are 2 bytes per)
+00001532  1AF2 2000                559      MOVE.B  00(A2,D2),(A5)+         * get the first byte
+00001536  528A                     560      ADDQ.L  #1,A2               * increment the pointer
+00001538  1AF2 2000                561      MOVE.B  00(A2,D2),(A5)+         * Get the second byte
+0000153C  1AFC 002F                562      MOVE.B  #$2F,(A5)+          * Add a "/"
+00001540                           563  OPCODE_DECODE_MOVEM_PRE_X
+00001540  E259                     564      ROR.W   #1,D1               * shift the bits to the right 
+00001542  51CB FFD8                565      DBF D3,OPCODE_DECODE_MOVEM_PRE  * keep processing until we've checked every Rn
+00001546  538D                     566      SUBQ.L  #1,A5               * get rid of the trailing "/"
+00001548  4E75                     567      RTS
+0000154A                           568  
+0000154A                           569  * ADDQ/SUBQ/Scc/DBcc
+0000154A                           570  code0101    
+0000154A  1E3C 0001                571      MOVE.B  #$01,D7         * Set error code because we were unable to decode the intruction
+0000154E  4E75                     572      RTS
+00001550                           573      
+00001550                           574  * BSR, BRA, Bcc
+00001550                           575  code0110
+00001550                           576      * Check for BSR
+00001550  43F9 00002491            577      LEA str_BSR,A1      * prep the string
+00001556  3200                     578      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001558  0241 FF00                579      ANDI.W  #%1111111100000000,D1   * Isolate bits 8-15
+0000155C  B27C 6100                580      CMP.W   #%0110000100000000,D1   * Check to see if this is a BSR
+00001560  6700 0008                581      BEQ OPCODE_DECODE_BSR   * call special decoder for BSR
+00001564  1E3C 0001                582      MOVE.B  #$01,D7         * Set error code because we were unable to decode the intruction
+00001568  4E75                     583      RTS
+0000156A                           584  
+0000156A                           585  OPCODE_DECODE_BSR
+0000156A                           586      * Update the "good" string
+0000156A  244D                     587      MOVE.L  A5,A2       * Setup the "good" string as the DST
+0000156C  4EB9 00001EC8            588      JSR STRCPY      * Call STRCPY
+00001572  2A4A                     589      MOVE.L  A2,A5       * Update the string pointer
+00001574  4281                     590      CLR.L   D1      * clear D1
+00001576  3200                     591      MOVE.W  D0,D1       * Make a copy of D0 (the OPCode)
+00001578  0241 00FF                592      ANDI.W  #%0000000011111111,D1   * Isolate bits 0-7 (displacement)
+0000157C  2008                     593      MOVE.L  A0,D0       * make a copy of the memory address we are pointing to  
+0000157E  4EB9 00001B36            594      JSR     OPCODE_PAD      * align the string for the next column
+00001584  B23C 0000                595      CMP.B   #$00,D1         * is there a word operand?
+00001588  6700 0022                596      BEQ OPCODE_DECODE_BSR_WORD  
+0000158C  B23C 00FF                597      CMP.B   #$FF,D1         * is there a long operand?
+00001590  6700 0034                598      BEQ OPCODE_DECODE_BSR_LONG
+00001594                           599      * must be a byte        
+00001594  3401                     600      MOVE    D1,D2       * Make a copy of D1 
+00001596  0202 0080                601      ANDI.B  #$80,D2     * isolate the most significant bit
+0000159A  B43C 0080                602      CMP.B   #$80,D2     * is the most significant bit = true? (negative)
+0000159E  6600 0044                603      BNE OPCODE_DECODE_BSR_POS
+000015A2  4601                     604      NOT.B   D1
+000015A4  5201                     605      ADDQ.B  #1,D1
+000015A6  9081                     606      SUB.L   D1,D0
+000015A8  6000 003C                607      BRA OPCODE_DECODE_BSR_FINISH
+000015AC                           608  OPCODE_DECODE_BSR_WORD
+000015AC  3218                     609      MOVE.W  (A0)+,D1    * read in the next word
+000015AE  3401                     610      MOVE    D1,D2       * Make a copy of D1 
+000015B0  0242 8000                611      ANDI.W  #$8000,D2   * isolate the most significant bit
+000015B4  B47C 8000                612      CMP.W   #$8000,D2   * is the most significant bit = true? (negative)
+000015B8  6600 002A                613      BNE OPCODE_DECODE_BSR_POS
+000015BC  4641                     614      NOT.W   D1
+000015BE  5241                     615      ADDQ.W  #1,D1
+000015C0  9081                     616      SUB.L   D1,D0
+000015C2  6000 0022                617      BRA OPCODE_DECODE_BSR_FINISH
+000015C6                           618  OPCODE_DECODE_BSR_LONG
+000015C6  3218                     619      MOVE.W  (A0)+,D1    * read in the next long
+000015C8  3401                     620      MOVE    D1,D2       * Make a copy of D1 
+000015CA  0282 80000000            621      ANDI.L  #$80000000,D2   * isolate the most significant bit
+000015D0  B4BC 80000000            622      CMP.L   #$80000000,D2   * is the most significant bit = true? (negative)
+000015D6  6600 000C                623      BNE OPCODE_DECODE_BSR_POS
+000015DA  4681                     624      NOT.L   D1
+000015DC  5281                     625      ADDQ.L  #1,D1
+000015DE  9081                     626      SUB.L   D1,D0
+000015E0  6000 0004                627      BRA OPCODE_DECODE_BSR_FINISH
+000015E4                           628  OPCODE_DECODE_BSR_POS
+000015E4  D081                     629      ADD.L   D1,D0       * determine the destination address (displacement + address)
+000015E6                           630  OPCODE_DECODE_BSR_FINISH
+000015E6  4281                     631      CLR.L   D1      * clear D1
+000015E8  123C 0004                632      MOVE.B  #4,D1       * setup the size
+000015EC  224D                     633      MOVE.L  A5,A1       * setup the "good" string as the output
+000015EE  4EB9 00001F62            634      JSR HEXTOASCII  * convert the value and add it to the string
+000015F4  2A49                     635      MOVE.L  A1,A5       * update the string pointer
+000015F6  4E75                     636      RTS
+000015F8                           637  
+000015F8                           638  * MOVEQ
+000015F8                           639  code0111    
+000015F8  1E3C 0001                640      MOVE.B  #$01,D7     * Set error code because we were unable to decode the intruction
+000015FC  4E75                     641      RTS
+000015FE                           642  
+000015FE                           643  * OR/DIV/SBCD
+000015FE                           644  code1000
+000015FE                           645      * Check for OR.x (default)
+000015FE  43F9 000024EA            646      LEA str_OR,A1       * prep the string
+00001604  4EB9 00001B1E            647      JSR OPCODE_MODE_FIX
+0000160A  883C 0004                648      OR.B    #%00000100,D4       * Set bit 2 = true to show this is a Dn 
+0000160E  6000 02DC                649      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001612                           650  
+00001612                           651  * SUB/SUBX
+00001612                           652  code1001
+00001612                           653      * Check for SUBA
+00001612  43F9 00002501            654      LEA str_SUBA,A1     * prep the string
+00001618  3200                     655      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000161A  0241 F0C0                656      ANDI.W  #%1111000011000000,D1   * Isolate bits 8-15
+0000161E  B27C 90C0                657      CMP.W   #%1001000011000000,D1   * Check to see if this is a ADDA
+00001622  6700 0016                658      BEQ OPCODE_FIX_SUBA     * fix the values so we can finish decoding
+00001626                           659  
+00001626                           660      * Check for SUB (default)
+00001626  43F9 000024FD            661      LEA str_SUB,A1      * prep the string
+0000162C  4EB9 00001B1E            662      JSR OPCODE_MODE_FIX
+00001632  883C 0004                663      OR.B    #%00000100,D4       * bit 2 = true to show this is a Dn 
+00001636  6000 02B4                664      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000163A                           665  
+0000163A                           666  OPCODE_FIX_SUBA
+0000163A  1204                     667      MOVE.B  D4,D1           * Make a copy of D4 (the OPMode)
+0000163C  C23C 0007                668      AND.B   #%00000111,D1       * isolate bits 0-1
+00001640  183C 0001                669      MOVE.B  #%00000001,D4       * prep the size + set bit 2 = false because this is an An
+00001644  B23C 0003                670      CMP.B   #%00000011,D1       * Is this an OPCode match for SUBA.W?
+00001648  6700 02A2                671      BEQ OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+0000164C  183C 0002                672      MOVE.B  #%00000010,D4       * prep the size + set bit 2 = false because this is an An   
+00001650  6000 029A                673      BRA OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+00001654                           674  
+00001654                           675  * Unassigned
+00001654                           676  code1010    
+00001654  1E3C 0001                677      MOVE.B  #$01,D7     * Set error code because we were unable to decode the intruction
+00001658  4E75                     678      RTS
+0000165A                           679  
+0000165A                           680  * CMP/EOR
+0000165A                           681  code1011
+0000165A                           682      * Check for CMPA
+0000165A  43F9 0000249D            683      LEA str_CMPA,A1     * prep the string
+00001660  3200                     684      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001662  0241 F0C0                685      ANDI.W  #%1111000011000000,D1   * Isolate bits 8-15
+00001666  B27C B0C0                686      CMP.W   #%1011000011000000,D1   * Check to see if this is a ADDA
+0000166A  6700 0026                687      BEQ OPCODE_FIX_CMPA     * fix the values so we can finish decoding
+0000166E                           688  
+0000166E                           689      * Check for EOR
+0000166E  43F9 000024AC            690      LEA str_EOR,A1      * prep the string
+00001674  3200                     691      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001676  0241 F100                692      ANDI.W  #%1111000100000000,D1   * Isolate bits 8-15
+0000167A  B27C B100                693      CMP.W   #%1011000100000000,D1   * Check to see if this is an EOR
+0000167E  6700 002C                694      BEQ OPCODE_FIX_EOR      * fix the values so we can finish decoding
+00001682                           695  
+00001682                           696      * Check for CMP (default)
+00001682  43F9 00002499            697      LEA str_CMP,A1      * prep the string
+00001688  883C 0004                698      OR.B    #%00000100,D4       * bit 2 = true to show this is a Dn 
+0000168C  6000 025E                699      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001690  4E75                     700      RTS
+00001692                           701  
+00001692                           702  OPCODE_FIX_CMPA
+00001692  1204                     703      MOVE.B  D4,D1           * Make a copy of D4 (the OPMode)
+00001694  C23C 0007                704      AND.B   #%00000111,D1       * isolate bits 0-1
+00001698  183C 0001                705      MOVE.B  #%00000001,D4       * prep the size + set bit 2 = false because this is an An
+0000169C  B23C 0003                706      CMP.B   #%00000011,D1       * Is this an OPCode match for CMPA.W?
+000016A0  6700 024A                707      BEQ OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+000016A4  183C 0002                708      MOVE.B  #%00000010,D4       * prep the size + set bit 2 = false because this is an An   
+000016A8  6000 0242                709      BRA OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+000016AC                           710  
+000016AC                           711  OPCODE_FIX_EOR
+000016AC  1204                     712      MOVE.B  D4,D1           * Make a copy of D4 (the OPMode)
+000016AE  C83C 0003                713      AND.B   #%00000011,D4       * isolate bits 0-1
+000016B2  883C 000C                714      OR.B    #%00001100,D4       * set to mode1 (Rn,EA) & specify Dn
+000016B6  6000 0234                715      BRA OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+000016BA                           716  
+000016BA                           717  * AND/MUL/ABCD/EXG
+000016BA                           718  code1100
+000016BA                           719      * Check for EXG
+000016BA  43F9 000024B5            720      LEA str_EXG,A1      * prep the string
+000016C0  3200                     721      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000016C2  0241 F1F8                722      ANDI.W  #%1111000111111000,D1   * Isolate bits 8-15
+000016C6  B27C C140                723      CMP.W   #%1100000101000000,D1   * Check to see if this is an EOR (Dn,Dn)
+000016CA  6700 0026                724      BEQ OPCODE_FIX_EXG_TYPEA    * fix the values so we can finish decoding
+000016CE  B27C C148                725      CMP.W   #%1100000101001000,D1   * Check to see if this is an EOR (An,An)
+000016D2  6700 0026                726      BEQ OPCODE_FIX_EXG_TYPEB    * fix the values so we can finish decoding
+000016D6  B27C C188                727      CMP.W   #%1100000110001000,D1   * Check to see if this is an EOR (Dn,An)
+000016DA  6700 0026                728      BEQ OPCODE_FIX_EXG_TYPEC    * fix the values so we can finish decoding
+000016DE                           729      
+000016DE                           730      * Check for AND (default)
+000016DE  43F9 00002480            731      LEA str_AND,A1      * prep the string
+000016E4  4EB9 00001B1E            732      JSR OPCODE_MODE_FIX
+000016EA  883C 0004                733      OR.B    #%00000100,D4       * Set bit 2 = true to show this is a Dn 
+000016EE  6000 01FC                734      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000016F2                           735  
+000016F2                           736  OPCODE_FIX_EXG_TYPEA
+000016F2  183C 001F                737      MOVE.B  #%00011111,D4       * set for mode4, no size (11), and Dn
+000016F6  6000 01F4                738      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+000016FA                           739  OPCODE_FIX_EXG_TYPEB
+000016FA  183C 001B                740      MOVE.B  #%00011011,D4       * set for mode4, no size (11), and An
+000016FE  6000 01EC                741      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001702                           742  OPCODE_FIX_EXG_TYPEC
+00001702  183C 003F                743      MOVE.B  #%00111111,D4       * set for mode8 and no size (11)
+00001706  3200                     744      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001708  0241 0007                745      ANDI.W  #%0000000000000111,D1   * Isolate bits 0-2
+0000170C  1A01                     746      MOVE.B  D1,D5           * copy the dst register to D5
+0000170E  6000 01DC                747      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+00001712                           748  
+00001712                           749  * ADD/ADDA/ADDX
+00001712                           750  code1101
+00001712                           751      * Check for ADDA
+00001712  43F9 00002476            752      LEA str_ADDA,A1     * prep the string
+00001718  3200                     753      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000171A  0241 F0C0                754      ANDI.W  #%1111000011000000,D1   * Isolate bits 8-15
+0000171E  B27C D0C0                755      CMP.W   #%1101000011000000,D1   * Check to see if this is a ADDA
+00001722  6700 0016                756      BEQ OPCODE_FIX_ADDA     * fix the values so we can finish decoding
+00001726                           757  
+00001726                           758      * Check for ADD (default)
+00001726  43F9 00002472            759      LEA str_ADD,A1      * prep the string
+0000172C  4EB9 00001B1E            760      JSR OPCODE_MODE_FIX
+00001732  883C 0004                761      OR.B    #%00000100,D4       * bit 2 = true to show this is a Dn 
+00001736  6000 01B4                762      BRA OPCODE_DECODE_TYPEA * decode the rest of the instruction
+0000173A                           763  
+0000173A                           764  OPCODE_FIX_ADDA
+0000173A  1204                     765      MOVE.B  D4,D1           * Make a copy of D4 (the OPMode)
+0000173C  C23C 0007                766      AND.B   #%00000111,D1       * isolate bits 0-1
+00001740  183C 0001                767      MOVE.B  #%00000001,D4       * prep the size + set bit 2 = false because this is an An
+00001744  B23C 0003                768      CMP.B   #%00000011,D1       * Is this an OPCode match for ADDA.W?
+00001748  6700 01A2                769      BEQ OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+0000174C  183C 0002                770      MOVE.B  #%00000010,D4       * prep the size + set bit 2 = false because this is an An   
+00001750  6000 019A                771      BRA OPCODE_DECODE_TYPEA * If we found a match we're ready to decode the rest of the instruction
+00001754                           772  
+00001754                           773  * Shift/Rotate
+00001754                           774  code1110
+00001754                           775      * Check for ASR
+00001754  43F9 0000248D            776      LEA str_ASR,A1      * prep the string
+0000175A  3200                     777      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000175C  0244 0003                778      ANDI.W  #%00000011,D4       * keep the size
+00001760  0044 002C                779      ORI.W   #%00101100,D4       * set for mode6
+00001764  0241 FFC0                780      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+00001768  B27C E0C0                781      CMP.W   #%1110000011000000,D1   * Check to see if this is a ASR w EA
+0000176C  6700 017E                782      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+00001770  3200                     783      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001772  0244 0003                784      ANDI.W  #%00000011,D4       * keep the size
+00001776  0044 0024                785      ORI.W   #%00100100,D4       * set for mode5
+0000177A  0241 F138                786      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+0000177E  B27C E000                787      CMP.W   #%1110000000000000,D1   * Check to see if this is a ASR w/o EA (reg = shift count)
+00001782  6700 0168                788      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+00001786  0244 0003                789      ANDI.W  #%00000011,D4       * keep the size
+0000178A  0044 001C                790      ORI.W   #%00011100,D4       * set for mode4
+0000178E  B27C E020                791      CMP.W   #%1110000000100000,D1   * Check to see if this is a ASR w/o EA (reg = reg)
+00001792  6700 0158                792      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+00001796                           793  
+00001796                           794      * Check for ASL
+00001796  43F9 00002489            795      LEA str_ASL,A1      * prep the string
+0000179C  3200                     796      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000179E  0244 0003                797      ANDI.W  #%00000011,D4       * keep the size
+000017A2  0044 002C                798      ORI.W   #%00101100,D4       * set for mode6
+000017A6  0241 FFC0                799      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+000017AA  B27C E1C0                800      CMP.W   #%1110000111000000,D1   * Check to see if this is a ASL w EA
+000017AE  6700 013C                801      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000017B2  3200                     802      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000017B4  0244 0003                803      ANDI.W  #%00000011,D4       * keep the size
+000017B8  0044 0024                804      ORI.W   #%00100100,D4       * set for mode5
+000017BC  0241 F138                805      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+000017C0  B27C E100                806      CMP.W   #%1110000100000000,D1   * Check to see if this is a ASL w/o EA (reg = shift count)
+000017C4  6700 0126                807      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000017C8  0244 0003                808      ANDI.W  #%00000011,D4       * keep the size
+000017CC  0044 001C                809      ORI.W   #%00011100,D4       * set for mode4
+000017D0  B27C E120                810      CMP.W   #%1110000100100000,D1   * Check to see if this is a ASL w/o EA (reg = reg)
+000017D4  6700 0116                811      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000017D8                           812  
+000017D8                           813      * Check for LSR
+000017D8  43F9 000024C5            814      LEA str_LSR,A1      * prep the string
+000017DE  3200                     815      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000017E0  0244 0003                816      ANDI.W  #%00000011,D4       * keep the size
+000017E4  0044 002C                817      ORI.W   #%00101100,D4       * set for mode6
+000017E8  0241 FFC0                818      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+000017EC  B27C E2C0                819      CMP.W   #%1110001011000000,D1   * Check to see if this is a LSR w EA
+000017F0  6700 00FA                820      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000017F4  3200                     821      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000017F6  0244 0003                822      ANDI.W  #%00000011,D4       * keep the size
+000017FA  0044 0024                823      ORI.W   #%00100100,D4       * set for mode5
+000017FE  0241 F138                824      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+00001802  B27C E008                825      CMP.W   #%1110000000001000,D1   * Check to see if this is a LSR w/o EA (reg = shift count)
+00001806  6700 00E4                826      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000180A  0244 0003                827      ANDI.W  #%00000011,D4       * keep the size
+0000180E  0044 001C                828      ORI.W   #%00011100,D4       * set for mode4
+00001812  B27C E028                829      CMP.W   #%1110000000101000,D1   * Check to see if this is a LSR w/o EA (reg = reg)
+00001816  6700 00D4                830      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000181A                           831  
+0000181A                           832      * Check for LSL
+0000181A  43F9 000024C9            833      LEA str_LSL,A1      * prep the string
+00001820  3200                     834      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001822  0244 0003                835      ANDI.W  #%00000011,D4       * keep the size
+00001826  0044 002C                836      ORI.W   #%00101100,D4       * set for mode6
+0000182A  0241 FFC0                837      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+0000182E  B27C E3C0                838      CMP.W   #%1110001111000000,D1   * Check to see if this is a LSL w EA
+00001832  6700 00B8                839      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+00001836  3200                     840      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001838  0244 0003                841      ANDI.W  #%00000011,D4       * keep the size
+0000183C  0044 0024                842      ORI.W   #%00100100,D4       * set for mode5
+00001840  0241 F138                843      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+00001844  B27C E108                844      CMP.W   #%1110000100001000,D1   * Check to see if this is a LSL w/o EA (reg = shift count)
+00001848  6700 00A2                845      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000184C  0244 0003                846      ANDI.W  #%00000011,D4       * keep the size
+00001850  0044 001C                847      ORI.W   #%00011100,D4       * set for mode4
+00001854  B27C E128                848      CMP.W   #%1110000100101000,D1   * Check to see if this is a LSL w/o EA (reg = reg)
+00001858  6700 0092                849      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000185C                           850  
+0000185C                           851      * Check for ROR
+0000185C  43F9 000024F5            852      LEA str_ROR,A1      * prep the string
+00001862  3200                     853      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+00001864  0244 0003                854      ANDI.W  #%00000011,D4       * keep the size
+00001868  0044 002C                855      ORI.W   #%00101100,D4       * set for mode6
+0000186C  0241 FFC0                856      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+00001870  B27C E6C0                857      CMP.W   #%1110011011000000,D1   * Check to see if this is a ROR w EA
+00001874  6700 0076                858      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+00001878  3200                     859      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+0000187A  0244 0003                860      ANDI.W  #%00000011,D4       * keep the size
+0000187E  0044 0024                861      ORI.W   #%00100100,D4       * set for mode5
+00001882  0241 F138                862      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+00001886  B27C E018                863      CMP.W   #%1110000000011000,D1   * Check to see if this is a ROR w/o EA (reg = shift count)
+0000188A  6700 0060                864      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000188E  0244 0003                865      ANDI.W  #%00000011,D4       * keep the size
+00001892  0044 001C                866      ORI.W   #%00011100,D4       * set for mode4
+00001896  B27C E038                867      CMP.W   #%1110000000111000,D1   * Check to see if this is a ROR w/o EA (reg = reg)
+0000189A  6700 0050                868      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+0000189E                           869  
+0000189E                           870      * Check for ROL
+0000189E  43F9 000024F1            871      LEA str_ROL,A1      * prep the string
+000018A4  3200                     872      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000018A6  0244 0003                873      ANDI.W  #%00000011,D4       * keep the size
+000018AA  0044 002C                874      ORI.W   #%00101100,D4       * set for mode6
+000018AE  0241 FFC0                875      ANDI.W  #%1111111111000000,D1   * Isolate bits 
+000018B2  B27C E7C0                876      CMP.W   #%1110011111000000,D1   * Check to see if this is a ROL w EA
+000018B6  6700 0034                877      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000018BA  3200                     878      MOVE.W  D0,D1           * Make a copy of D1 (the OPCode)
+000018BC  0244 0003                879      ANDI.W  #%00000011,D4       * keep the size
+000018C0  0044 0024                880      ORI.W   #%00100100,D4       * set for mode5
+000018C4  0241 F138                881      ANDI.W  #%1111000100111000,D1   * Isolate bits 
+000018C8  B27C E118                882      CMP.W   #%1110000100011000,D1   * Check to see if this is a ROL w/o EA (reg = shift count)
+000018CC  6700 001E                883      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000018D0  0244 0003                884      ANDI.W  #%00000011,D4       * keep the size
+000018D4  0044 001C                885      ORI.W   #%00011100,D4       * set for mode4
+000018D8  B27C E138                886      CMP.W   #%1110000100111000,D1   * Check to see if this is a ROL w/o EA (reg = reg)
+000018DC  6700 000E                887      BEQ OPCODE_DECODE_TYPEA * fix the values so we can finish decoding
+000018E0                           888  
+000018E0  1E3C 0001                889      MOVE.B  #$01,D7     * Set error code because we were unable to decode the intruction
+000018E4  4E75                     890      RTS
+000018E6                           891  
+000018E6                           892  * Special/Reserved
+000018E6                           893  code1111    
+000018E6  1E3C 0001                894      MOVE.B  #$01,D7     * Set error code because we were unable to decode the intruction
+000018EA  4E75                     895      RTS
+000018EC                           896      
+000018EC                           897  **********************************************************************************************
+000018EC                           898  
+000018EC                           899  OPCODE_DECODE_TYPEA
+000018EC                           900      * D4 breakdown:
+000018EC                           901      *   bits 0-1 = the size
+000018EC                           902      *   bit 2    = type of register (0 = An, 1 = Dn)    
+000018EC                           903      *   bits 3-6 = mode
+000018EC                           904  
+000018EC                           905      * Update the "good" string
+000018EC  244D                     906      MOVE.L  A5,A2           * Setup the "good" string as the DST
+000018EE  4EB9 00001EC8            907      JSR STRCPY          * Call STRCPY
+000018F4  2A4A                     908      MOVE.L  A2,A5           * Update the string pointer
+000018F6                           909      * Add the size (unless size = 11)
+000018F6  1204                     910      MOVE.B  D4,D1           * Make a copy of D4
+000018F8  C23C 0003                911      AND.B   #%00000011,D1       * isolate bit #0-1
+000018FC  B23C 0000                912      CMP.B   #%00000000,D1       * is this a BYTE?
+00001900  6700 01A4                913      BEQ OPCODE_SIZE_B
+00001904  B23C 0001                914      CMP.B   #%00000001,D1       * is this a WORD?
+00001908  6700 01A8                915      BEQ OPCODE_SIZE_W
+0000190C  B23C 0002                916      CMP.B   #%00000010,D1       * is this a LONG?
+00001910  6700 01AC                917      BEQ OPCODE_SIZE_L       
+00001914                           918  OPCODE_DECODE_TYPEA_CONT
+00001914  4EB9 00001B36            919      JSR     OPCODE_PAD      * align the string for the next column
+0000191A  1204                     920      MOVE.B  D4,D1           * Make a copy of D4
+0000191C  C23C 0078                921      AND.B   #%01111000,D1       * isolate bit #2-5
+00001920  B23C 0000                922      CMP.B   #%00000000,D1       * 000 = mode1 (EA,Rn)
+00001924  6700 005E                923      BEQ OPCODE_MODE1     
+00001928  B23C 0008                924      CMP.B   #%00001000,D1       * 0001 = mode2 (Rn,EA)
+0000192C  6700 0068                925      BEQ OPCODE_MODE2    
+00001930  B23C 0018                926      CMP.B   #%00011000,D1       * 0011 = mode4 (Rn,Rn)
+00001934  6700 00DC                927      BEQ OPCODE_MODE4    
+00001938  B23C 0020                928      CMP.B   #%00100000,D1       * 0100 = mode5 (#shift,Rn)
+0000193C  6700 00EC                929      BEQ OPCODE_MODE5    
+00001940  B23C 0028                930      CMP.B   #%00101000,D1       * 0101 = mode6 (EA)
+00001944  6700 010E                931      BEQ OPCODE_MODE6    
+00001948  B23C 0030                932      CMP.B   #%00110000,D1       * 0101 = mode7 (EA,EA)
+0000194C  6700 010E                933      BEQ OPCODE_MODE7    
+00001950  B23C 0038                934      CMP.B   #%00111000,D1       * 0101 = mode8 (Dn,An)
+00001954  6700 012C                935      BEQ OPCODE_MODE8    
+00001958  B23C 0040                936      CMP.B   #%01000000,D1       * 1000 = mode9 (Rn)
+0000195C  6700 0140                937      BEQ OPCODE_MODE9    
+00001960                           938      
+00001960  1204                     939      MOVE.B  D4,D1           * Make a copy of D4
+00001962  C23C 003B                940      AND.B   #%00111011,D1       * isolate bit #0-4
+00001966  B23C 0010                941      CMP.B   #%00010000,D1       * 01100 = mode3 w/byte (#,EA)
+0000196A  6700 003C                942      BEQ OPCODE_MODE3_BYTE   
+0000196E  B23C 0011                943      CMP.B   #%00010001,D1       * 01101 = mode3 w/word (#,EA)
+00001972  6700 0058                944      BEQ OPCODE_MODE3_WORD   
+00001976  B23C 0012                945      CMP.B   #%00010010,D1       * 01110 = mode3 w/long (#,EA)
+0000197A  6700 0074                946      BEQ OPCODE_MODE3_LONG   
+0000197E                           947  
+0000197E  1E3C 0001                948      MOVE.B  #$01,D7         * Set error code because we were unable to decode the intruction
+00001982  4E75                     949      RTS
+00001984                           950  OPCODE_MODE1
+00001984  4EB9 00001B52            951      JSR EADECODE        * Try to decode the EA
+0000198A  1AFC 002C                952      MOVE.B  #$2C,(A5)+      * Add a comma 
+0000198E  4EB9 00001ACA            953      JSR OPCODE_PRINTREG     * print the reg
+00001994  4E75                     954      RTS 
+00001996                           955  OPCODE_MODE2
+00001996  4EB9 00001ACA            956      JSR OPCODE_PRINTREG     * print the reg
+0000199C  1AFC 002C                957      MOVE.B  #$2C,(A5)+      * Add a comma 
+000019A0  4EB9 00001B52            958      JSR EADECODE        * Try to decode the EA
+000019A6  4E75                     959      RTS 
+000019A8                           960  OPCODE_MODE3_BYTE
+000019A8  1AFC 0023                961      MOVE.B  #$23,(A5)+      * Add a "#" 
+000019AC  1AFC 0024                962      MOVE.B  #$24,(A5)+      * Add a "$" 
+000019B0  3018                     963      MOVE.W  (A0)+,D0        * read in the next word (but we will only look at the byte)
+000019B2  4281                     964      CLR.L   D1          * clear D1
+000019B4  7201                     965      MOVE.L  #1,D1           * setup the size (1 byte)
+000019B6  224D                     966      MOVE.L  A5,A1           * setup the "good" string as the output
+000019B8  4EB9 00001F62            967      JSR HEXTOASCII      * convert the value and add it to the string
+000019BE  2A49                     968      MOVE.L  A1,A5           * update the string pointer
+000019C0  1AFC 002C                969      MOVE.B  #$2C,(A5)+      * Add a comma 
+000019C4  4EB9 00001B52            970      JSR EADECODE        * Try to decode the EA
+000019CA  4E75                     971      RTS
+000019CC                           972  OPCODE_MODE3_WORD
+000019CC  1AFC 0023                973      MOVE.B  #$23,(A5)+      * Add a "#" 
+000019D0  1AFC 0024                974      MOVE.B  #$24,(A5)+      * Add a "$" 
+000019D4  3018                     975      MOVE.W  (A0)+,D0        * read in the next word
+000019D6  4281                     976      CLR.L   D1          * clear D1
+000019D8  7202                     977      MOVE.L  #2,D1           * setup the size (2 byte)
+000019DA  224D                     978      MOVE.L  A5,A1           * setup the "good" string as the output
+000019DC  4EB9 00001F62            979      JSR HEXTOASCII      * convert the value and add it to the string
+000019E2  2A49                     980      MOVE.L  A1,A5           * update the string pointer
+000019E4  1AFC 002C                981      MOVE.B  #$2C,(A5)+      * Add a comma 
+000019E8  4EB9 00001B52            982      JSR EADECODE        * Try to decode the EA
+000019EE  4E75                     983      RTS
+000019F0                           984  OPCODE_MODE3_LONG
+000019F0  1AFC 0023                985      MOVE.B  #$23,(A5)+      * Add a "#" 
+000019F4  1AFC 0024                986      MOVE.B  #$24,(A5)+      * Add a "$" 
+000019F8  2018                     987      MOVE.L  (A0)+,D0        * read in the next long
+000019FA  7204                     988      MOVE.L  #4,D1           * setup the size (4 bytes)
+000019FC  224D                     989      MOVE.L  A5,A1           * setup the "good" string as the output
+000019FE  4EB9 00001F62            990      JSR HEXTOASCII      * convert the value and add it to the string
+00001A04  2A49                     991      MOVE.L  A1,A5           * update the string pointer
+00001A06  1AFC 002C                992      MOVE.B  #$2C,(A5)+      * Add a comma 
+00001A0A  4EB9 00001B52            993      JSR EADECODE        * Try to decode the EA
+00001A10  4E75                     994      RTS
+00001A12                           995  OPCODE_MODE4
+00001A12  4EB9 00001ACA            996      JSR OPCODE_PRINTREG     * print the reg
+00001A18  1AFC 002C                997      MOVE.B  #$2C,(A5)+      * Add a comma 
+00001A1C  3600                     998      MOVE.W  D0,D3           * copy the OPCode to D3 (register)
+00001A1E  0243 0007                999      ANDI.W  #$0007,D3       * isolate the register data
+00001A22  4EB9 00001ACA           1000      JSR OPCODE_PRINTREG     * print the second reg
+00001A28  4E75                    1001      RTS
+00001A2A                          1002  OPCODE_MODE5
+00001A2A  1AFC 0023               1003      MOVE.B  #$23,(A5)+      * Add a "#" 
+00001A2E  1AFC 0024               1004      MOVE.B  #$24,(A5)+      * Add a "$" 
+00001A32  3A00                    1005      MOVE.W  D0,D5           * copy the OPCode to D5 (register)
+00001A34  0245 0007               1006      ANDI.W  #$0007,D5       * isolate the register data
+00001A38  1003                    1007      MOVE.B  D3,D0           * Move D3 (the # of bits to shift) to D0
+00001A3A  7201                    1008      MOVE.L  #1,D1           * setup the size (1 byte)
+00001A3C  224D                    1009      MOVE.L  A5,A1           * setup the "good" string as the output
+00001A3E  4EB9 00001F62           1010      JSR HEXTOASCII      * convert the value and add it to the string
+00001A44  2A49                    1011      MOVE.L  A1,A5           * update the string pointer
+00001A46  1AFC 002C               1012      MOVE.B  #$2C,(A5)+      * Add a comma 
+00001A4A  3605                    1013      MOVE.W  D5,D3           * copy the D5 (the register) to D3
+00001A4C  4EB9 00001ACA           1014      JSR OPCODE_PRINTREG     * print the reg
+00001A52  4E75                    1015      RTS
+00001A54                          1016  OPCODE_MODE6
+00001A54  4EB9 00001B52           1017      JSR EADECODE        * Try to decode the EA
+00001A5A  4E75                    1018      RTS
+00001A5C                          1019  OPCODE_MODE7
+00001A5C                          1020      * Need to decode 2 EA addresses (MOVE)
+00001A5C  4EB9 00001B52           1021      JSR EADECODE        * Try to decode the EA
+00001A62  1AFC 002C               1022      MOVE.B  #$2C,(A5)+      * Add a comma 
+00001A66  3A00                    1023      MOVE.W  D0,D5           * copy D0 
+00001A68  0245 0E00               1024      ANDI.W  #%0000111000000000,D5   * isolate bits
+00001A6C  EC5D                    1025      ROR.W   #6,D5           * shift the bits
+00001A6E  E65D                    1026      ROR.W   #3,D5           * shift the bits
+00001A70  3200                    1027      MOVE.W  D0,D1           * copy D0 
+00001A72  0241 01C0               1028      ANDI.W  #%0000000111000000,D1   * isolate bits
+00001A76  E659                    1029      ROR.W   #3,D1           * shift the bits
+00001A78  8A41                    1030      OR.W    D1,D5           * combine the values (in the correct order)
+00001A7A  4EB9 00001B52           1031      JSR EADECODE        * Try to decode the EA
+00001A80  4E75                    1032      RTS
+00001A82                          1033  OPCODE_MODE8
+00001A82                          1034      * Src register # must be in D3 (Dn)
+00001A82                          1035      * Dst register # must be in D5 (An)
+00001A82  0004 0004               1036      ORI.B   #%00000100,D4       * set Dn
+00001A86  4EB9 00001ACA           1037      JSR OPCODE_PRINTREG     * print the reg
+00001A8C  1AFC 002C               1038      MOVE.B  #$2C,(A5)+      * Add a comma 
+00001A90  3605                    1039      MOVE.W  D5,D3           * copy the Dst register to D3
+00001A92  0204 0003               1040      ANDI.B  #%00000011,D4       * make sure we're set for An
+00001A96  4EB9 00001ACA           1041      JSR OPCODE_PRINTREG     * print the second reg
+00001A9C  4E75                    1042      RTS
+00001A9E                          1043  OPCODE_MODE9
+00001A9E  4EB9 00001ACA           1044      JSR OPCODE_PRINTREG     * print the reg
+00001AA4  4E75                    1045      RTS 
+00001AA6                          1046  
+00001AA6                          1047  * call to add size info
+00001AA6                          1048  OPCODE_SIZE_B
+00001AA6  1AFC 002E               1049      MOVE.B  #$2E,(A5)+      * Add a period 
+00001AAA  1AFC 0042               1050      MOVE.B  #$42,(A5)+      * Add a "B"
+00001AAE  6000 FE64               1051      BRA OPCODE_DECODE_TYPEA_CONT
+00001AB2                          1052  OPCODE_SIZE_W
+00001AB2  1AFC 002E               1053      MOVE.B  #$2E,(A5)+      * Add a period 
+00001AB6  1AFC 0057               1054      MOVE.B  #$57,(A5)+      * Add a "W"
+00001ABA  6000 FE58               1055      BRA OPCODE_DECODE_TYPEA_CONT
+00001ABE                          1056  OPCODE_SIZE_L
+00001ABE  1AFC 002E               1057      MOVE.B  #$2E,(A5)+      * Add a period 
+00001AC2  1AFC 004C               1058      MOVE.B  #$4C,(A5)+      * Add a "L"
+00001AC6  6000 FE4C               1059      BRA OPCODE_DECODE_TYPEA_CONT
+00001ACA                          1060  
+00001ACA                          1061  * call this to print the Rn (as specified in D3 and the Rn bit in D4)
+00001ACA                          1062  OPCODE_PRINTREG
+00001ACA                          1063      * D4 = the mode info (Dn/An)
+00001ACA                          1064      * D3 = the register number
+00001ACA  1204                    1065      MOVE.B  D4,D1           * Make a copy of D4
+00001ACC  C23C 0004               1066      AND.B   #%00000100,D1       * isolate bit #3
+00001AD0  B23C 0000               1067      CMP.B   #%00000000,D1       * see if bit #3 = false (An)
+00001AD4  6700 000A               1068      BEQ OPCODE_PRINTREG_An  * if match then print an An
+00001AD8  1AFC 0044               1069      MOVE.B  #$44,(A5)+      * Add a "D" 
+00001ADC  6000 0006               1070      BRA     OPCODE_PRINTREG_CONT
+00001AE0                          1071  OPCODE_PRINTREG_An
+00001AE0  1AFC 0041               1072      MOVE.B  #$41,(A5)+      * Add a "A" 
+00001AE4                          1073  OPCODE_PRINTREG_CONT
+00001AE4  0603 0030               1074      ADD.B   #$30,D3         * convert to ascii
+00001AE8  1AC3                    1075      MOVE.B  D3,(A5)+        * Add the number to the string 
+00001AEA  4E75                    1076      RTS
+00001AEC                          1077  
+00001AEC                          1078  * Call this for any instruction that only needs to update the good string and nothing else
+00001AEC                          1079  OPCODE_DECODE_TYPEB
+00001AEC                          1080      * Update the "good" string
+00001AEC  244D                    1081      MOVE.L  A5,A2           * Setup the "good" string as the DST
+00001AEE  4EB9 00001EC8           1082      JSR STRCPY          * Call STRCPY
+00001AF4  2A4A                    1083      MOVE.L  A2,A5           * Update the string pointer
+00001AF6  4E75                    1084      RTS
+00001AF8                          1085  
+00001AF8                          1086  * Call this for instructions with the EA, OPMode, and Register data in standard locations
+00001AF8                          1087  OPCODE_DECODE_GET
+00001AF8                          1088      * Parameters:
+00001AF8                          1089      * D0 = the OPCode
+00001AF8                          1090      *
+00001AF8                          1091      * Returns:
+00001AF8                          1092      * D3 = Register bits
+00001AF8                          1093      * D4 = OPMode bits
+00001AF8                          1094      * D5 = EA bits
+00001AF8  48E7 8000               1095      MOVEM.L D0,-(SP)        * Push register data onto the stack so we can restore it at the end
+00001AFC                          1096  
+00001AFC  3200                    1097      MOVE.W  D0,D1           * Copy the OPCode to D1
+00001AFE  0241 003F               1098      ANDI.W  #%0000000000111111,D1   * Get the last 6 bits
+00001B02  1A01                    1099      MOVE.B  D1,D5           * copy the EA bits into D5
+00001B04                          1100      
+00001B04  EC58                    1101      ROR.W   #6,D0           * Roll the bits right by 6
+00001B06  3200                    1102      MOVE.W  D0,D1           * Copy the OPCode to D1
+00001B08  0241 0007               1103      ANDI.W  #%0000000000000111,D1   * Get the last 3 bits
+00001B0C  1801                    1104      MOVE.B  D1,D4           * copy the OPMode bits into D4
+00001B0E                          1105      
+00001B0E  E658                    1106      ROR.W   #3,D0           * Roll the bits right by 3
+00001B10  3200                    1107      MOVE.W  D0,D1           * Copy the OPode to D1
+00001B12  0241 0007               1108      ANDI.W  #%0000000000000111,D1   * Get the last 3 bits
+00001B16  1601                    1109      MOVE.B  D1,D3           * copy the Register bits into D3
+00001B18                          1110  
+00001B18  4CDF 0001               1111      MOVEM.L (SP)+,D0        * Pop register data off the stack and restore it 
+00001B1C  4E75                    1112      RTS
+00001B1E                          1113  
+00001B1E                          1114  * Call this for commands like ADD and OR where they could be EA,Rn or Rn,EA depending on the 3rd bit in the OPMODE
+00001B1E                          1115  OPCODE_MODE_FIX
+00001B1E  1204                    1116      MOVE.B  D4,D1           * make a copy
+00001B20  0201 0004               1117      ANDI.B  #%00000100,D1       * isoate bit #3
+00001B24  B23C 0004               1118      CMP.B   #%00000100,D1       * is the bit = true?
+00001B28  6600 000A               1119      BNE OPCODE_MODE_FIX_DONE
+00001B2C  0204 0003               1120      ANDI.B  #%00000011,D4       * isolate the size bits
+00001B30  883C 0008               1121      OR.B    #%00001000,D4       * set for mode2 (Rn,EA)
+00001B34                          1122  OPCODE_MODE_FIX_DONE
+00001B34  4E75                    1123      RTS
+00001B36                          1124      
+00001B36                          1125  * This small function will ensure that the next column lines up correctly
+00001B36                          1126  OPCODE_PAD
+00001B36  240D                    1127      MOVE.L  A5,D2           * copy the memory address of the end of the string to D2
+00001B38  0482 000020B0           1128      SUB.L   #str_good,D2        * get the length of the good string
+00001B3E  0482 0000000A           1129      SUBI.L  #10,D2          * subtract 8 from the length (should give us a negative number)
+00001B44  C4FC FFFF               1130      MULU    #-1,D2          * multiply by -1 to make positive
+00001B48                          1131  OPCODE_PAD_MORE
+00001B48  1AFC 0020               1132      MOVE.B  #$20,(A5)+      * Add a space
+00001B4C  51CA FFFA               1133      DBF D2,OPCODE_PAD_MORE  * While D2 > 0 keep padding the string with spaces
+00001B50  4E75                    1134      RTS
+00001B52                          1135  
+00001B52                          1136  **********************************************************************************************
+00001B52                          1137  ;-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+00001B52                          1138  ; SUBROUTINE EADECODE
+00001B52                          1139  ; this subroutine can be called to decode the 6 bit EA code from an instruction
+00001B52                          1140  ; opcode. If further memory reading is deemed necessary, the read data will be
+00001B52                          1141  ; sent to the subroutine HEXTOASCII.
+00001B52                          1142  ;
+00001B52                          1143  ; ASSUMPTIONS:
+00001B52                          1144  ;       HEXTOASCII uses D0 and D1 as parameters.
+00001B52                          1145  ;       HEXTOASCII will add the converted values to the A1 pointer.
+00001B52                          1146  ;
+00001B52                          1147  ; REQUIREMENTS (from OPCODE SR):
+00001B52                          1148  ;   D4  can be used to store the size of the operation. This should be
+00001B52                          1149  ;       initialized by the OPCode person, but is only necessary if the
+00001B52                          1150  ;       EA turns out to be immediate data.
+00001B52                          1151  ;   D5  must contain the mode and reg bits that comprise the EA.
+00001B52                          1152  ;   A0  must represent the pointer to the next memory word to be read.
+00001B52                          1153  ;       If this pointer is not current, problems will ensue.
+00001B52                          1154  ;   A1  must represent the pointer to the end of the "good buffer".
+00001B52                          1155  ;       If this is not current then there will be problems with I/O.
+00001B52                          1156  ;   SP  is the stack pointer. So long as no one misuses this, there
+00001B52                          1157  ;       shouldn't be any problems.
+00001B52                          1158  ; NOTE:
+00001B52                          1159  ;   D7  is or contains flags to ultimately signal the I/O to print
+00001B52                          1160  ;       the "good" or "bad" buffer. This subroutine does not test
+00001B52                          1161  ;       for any illegality so D7 is likely untouched
+00001B52                          1162  ; USES:
+00001B52                          1163  ;   D0  will be used to store words read from memory that need to be
+00001B52                          1164  ;       converted to ASCII by the subroutine HEXTOASCII.
+00001B52                          1165  ;   D1  will be used to store the size of the data in D0 in bytes. Will
+00001B52                          1166  ;       be set to 2 for a word or 4 for a long word.
+00001B52                          1167  ;   D3  will contain the reg bits.
+00001B52                          1168  ;
+00001B52                          1169  ;
+00001B52  48E7 FE38               1170  EADECODE    MOVEM.L     D0-D6/A2-A4,-(SP)   ; save registers that will be used for things are purely local
+00001B56                          1171  ;************************************************************************************
+00001B56  224D                    1172          MOVE.L      A5,A1       ; copy the good buffer pointer to A1
+00001B58                          1173      ;----------------------------------------------------------------
+00001B58                          1174      ; SEPARATE THE MODE AND REG
+00001B58  1605                    1175          MOVE.B      D5,D3
+00001B5A  0203 0007               1176          ANDI.B      #%00000111,D3
+00001B5E  0205 0038               1177          ANDI.B      #%00111000,D5
+00001B62  E60D                    1178          LSR.B       #3,D5
+00001B64                          1179      ;----------------------------------------------------------------
+00001B64                          1180      ; A JUMP TABLE
+00001B64  BA3C 0000               1181          CMP.B       #0,D5
+00001B68  6700 0042               1182          BEQ     MODE_ZERO
+00001B6C  BA3C 0001               1183          CMP.B       #1,D5
+00001B70  6700 0048               1184          BEQ     MODE_ONE
+00001B74  BA3C 0002               1185          CMP.B       #2,D5
+00001B78  6700 0060               1186          BEQ     MODE_TWO
+00001B7C  BA3C 0003               1187          CMP.B       #3,D5
+00001B80  6700 0080               1188          BEQ     MODE_THREE
+00001B84  BA3C 0004               1189          CMP.B       #4,D5
+00001B88  6700 00A4               1190          BEQ     MODE_FOUR
+00001B8C  BA3C 0005               1191          CMP.B       #5,D5
+00001B90  6700 00C8               1192          BEQ     MODE_FIVE
+00001B94  BA3C 0006               1193          CMP.B       #6,D5
+00001B98  6700 010C               1194          BEQ     MODE_SIX
+00001B9C  BA3C 0007               1195          CMP.B       #7,D5
+00001BA0  6700 019A               1196          BEQ     MODE_SEVEN
+00001BA4                          1197      ;----------------------------------------------------------------
+00001BA4                          1198      ; INVALID MODE
+00001BA4  0007 0002               1199          ORI.B       #$02,D7 ; FLAG SET
+00001BA8  6000 0316               1200          BRA     FINISH
+00001BAC                          1201  ;*************************************************************************************
+00001BAC                          1202  ; DATA REGISTER DIRECT MODE
+00001BAC                          1203  ; Basic EA that displays a capital 'D' and a number
+00001BAC                          1204  ; ex: D4
+00001BAC  0603 0030               1205  MODE_ZERO   ADDI.B      #48,D3      ; convert register into number
+00001BB0  12FC 0044               1206          MOVE.B      #$44,(A1)+  ; add 'D' to the good buffer
+00001BB4  12C3                    1207          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001BB6  6000 0308               1208          BRA     FINISH      ; we have now added D# to the good buffer
+00001BBA                          1209  ;-------------------------------------------------------------------------------------
+00001BBA                          1210  ; ADDRESS REGISTER DIRECT MODE
+00001BBA                          1211  ; Basic EA that displays a capital 'A' and a number
+00001BBA                          1212  ; ex: A2
+00001BBA  B63C 0007               1213  MODE_ONE    CMP.B       #7,D3       ; is reg 7?
+00001BBE  6700 0010               1214          BEQ     SPREGONE
+00001BC2  0603 0030               1215          ADDI.B      #48,D3      ; convert register into number
+00001BC6  12FC 0041               1216          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001BCA  12C3                    1217          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001BCC  6000 02F2               1218  MONE_X      BRA     FINISH      ; we have now added A# to the good buffer
+00001BD0  12FC 0053               1219  SPREGONE    MOVE.B      #$53,(A1)+  ; add 'S'
+00001BD4  12FC 0050               1220          MOVE.B      #$50,(A1)+  ; add 'P'
+00001BD8  60F2                    1221          BRA     MONE_X
+00001BDA                          1222  ;-------------------------------------------------------------------------------------
+00001BDA                          1223  ; ADDRESS REGISTER INDIRECT MODE
+00001BDA                          1224  ; Slightly more complicated than the previous EA. Displays 'A' and number in parentheses.
+00001BDA                          1225  ; ex: (A6)
+00001BDA  12FC 0028               1226  MODE_TWO    MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001BDE  B63C 0007               1227          CMP.B       #7,D3       ; is reg 7?
+00001BE2  6700 0014               1228          BEQ     SPREGTWO
+00001BE6  0603 0030               1229          ADDI.B      #48,D3      ; convert register into number
+00001BEA  12FC 0041               1230          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001BEE  12C3                    1231          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001BF0  12FC 0029               1232  MTWO_X      MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001BF4  6000 02CA               1233          BRA     FINISH      ; we have now added (A#) to the good buffer
+00001BF8  12FC 0053               1234  SPREGTWO    MOVE.B      #$53,(A1)+  ; add 'S'
+00001BFC  12FC 0050               1235          MOVE.B      #$50,(A1)+  ; add 'P'
+00001C00  60EE                    1236          BRA     MTWO_X
+00001C02                          1237  ;-------------------------------------------------------------------------------------
+00001C02                          1238  ; ADDRESS REGISTER INDIRECT WITH POSTINCREMENT MODE
+00001C02                          1239  ; Slightly more complicated that the previous EA. Displays parenthized 'A' and number with
+00001C02                          1240  ; a '+' at the end.
+00001C02                          1241  ; ex: (A1)+
+00001C02  12FC 0028               1242  MODE_THREE  MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001C06  B63C 0007               1243          CMP.B       #7,D3       ; is reg 7?
+00001C0A  6700 0018               1244          BEQ     SPREGTHR
+00001C0E  0603 0030               1245          ADDI.B      #48,D3      ; convert register into number
+00001C12  12FC 0041               1246          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001C16  12C3                    1247          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001C18  12FC 0029               1248  MTHR_X      MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001C1C  12FC 002B               1249          MOVE.B      #$2B,(A1)+  ; add '+' to the good buffer
+00001C20  6000 029E               1250          BRA     FINISH      ; we have now added (A#) to the good buffer
+00001C24  12FC 0053               1251  SPREGTHR    MOVE.B      #$53,(A1)+  ; add 'S'
+00001C28  12FC 0050               1252          MOVE.B      #$50,(A1)+  ; add 'P'
+00001C2C  60EA                    1253          BRA     MTHR_X
+00001C2E                          1254  ;-------------------------------------------------------------------------------------
+00001C2E                          1255  ; ADDRESS REGISTER INDIRECT WITH PREDECREMENT MODE
+00001C2E                          1256  ; Similar to the previous EA except with a '-' at the beginning instead of a '+' at the end.
+00001C2E                          1257  ; ex: -(A5)
+00001C2E  12FC 002D               1258  MODE_FOUR   MOVE.B      #$2D,(A1)+  ; add '-' to the good buffer
+00001C32  12FC 0028               1259          MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001C36  B63C 0007               1260          CMP.B       #7,D3       ; is reg 7?
+00001C3A  6700 0014               1261          BEQ     SPREGFOR
+00001C3E  0603 0030               1262          ADDI.B      #48,D3      ; convert register into number
+00001C42  12FC 0041               1263          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001C46  12C3                    1264          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001C48  12FC 0029               1265  MFOR_X      MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001C4C  6000 0272               1266          BRA     FINISH      ; we have now added (A#) to the good buffer
+00001C50  12FC 0053               1267  SPREGFOR    MOVE.B      #$53,(A1)+  ; add 'S'
+00001C54  12FC 0050               1268          MOVE.B      #$50,(A1)+  ; add 'P'
+00001C58  60EE                    1269          BRA     MFOR_X
+00001C5A                          1270  ;-------------------------------------------------------------------------------------
+00001C5A                          1271  ; ADDRESS REGISTER INDIRECT WITH DISPLACEMENT MODE
+00001C5A                          1272  ; This is like the ADDRESS REGISTER INDIRECT (parenthized A#) but with a 16bit displacement
+00001C5A                          1273  ; immediately preceding. Negative displacements are actually displayed as negatives.
+00001C5A                          1274  ; ex: $7C49(A3)
+00001C5A                          1275  ; NOTE there are other (not used) acceptable syntax
+00001C5A                          1276  ; -- ($7C49)(A3)
+00001C5A                          1277  ; -- ($7C49,A3)
+00001C5A                          1278  ; NOTE displacements are sign-extended to 32bits
+00001C5A  3018                    1279  MODE_FIVE   MOVE.W      (A0)+,D0    ; read one word from memory into D0
+00001C5C  123C 0002               1280          MOVE.B      #$02,D1     ; size of D0 in bytes
+00001C60                          1281      ; if the displacement is greater that 7fff then it is negative
+00001C60  3C00                    1282          MOVE.W      D0,D6
+00001C62  0246 8000               1283          ANDI.W      #$8000,D6   ; MASK the sign bit
+00001C66  6600 002A               1284          BNE     ARID_ADJ    ; if sign bit is 1 then goto adjuster
+00001C6A  12FC 0024               1285  ARID_CB     MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001C6E  4EB9 00001F62           1286          JSR     HEXTOASCII  ; SEND D0 TO FUNCTION TOHEX
+00001C74  12FC 0028               1287          MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001C78  B63C 0007               1288          CMP.B       #7,D3       ; is reg 7?
+00001C7C  6700 001E               1289          BEQ     SPREGFIV
+00001C80  0603 0030               1290          ADDI.B      #48,D3      ; convert register into number
+00001C84  12FC 0041               1291          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001C88  12C3                    1292          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001C8A  12FC 0029               1293  MFIV_X      MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001C8E  6000 0230               1294          BRA     FINISH      ; we have now added [####(A#)]
+00001C92  12FC 002D               1295  ARID_ADJ    MOVE.B      #$2D,(A1)+  ; add '-' to signify a negative displacement
+00001C96                          1296      ; twos complement means flip every bit, and add one
+00001C96  4640                    1297          NOT.W       D0
+00001C98  5240                    1298          ADDQ.W      #1,D0
+00001C9A  60CE                    1299          BRA     ARID_CB     ; resume normal flow
+00001C9C  12FC 0053               1300  SPREGFIV    MOVE.B      #$53,(A1)+  ; add 'S'
+00001CA0  12FC 0050               1301          MOVE.B      #$50,(A1)+  ; add 'P'
+00001CA4  60E4                    1302          BRA     MFIV_X
+00001CA6                          1303  ;-------------------------------------------------------------------------------------
+00001CA6                          1304  ; ADDRESS REGISTER INDIRECT WITH INDEX (8-BIT DISP) MODE
+00001CA6                          1305  ; This is similar to the above EA but w/ an addtional figure to add in (an Index). The
+00001CA6                          1306  ; displacement is only 8bits long this time. The index is displayed after a comma inside
+00001CA6                          1307  ; the parentheses. The index is a register dot size. Negative displacements are actually
+00001CA6                          1308  ; displayed as negatives.
+00001CA6                          1309  ; ex: $5B(A6,D4.L)
+00001CA6                          1310  ; NOTE there are other (not used) acceptable syntax
+00001CA6                          1311  ; -- ($5B)(A6,D4.L)
+00001CA6                          1312  ; -- ($5B,A6,D4.L)
+00001CA6                          1313  ; NOTE displacements are sign-extended to 32bits
+00001CA6  3018                    1314  MODE_SIX    MOVE.W      (A0)+,D0    ; read one word into a scratch data register
+00001CA8  3C00                    1315          MOVE.W      D0,D6       ; copy the word
+00001CAA  0240 00FF               1316          ANDI.W      #$00FF,D0   ; the displacement
+00001CAE  0246 FF00               1317          ANDI.W      #$FF00,D6   ; the index
+00001CB2  E04E                    1318          LSR.W       #8,D6       ; is moved to lsbp
+00001CB4  123C 0001               1319          MOVE.B      #1,D1       ; for counter
+00001CB8                          1320      ; if the displacement is greater that 7f then it is negative
+00001CB8  3400                    1321          MOVE.W      D0,D2       ; make copy for anding
+00001CBA  0282 00000080           1322          ANDI.L      #$00000080,D2   ; MASK sign bit
+00001CC0  6600 0066               1323          BNE     ARII_ADJ
+00001CC4  12FC 0024               1324  ARII_CB     MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001CC8  4EB9 00001F62           1325          JSR     HEXTOASCII  ; add the displacement to the good buffer
+00001CCE                          1326          ; D0 and D2 ARE FREE AGAIN
+00001CCE  12FC 0028               1327          MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001CD2  B63C 0007               1328          CMP.B       #7,D3       ; is reg 7?
+00001CD6  6700 005A               1329          BEQ     SPREGSIX
+00001CDA  12FC 0041               1330          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001CDE  0603 0030               1331          ADDI.B      #48,D3      ; convert register into number
+00001CE2  12C3                    1332          MOVE.B      D3,(A1)+    ; add number to the good buffer
+00001CE4                          1333          ; d3 is free
+00001CE4  12FC 002C               1334  MSIX_X      MOVE.B      #$2C,(A1)+  ; add ',' to the good buffer
+00001CE8  E30E                    1335          LSL.B       #1,D6       ; PUSH into x
+00001CEA  6400 000A               1336          BCC     DREG
+00001CEE  12FC 0041               1337          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001CF2  6000 0006               1338          BRA     NXT
+00001CF6  12FC 0044               1339  DREG        MOVE.B      #$44,(A1)+  ; add 'D' to the good buffer
+00001CFA  1406                    1340  NXT     MOVE.B      D6,D2
+00001CFC  0202 00E0               1341          ANDI.B      #$E0,D2
+00001D00  EA0A                    1342          LSR.B       #5,D2       ; IND REG number
+00001D02  0602 0030               1343          ADDI.B      #48,D2      ; convert number to ascii
+00001D06  12C2                    1344          MOVE.B      D2,(A1)+    ; add number to the good buffer
+00001D08  12FC 002E               1345          MOVE.B      #$2E,(A1)+  ; add '.' to the good buffer
+00001D0C  0206 0010               1346          ANDI.B      #$10,D6
+00001D10  6700 000A               1347          BEQ     SIZB
+00001D14  12FC 004C               1348          MOVE.B      #$4C,(A1)+  ; add 'L' to the good buffer
+00001D18  6000 0006               1349          BRA     NXT2
+00001D1C  12FC 0057               1350  SIZB        MOVE.B      #$57,(A1)+  ; add 'W' to the good buffer
+00001D20  12FC 0029               1351  NXT2        MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001D24  6000 019A               1352          BRA     FINISH      ;
+00001D28  12FC 002D               1353  ARII_ADJ    MOVE.B      #$2D,(A1)+  ; add a '-' because the displacement is negative
+00001D2C                          1354      ; twos complement means flip every bit, and add one
+00001D2C  4600                    1355          NOT.B       D0
+00001D2E  5200                    1356          ADDQ.B      #1,D0
+00001D30  6092                    1357          BRA     ARII_CB
+00001D32  12FC 0053               1358  SPREGSIX    MOVE.B      #$53,(A1)+  ; add 'S'
+00001D36  12FC 0050               1359          MOVE.B      #$50,(A1)+  ; add 'P'
+00001D3A  60A8                    1360          BRA     MSIX_X
+00001D3C                          1361  ;-------------------------------------------------------------------------------------
+00001D3C                          1362  ; The following five codes are for when the MODE IS 7 (111)
+00001D3C                          1363  ;-------------------------------------------------------------------------------------
+00001D3C                          1364  ; since mode seven is the only one that has several addressing modes, it is fortunate
+00001D3C                          1365  ; that it is that last one (according to its mode number)
+00001D3C                          1366      ;----------------------------------------------------------------
+00001D3C                          1367      ; A JUMP TABLE
+00001D3C  B63C 0000               1368  MODE_SEVEN  CMP.B       #0,D3
+00001D40  6700 002A               1369          BEQ     REG_ZERO
+00001D44  B63C 0001               1370          CMP.B       #1,D3
+00001D48  6700 0036               1371          BEQ     REG_ONE
+00001D4C  B63C 0002               1372          CMP.B       #2,D3
+00001D50  6700 0042               1373          BEQ     REG_TWO
+00001D54  B63C 0003               1374          CMP.B       #3,D3
+00001D58  6700 0094               1375          BEQ     REG_THREE
+00001D5C  B63C 0004               1376          CMP.B       #4,D3
+00001D60  6700 0134               1377          BEQ     REG_FOUR
+00001D64                          1378      ;----------------------------------------------------------------
+00001D64                          1379      ; INVALID REGISTER
+00001D64  0007 0001               1380          ORI.B       #$01,D7     ; FLAG SET
+00001D68  6000 0156               1381          BRA     FINISH
+00001D6C                          1382  ;-------------------------------------------------------------------------------------
+00001D6C                          1383  ; REG 000 ABSOLUTE SHORT ADDRESSING MODE
+00001D6C  3018                    1384  REG_ZERO    MOVE.W      (A0)+,D0    ; read one word from memory into D0
+00001D6E  123C 0002               1385          MOVE.B      #$02,D1     ; size of D0 in bytes
+00001D72  12FC 0024               1386          MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001D76  4EB9 00001F62           1387          JSR     HEXTOASCII  ; SEND D6 TO FUNCTION TOHEX
+00001D7C  6000 0142               1388          BRA     FINISH
+00001D80                          1389  ;-------------------------------------------------------------------------------------
+00001D80                          1390  ; REG 001 ABSOLUTE LONG ADDRESSING MODE
+00001D80  2018                    1391  REG_ONE     MOVE.L      (A0)+,D0    ; read one word from memory into D0
+00001D82  123C 0004               1392          MOVE.B      #$04,D1     ; size of D0 in bytes
+00001D86  12FC 0024               1393          MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001D8A  4EB9 00001F62           1394          JSR     HEXTOASCII  ; SEND D6 TO FUNCTION TOHEX
+00001D90  6000 012E               1395          BRA     FINISH
+00001D94                          1396  ;-------------------------------------------------------------------------------------
+00001D94                          1397  ; REG 010 PROGRAM COUNTER INDIRECT WITH DISPLACEMENT MODE
+00001D94                          1398  ; displacement is sign-extended
+00001D94  3448                    1399  REG_TWO     MOVEA.W     A0,A2       ; save a copy of the "PC" of the test program
+00001D96  3018                    1400          MOVE.W      (A0)+,D0    ; D0 is current displacement
+00001D98  5480                    1401          ADDQ.L      #2,D0       ; D0 is now actual displacement from the calling command
+00001D9A  2400                    1402          MOVE.L      D0,D2       ; save disp for analysis
+00001D9C  0280 00008000           1403          ANDI.L      #$00008000,D0   ; mask the sign bit
+00001DA2  6600 0040               1404          BNE     PCID_ADJ    ; if disp is negative, then adjust
+00001DA6  D08A                    1405  PCID_CB     ADD.L       A2,D0       ; add complete disp to get address with that displacement
+00001DA8  7204                    1406          MOVE.L      #$04,D1     ; start size of address at long
+00001DAA  2400                    1407          MOVE.L      D0,D2       ; if first byte is zero, decrease size
+00001DAC  C4BC FF000000           1408          AND.L       #$FF000000,D2
+00001DB2  6600 0012               1409          BNE     SIZEREADY1
+00001DB6  5301                    1410          SUBQ.B      #1,D1
+00001DB8  2400                    1411          MOVE.L      D0,D2       ; if second byte is zero, decrease size
+00001DBA  C4BC 00FF0000           1412          AND.L       #$00FF0000,D2
+00001DC0  6600 0004               1413          BNE     SIZEREADY1
+00001DC4  5301                    1414          SUBQ.B      #1,D1
+00001DC6                          1415      ; now size has been reduced to prevent unneccessary leading zeros
+00001DC6  12FC 0024               1416  SIZEREADY1  MOVE.B      #$24,(A1)+  ; print '$'
+00001DCA  4EB9 00001F62           1417          JSR     HEXTOASCII  ; print address
+00001DD0  12FC 0028               1418          MOVE.B      #$28,(A1)+  ; print '('
+00001DD4  12FC 0050               1419          MOVE.B      #$50,(A1)+  ; pring 'P'
+00001DD8  12FC 0043               1420          MOVE.B      #$43,(A1)+  ; print 'C'
+00001DDC  12FC 0029               1421          MOVE.B      #$29,(A1)+  ; print ')'
+00001DE0  6000 00DE               1422          BRA     FINISH
+00001DE4  203C FFFF0000           1423  PCID_ADJ    MOVE.L      #$FFFF0000,D0   ; manually sign-extend
+00001DEA  D042                    1424          ADD.W       D2,D0       ; with adding
+00001DEC  60B8                    1425          BRA     PCID_CB
+00001DEE                          1426  ;-------------------------------------------------------------------------------------
+00001DEE                          1427  ; REG 011 PROGRAM COUNTER INDIRECT WITH INDEX (8-BIT DISP) MODE ?UNNECESSARY?
+00001DEE                          1428  ; displacement is sign-extended
+00001DEE  0603 0030               1429  REG_THREE   ADDI.B      #48,D3      ; convert register into number
+00001DF2                          1430      ; because it is PC
+00001DF2  3448                    1431          MOVEA.W     A0,A2       ; save a copy of the "PC" of the test program
+00001DF4  3018                    1432          MOVE.W      (A0)+,D0    ; read one word into a scratch data register
+00001DF6  3600                    1433          MOVE.W      D0,D3       ; copy the word
+00001DF8  0240 00FF               1434          ANDI.W      #$00FF,D0   ; D0 is the current displacement
+00001DFC  5480                    1435          ADDQ.L      #2,D0       ; D0 is now actual displacement from the calling command
+00001DFE                          1436          ; this is for the displacement
+00001DFE  2400                    1437          MOVE.L      D0,D2       ; copy disp for anding
+00001E00  0280 00000080           1438          ANDI.L      #$00000080,D0   ; mask the sign bit
+00001E06  6600 0082               1439          BNE     PCII_ADJ    ; if negative, then adjust
+00001E0A  D08A                    1440  PCII_CB     ADD.L       A2,D0       ; add disp to PC to get address 
+00001E0C                          1441          ; GOT THE ADDRESS AND D2 IS NOW FREE
+00001E0C  7204                    1442          MOVE.L      #$04,D1     ; start size of address at long
+00001E0E  2400                    1443          MOVE.L      D0,D2       ; if first byte is zero, decrease size
+00001E10  C4BC FF000000           1444          AND.L       #$FF000000,D2
+00001E16  6600 0012               1445          BNE     SIZEREADY2
+00001E1A  5301                    1446          SUBQ.B      #1,D1
+00001E1C  2400                    1447          MOVE.L      D0,D2       ; if second byte is zero, decrease size
+00001E1E  C4BC 00FF0000           1448          AND.L       #$00FF0000,D2
+00001E24  6600 0004               1449          BNE     SIZEREADY2
+00001E28  5301                    1450          SUBQ.B      #1,D1
+00001E2A                          1451          ; GOT THE CORRECT SIZE OF THE ADDRESS
+00001E2A  0243 FF00               1452  SIZEREADY2  ANDI.W      #$FF00,D3   ; the index
+00001E2E  E04B                    1453          LSR.W       #8,D3       ; is moved to lsbp
+00001E30  12FC 0024               1454          MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001E34  4EB9 00001F62           1455          JSR     HEXTOASCII  ; add the displacement to the good buffer
+00001E3A                          1456          ; D0 IS FREE AGAIN
+00001E3A  12FC 0028               1457          MOVE.B      #$28,(A1)+  ; add '(' to the good buffer
+00001E3E  12FC 0050               1458          MOVE.B      #$50,(A1)+  ; add 'P' to the good buffer
+00001E42  12FC 0043               1459          MOVE.B      #$43,(A1)+  ; add 'C' to the good buffer
+00001E46  12FC 002C               1460          MOVE.B      #$2C,(A1)+  ; add ',' to the good buffer
+00001E4A  E30B                    1461          LSL.B       #1,D3       ; PUSH into x
+00001E4C  6400 000A               1462          BCC     DREG2
+00001E50  12FC 0041               1463          MOVE.B      #$41,(A1)+  ; add 'A' to the good buffer
+00001E54  6000 0006               1464          BRA     NXT11
+00001E58  12FC 0044               1465  DREG2       MOVE.B      #$44,(A1)+  ; add 'D' to the good buffer
+00001E5C  1403                    1466  NXT11       MOVE.B      D3,D2       ; copy the rest of the index
+00001E5E  0202 00E0               1467          ANDI.B      #$E0,D2     ; mask number
+00001E62  EA0A                    1468          LSR.B       #5,D2       ; shift
+00001E64  0602 0030               1469          ADDI.B      #48,D2      ; convert
+00001E68  12C2                    1470          MOVE.B      D2,(A1)+    ; add number to the good buffer
+00001E6A                          1471          ;NUMBER
+00001E6A  12FC 002E               1472          MOVE.B      #$2E,(A1)+  ; add '.' to the good buffer
+00001E6E  0206 0010               1473          ANDI.B      #$10,D6     ; mask size bit
+00001E72  6700 000A               1474          BEQ     SIZB1
+00001E76  12FC 004C               1475          MOVE.B      #$4C,(A1)+  ; add 'L' to the good buffer
+00001E7A  6000 0006               1476          BRA     NXT12
+00001E7E  12FC 0057               1477  SIZB1       MOVE.B      #$57,(A1)+  ; add 'W' to the good buffer
+00001E82  12FC 0029               1478  NXT12       MOVE.B      #$29,(A1)+  ; add ')' to the good buffer
+00001E86  6000 0038               1479          BRA     FINISH      ;
+00001E8A  203C FFFFFF00           1480  PCII_ADJ    MOVE.L      #$FFFFFF00,D0   ; manually sign-extend
+00001E90  D002                    1481          ADD.B       D2,D0
+00001E92  6000 FF76               1482          BRA     PCII_CB
+00001E96                          1483  ;-------------------------------------------------------------------------------------
+00001E96                          1484  ; REG 100 IMMEDIATE DATA
+00001E96                          1485  ; Pretty simple but requires knowledge of operation size. Size should be stored the lowest
+00001E96                          1486  ; two bits of D4.
+00001E96  0204 0003               1487  REG_FOUR    ANDI.B      #%00000011,D4   ; mask the size bits
+00001E9A  B83C 0002               1488          CMP.B       #$02,D4     ; is the size LONG?
+00001E9E  6600 000C               1489          BNE     WORB        ; if not, go to the section for word
+00001EA2  123C 0004               1490          MOVE.B      #$04,D1     ; for a long put size (in bytes)
+00001EA6  2018                    1491          MOVE.L      (A0)+,D0    ; take a long from mem
+00001EA8  6000 0008               1492          BRA     FIN     ; skip over word
+00001EAC  123C 0002               1493  WORB        MOVE.B      #$02,D1     ; for a word put size (in bytes)
+00001EB0  3018                    1494          MOVE.W      (A0)+,D0    ; take a word from mem
+00001EB2  12FC 0023               1495  FIN     MOVE.B      #$23,(A1)+  ; add '#' to the good buffer
+00001EB6  12FC 0024               1496          MOVE.B      #$24,(A1)+  ; add '$' to the good buffer
+00001EBA  4EB9 00001F62           1497          JSR     HEXTOASCII  ; SEND D0 and D1 TO FUNCTION HEXTOASCII
+00001EC0  4CDF 1C7F               1498  FINISH      MOVEM.L     (SP)+,D0-D6/A2-A4
+00001EC4  2A49                    1499          MOVE.L      A1,A5       
+00001EC6  4E75                    1500          RTS
+00001EC8                          1501  **********************************************************************************************
+00001EC8                          1502  * STRCPY - 
+00001EC8                          1503  *      
+00001EC8                          1504  * A1 = SRC: The memory location of the start of the string.
+00001EC8                          1505  * A2 = DST: The memory location of the start of the string.
+00001EC8                          1506  * D1 = Internal
+00001EC8                          1507  * D2 = Internal
+00001EC8                          1508  *
+00001EC8                          1509  
+00001EC8                          1510  STRCPY
+00001EC8  48E7 6000               1511      MOVEM.L D1-D2,-(A7) * Push register data onto the stack so we can restore it at the end
+00001ECC  4281                    1512      CLR.L   D1      * Clear D1 (counter)
+00001ECE  1238 00FF               1513      MOVE.B  $FF,D1      * Set D1 to $FF (max string length)
+00001ED2                          1514  
+00001ED2                          1515  STRCPY_NEXT
+00001ED2  1419                    1516      MOVE.B  (A1)+,D2    * Copy the next byte into a register
+00001ED4  B43C 0000               1517      CMP.B   #$00,D2     * See if we hit a null/end of string
+00001ED8  6700 0008               1518      BEQ STRCPY_DONE * Go to the end if we're finished
+00001EDC                          1519      
+00001EDC  14C2                    1520      MOVE.B  D2,(A2)+    * Copy the byte to the dest string
+00001EDE  51C9 FFF2               1521      DBF D1,STRCPY_NEXT  * If there is more to process, go to the next byte
+00001EE2                          1522  
+00001EE2                          1523  STRCPY_DONE
+00001EE2  4CDF 0006               1524      MOVEM.L (A7)+,D1-D2 * Pop register data off the stack and restore it 
+00001EE6  4E75                    1525      RTS 
+00001EE8                          1526  
+00001EE8                          1527  **********************************************************************************************
+00001EE8                          1528  **********************************************************************************************
+00001EE8                          1529  * ASCIITOHEX - This function converts a string input from user to an address value.
+00001EE8                          1530  * Valid inputs are numbers and uppercase letters (A-F) only
+00001EE8                          1531  *      
+00001EE8                          1532  * A1 = The memory location of the start of the string.
+00001EE8                          1533  * D0 = Internal - holds temp value
+00001EE8                          1534  * D1 = Length of string (param assigned from outside), on return holds 0 (success) or non-zero (error)
+00001EE8                          1535  * D2 = Internal (counter)
+00001EE8                          1536  * D3 = Final address value (return value)
+00001EE8                          1537  
+00001EE8                          1538  ASCIITOHEX
+00001EE8  48E7 A000               1539      MOVEM.L D0/D2,-(SP) *Push register data onto the stack so we can restore it at the end
+00001EEC                          1540  
+00001EEC                          1541      * Test input. WHAT ARE WE REALLY TESTING?
+00001EEC  B23C 0008               1542      CMP.B   #8, D1          * Make sure D1 <= 8
+00001EF0  6E00 0066               1543      BGT ASCIITOHEX_ERROR    * Invalid address size, exit
+00001EF4  B23C 0000               1544      CMP.B   #0, D1          * Make sure D1 is > 0
+00001EF8  6F00 005E               1545      BLE ASCIITOHEX_ERROR    * Invalid address size, exit
+00001EFC                          1546      
+00001EFC  4283                    1547      CLR.L   D3      * Clear the return value
+00001EFE  5301                    1548      SUBQ.B  #1,D1       * Subtract 1 from the counter (zero based)
+00001F00                          1549  
+00001F00                          1550  ASCIITOHEX_LOOP * This loop uses D1 as its counter
+00001F00  E99B                    1551      ROL.L   #4, D3          * shift the bits left by 4
+00001F02  1019                    1552      MOVE.B  (A1)+, D0       * Copy the next byte from memory for conversion
+00001F04  B03C 0039               1553      CMP.B   #$39, D0        * If the value is < $39 it is either a number or it is invalid
+00001F08  6E00 0012               1554      BGT ASCIITOHEX_LETTER   * If this is a letter, go to the letter processing 
+00001F0C  B03C 0030               1555      CMP.B   #$30, D0        * If the value is < $30 then it is invalid
+00001F10  6D00 0046               1556      BLT ASCIITOHEX_ERROR    * Return an error
+00001F14  0400 0030               1557      SUBI.B  #$30, D0        * Since this is a valid number, subtract $30
+00001F18  6000 0032               1558      BRA ASCIITOHEX_FINISH_LOOP
+00001F1C                          1559  
+00001F1C                          1560  ASCIITOHEX_LETTER
+00001F1C  B03C 0066               1561      CMP.B   #$66, D0        * If the value is > $66 then the input is invalid
+00001F20  6E00 0036               1562      BGT ASCIITOHEX_ERROR    * Return an error
+00001F24  B03C 0061               1563      CMP.B   #$61, D0        * If the value >= $61 then this is a valid lower case letter
+00001F28  6C00 001A               1564      BGE ASCIITOHEX_LLETTER  * Process a lowercase letter
+00001F2C                          1565      
+00001F2C  B03C 0046               1566      CMP.B   #$46, D0        * If the value is > $46 then the input is invalid
+00001F30  6E00 0026               1567      BGT ASCIITOHEX_ERROR    * Return an error
+00001F34  B03C 0041               1568      CMP.B   #$41, D0        * If the value is < $41 then the input is invalid
+00001F38  6D00 001E               1569      BLT ASCIITOHEX_ERROR    * Return an error
+00001F3C  0400 0037               1570      SUBI.B  #$37, D0        * Since this is a valid letter (A-F) subtract $37
+00001F40  6000 000A               1571      BRA ASCIITOHEX_FINISH_LOOP
+00001F44                          1572      
+00001F44                          1573  ASCIITOHEX_LLETTER
+00001F44  0400 0057               1574      SUBI.B  #$57, D0
+00001F48  6000 0002               1575      BRA ASCIITOHEX_FINISH_LOOP
+00001F4C                          1576      
+00001F4C                          1577  ASCIITOHEX_FINISH_LOOP
+00001F4C  8600                    1578      OR.B    D0, D3          * OR the results into the return value
+00001F4E  51C9 FFB0               1579      DBF D1, ASCIITOHEX_LOOP * decement the counter and loop while > 0
+00001F52  4281                    1580      CLR.L   D1          * clear D1 to show that the conversion was successful
+00001F54  6000 0006               1581      BRA ASCIITOHEX_X        * finished
+00001F58                          1582  
+00001F58                          1583  ASCIITOHEX_ERROR
+00001F58  123C 0001               1584      MOVE.B  #$01,D1     * Return error in D1 (0 = success)
+00001F5C                          1585  ASCIITOHEX_X
+00001F5C  4CDF 0005               1586      MOVEM.L (SP)+,D0/D2 * Pop register data off the stack and restore it
+00001F60  4E75                    1587      RTS         * Exit sub-routine
+00001F62                          1588  
+00001F62                          1589  **************************************************************************************************
+00001F62                          1590  **********************************************************************************************
+00001F62                          1591  * HEXTOASCII - this function takes 2 parameters.  A number is converted into
+00001F62                          1592  *         hex (ascii) and saved at the memory location specified
+00001F62                          1593  *
+00001F62                          1594  * A1 = The memory location where the output will be written
+00001F62                          1595  * D0 = The value to convert 
+00001F62                          1596  * D1 = The size of the operation (1-4: this is the number of bytes to process)
+00001F62                          1597  * D2 = Internal
+00001F62                          1598  * D3 = Internal
+00001F62                          1599  
+00001F62                          1600  HEXTOASCII
+00001F62                          1601      *Test inputs and setup
+00001F62  0281 000000FF           1602      ANDI.L  #$000000FF,D1   *Clear everything except the byte
+00001F68  B23C 0004               1603      CMP.B   #4,D1       *Make sure D1 is <= 3
+00001F6C  6E00 0040               1604      BGT HEXTOASCII_X    *If invalid exit with no action
+00001F70  B23C 0000               1605      CMP.B   #0,D1       *Make sure D1 is > 0
+00001F74  6F00 0038               1606      BLE HEXTOASCII_X    *If invalid exit with no action
+00001F78  48E7 B000               1607      MOVEM.L D0/D2-D3,-(A7)  *Push register data onto the stack so we can restore it at the end
+00001F7C  E399                    1608      ROL.L   #1,D1       *multiple the counter by 2 (since we need to look at nibbles)
+00001F7E  5381                    1609      SUBQ.L  #1,D1       *decrement the counter (since it needs to be zero based)
+00001F80  2601                    1610      MOVE.L  D1,D3       *Save the counter so we can use it at the end to pop the chars off the stack
+00001F82                          1611      
+00001F82                          1612  *Loop1: This is where each hex digit is converted into ascii
+00001F82                          1613  HEXTOASCII_LOOP1
+00001F82  2400                    1614      MOVE.L  D0,D2       *Make a copy of the data we're going to convert
+00001F84  0202 000F               1615      ANDI.B  #NMASK,D2   *only look at the first nibble
+00001F88  B43C 0009               1616      CMP.B   #9,D2       *Compare to 9
+00001F8C  6E00 000A               1617      BGT HEXTOASCII_LETTER   *Is this a letter? (if the value is > 9)
+00001F90  0642 0030               1618      ADDI    #48,D2      *For numbers add 48 (the value is <= 9)
+00001F94  6000 0006               1619      BRA HEXTOASCII_NEXT *Skip the letter section
+00001F98                          1620  HEXTOASCII_LETTER
+00001F98  0642 0037               1621      ADDI    #55,D2      *For letters add 55
+00001F9C                          1622  HEXTOASCII_NEXT 
+00001F9C  1F02                    1623      MOVE.B  D2,-(A7)        *Push the data onto the stack
+00001F9E  E898                    1624      ROR.L   #4,D0           *Shift the bits in D0 to the right (by 4 bits)
+00001FA0  51C9 FFE0               1625      DBF D1,HEXTOASCII_LOOP1 *Use D1 as the counter 
+00001FA4                          1626  
+00001FA4                          1627  *Loop2: This is where we write the output as a string to the memory location in A1
+00001FA4                          1628  HEXTOASCII_LOOP2
+00001FA4  12DF                    1629      MOVE.B  (A7)+,(A1)+     *Pop each ascii character off the stack (and now in the correct order)
+00001FA6  51CB FFFC               1630      DBF D3,HEXTOASCII_LOOP2 *decement the counter and loop while > 0
+00001FAA                          1631      
+00001FAA                          1632      *All finished, time for clean up
+00001FAA  4CDF 000D               1633      MOVEM.L (A7)+,D0/D2-D3  *Pop register data off the stack and restore the registers
+00001FAE                          1634      
+00001FAE  4E75                    1635  HEXTOASCII_X    RTS
+00001FB0                          1636  
+00001FB0                          1637  **********************************************************************************************
+00001FB0                          1638  
+00001FB0                          1639  **********************************************************************************************
+00001FB0                          1640  
+00001FB0                          1641  * Variables and Strings
+00001FB0= 00 00 00 00 00 00 ...   1642  user_input  DCB.B   256,0   * this will store the input entered by the user
+000020B0= 00 00 00 00 00 00 ...   1643  str_good    DCB.B   256,0   * string containing the "good" data
+000021B0= 00 00 00 00 00 00 ...   1644  str_bad     DCB.B   256,0   * string containing the "bad" data
+000022B0                          1645  
+000022B0                          1646  ***********************
+000022B0                          1647  * Declare some error messages used in I/O
+000022B0= 55 6E 6B 6E 6F 77 ...   1648  str_error00 DC.B    'Unknown error.',$0
+000022BF= 56 61 6C 75 65 20 ...   1649  str_error01 DC.B    'Value entered was invalid.',$0
+000022DA= 53 74 61 72 74 20 ...   1650  str_error02 DC.B    'Start address is >= (End address - 4).',$0
+00002301= 53 74 61 72 74 20 ...   1651  str_error03 DC.B    'Start address is < min address.',$0
+00002321= 45 6E 64 20 61 64 ...   1652  str_error04 DC.B    'End address is > max address. ',$0
+00002340                          1653  ************************
+00002340                          1654  
+00002340= 2A 2A 2A 2A 2A 2A ...   1655  welcome0    DC.B    '***************************************************', $0
+00002374= 57 65 6C 63 6F 6D ...   1656  welcome1    DC.B    'Welcome to our CSS 422 Disassembler!', $0
+00002399= 00                      1657  str_empty   DC.B    '', $0
+0000239A= 57 68 61 74 20 69 ...   1658  str_prompt1 DC.B    'What is the starting address of the program? ',$0  
+000023C8= 20 20 57 68 61 74 ...   1659  str_prompt2 DC.B    '  What is the ending address of the program? ',$0
+000023F6= 43 6C 69 63 6B 20 ...   1660  str_scrnfull    DC.B    'Click enter to continue... ',$0
+00002412= 50 72 6F 67 72 61 ...   1661  str_finito  DC.B    'Program Completely Decoded',$0
+0000242D                          1662  
+0000242D= 41 37 41 36 41 35 ...   1663  str_movem_pre   DC.B    'A7','A6','A5','A4','A3','A2','A1','A0','D7','D6','D5','D4','D3','D2','D1','D0'
+0000244D= 44 30 44 31 44 32 ...   1664  str_movem_post  DC.B    'D0','D1','D2','D3','D4','D5','D6','D7','A0','A1','A2','A3','A4','A5','A6','A7'
+0000246D= 44 41 54 41 00          1665  str_unknown DC.B    'DATA',$0
+00002472= 41 44 44 00             1666  str_ADD     DC.B    'ADD',$00
+00002476= 41 44 44 41 00          1667  str_ADDA    DC.B    'ADDA',$00
+0000247B= 41 44 44 49 00          1668  str_ADDI    DC.B    'ADDI',$00
+00002480= 41 4E 44 00             1669  str_AND     DC.B    'AND',$00
+00002484= 41 4E 44 49 00          1670  str_ANDI    DC.B    'ANDI',$00
+00002489= 41 53 4C 00             1671  str_ASL     DC.B    'ASL',$00
+0000248D= 41 53 52 00             1672  str_ASR     DC.B    'ASR',$00
+00002491= 42 53 52 00             1673  str_BSR     DC.B    'BSR',$00
+00002495= 43 4C 52 00             1674  str_CLR     DC.B    'CLR',$00
+00002499= 43 4D 50 00             1675  str_CMP     DC.B    'CMP',$00
+0000249D= 43 4D 50 41 00          1676  str_CMPA    DC.B    'CMPA',$00
+000024A2= 43 4D 50 49 00          1677  str_CMPI    DC.B    'CMPI',$00
+000024A7= 44 41 54 41 00          1678  str_DATA    DC.B    'DATA',$00
+000024AC= 45 4F 52 00             1679  str_EOR     DC.B    'EOR',$00
+000024B0= 45 4F 52 49 00          1680  str_EORI    DC.B    'EORI',$00
+000024B5= 45 58 47 00             1681  str_EXG     DC.B    'EXG',$00
+000024B9= 4A 4D 50 00             1682  str_JMP     DC.B    'JMP',$00
+000024BD= 4A 53 52 00             1683  str_JSR     DC.B    'JSR',$00
+000024C1= 4C 45 41 00             1684  str_LEA     DC.B    'LEA',$00
+000024C5= 4C 53 52 00             1685  str_LSR     DC.B    'LSR',$00
+000024C9= 4C 53 4C 00             1686  str_LSL     DC.B    'LSL',$00
+000024CD= 4D 4F 56 45 00          1687  str_MOVE    DC.B    'MOVE',$00
+000024D2= 4D 4F 56 45 41 00       1688  str_MOVEA   DC.B    'MOVEA',$00
+000024D8= 4D 4F 56 45 4D 00       1689  str_MOVEM   DC.B    'MOVEM',$00
+000024DE= 4E 45 47 00             1690  str_NEG     DC.B    'NEG',$00
+000024E2= 4E 4F 50 00             1691  str_NOP     DC.B    'NOP',$00
+000024E6= 4E 4F 54 00             1692  str_NOT     DC.B    'NOT',$00
+000024EA= 4F 52 00                1693  str_OR      DC.B    'OR',$00
+000024ED= 4F 52 49 00             1694  str_ORI     DC.B    'ORI',$00
+000024F1= 52 4F 4C 00             1695  str_ROL     DC.B    'ROL',$00
+000024F5= 52 4F 52 00             1696  str_ROR     DC.B    'ROR',$00
+000024F9= 52 54 53 00             1697  str_RTS     DC.B    'RTS',$00
+000024FD= 53 55 42 00             1698  str_SUB     DC.B    'SUB',$00
+00002501= 53 55 42 41 00          1699  str_SUBA    DC.B    'SUBA',$00
+00002506= 53 55 42 49 00          1700  str_SUBI    DC.B    'SUBI',$00
+0000250B= 53 57 41 50 00          1701  str_SWAP    DC.B    'SWAP',$00
+00002510                          1702  
+00002510                          1703      END $1000       
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ARID_ADJ            1C92
+ARID_CB             1C6A
+ARII_ADJ            1D28
+ARII_CB             1CC4
+ASCIITOHEX          1EE8
+ASCIITOHEX_ERROR    1F58
+ASCIITOHEX_FINISH_LOOP  1F4C
+ASCIITOHEX_LETTER   1F1C
+ASCIITOHEX_LLETTER  1F44
+ASCIITOHEX_LOOP     1F00
+ASCIITOHEX_X        1F5C
+CODE0000            1284
+CODE0001            131A
+CODE0010            1328
+CODE0011            134E
+CODE0100            1374
+CODE0101            154A
+CODE0110            1550
+CODE0111            15F8
+CODE1000            15FE
+CODE1001            1612
+CODE1010            1654
+CODE1011            165A
+CODE1100            16BA
+CODE1101            1712
+CODE1110            1754
+CODE1111            18E6
+DECODE              10B0
+DECODE_DONE         1106
+DECODE_LOOP         10B4
+DECODE_SCN_FULL     1118
+DREG                1CF6
+DREG2               1E58
+EADECODE            1B52
+ERROR_01            11C4
+ERROR_02            11CE
+ERROR_03            11D8
+ERROR_04            11E2
+ERROR_DISPLAY       11EC
+ERROR_HANDLER       119A
+FIN                 1EB2
+FINISH              1EC0
+HEXTOASCII          1F62
+HEXTOASCII_LETTER   1F98
+HEXTOASCII_LOOP1    1F82
+HEXTOASCII_LOOP2    1FA4
+HEXTOASCII_NEXT     1F9C
+HEXTOASCII_X        1FAE
+MAX_ADDR            FFFFFFFF
+MFIV_X              1C8A
+MFOR_X              1C48
+MIN_ADDR            0
+MODE_FIVE           1C5A
+MODE_FOUR           1C2E
+MODE_ONE            1BBA
+MODE_SEVEN          1D3C
+MODE_SIX            1CA6
+MODE_THREE          1C02
+MODE_TWO            1BDA
+MODE_ZERO           1BAC
+MONE_X              1BCC
+MSIX_X              1CE4
+MTHR_X              1C18
+MTWO_X              1BF0
+NMASK               F
+NXT                 1CFA
+NXT11               1E5C
+NXT12               1E82
+NXT2                1D20
+OPCODE              11F6
+OPCODE_DECODE_BSR   156A
+OPCODE_DECODE_BSR_FINISH  15E6
+OPCODE_DECODE_BSR_LONG  15C6
+OPCODE_DECODE_BSR_POS  15E4
+OPCODE_DECODE_BSR_WORD  15AC
+OPCODE_DECODE_FIX_SWAP  148A
+OPCODE_DECODE_GET   1AF8
+OPCODE_DECODE_MOVEM1  149A
+OPCODE_DECODE_MOVEM2  14C4
+OPCODE_DECODE_MOVEM_POST  14EE
+OPCODE_DECODE_MOVEM_POST_X  1512
+OPCODE_DECODE_MOVEM_PRE  151C
+OPCODE_DECODE_MOVEM_PRE_X  1540
+OPCODE_DECODE_TYPEA  18EC
+OPCODE_DECODE_TYPEA_CONT  1914
+OPCODE_DECODE_TYPEB  1AEC
+OPCODE_DONE         121A
+OPCODE_FIX_ADDA     173A
+OPCODE_FIX_CMPA     1692
+OPCODE_FIX_EOR      16AC
+OPCODE_FIX_EXG_TYPEA  16F2
+OPCODE_FIX_EXG_TYPEB  16FA
+OPCODE_FIX_EXG_TYPEC  1702
+OPCODE_FIX_SUBA     163A
+OPCODE_JMPTABLE     1224
+OPCODE_MODE1        1984
+OPCODE_MODE2        1996
+OPCODE_MODE3_BYTE   19A8
+OPCODE_MODE3_LONG   19F0
+OPCODE_MODE3_WORD   19CC
+OPCODE_MODE4        1A12
+OPCODE_MODE5        1A2A
+OPCODE_MODE6        1A54
+OPCODE_MODE7        1A5C
+OPCODE_MODE8        1A82
+OPCODE_MODE9        1A9E
+OPCODE_MODE_FIX     1B1E
+OPCODE_MODE_FIX_DONE  1B34
+OPCODE_PAD          1B36
+OPCODE_PAD_MORE     1B48
+OPCODE_PRINTREG     1ACA
+OPCODE_PRINTREG_AN  1AE0
+OPCODE_PRINTREG_CONT  1AE4
+OPCODE_SIZE_B       1AA6
+OPCODE_SIZE_L       1ABE
+OPCODE_SIZE_W       1AB2
+PAD_MORE            116C
+PCID_ADJ            1DE4
+PCID_CB             1DA6
+PCII_ADJ            1E8A
+PCII_CB             1E0A
+PRINT_BAD           1148
+PRMT_END            106C
+PRMT_START          102A
+QUIT                1138
+REG_FOUR            1E96
+REG_ONE             1D80
+REG_THREE           1DEE
+REG_TWO             1D94
+REG_ZERO            1D6C
+SCRN_LINES          1E
+SIZB                1D1C
+SIZB1               1E7E
+SIZEREADY1          1DC6
+SIZEREADY2          1E2A
+SPREGFIV            1C9C
+SPREGFOR            1C50
+SPREGONE            1BD0
+SPREGSIX            1D32
+SPREGTHR            1C24
+SPREGTWO            1BF8
+STACK               A0000
+START               1000
+STOP                1032
+STRCPY              1EC8
+STRCPY_DONE         1EE2
+STRCPY_NEXT         1ED2
+STR_ADD             2472
+STR_ADDA            2476
+STR_ADDI            247B
+STR_AND             2480
+STR_ANDI            2484
+STR_ASL             2489
+STR_ASR             248D
+STR_BAD             21B0
+STR_BSR             2491
+STR_CLR             2495
+STR_CMP             2499
+STR_CMPA            249D
+STR_CMPI            24A2
+STR_DATA            24A7
+STR_EMPTY           2399
+STR_EOR             24AC
+STR_EORI            24B0
+STR_ERROR00         22B0
+STR_ERROR01         22BF
+STR_ERROR02         22DA
+STR_ERROR03         2301
+STR_ERROR04         2321
+STR_EXG             24B5
+STR_FINITO          2412
+STR_GOOD            20B0
+STR_JMP             24B9
+STR_JSR             24BD
+STR_LEA             24C1
+STR_LSL             24C9
+STR_LSR             24C5
+STR_MOVE            24CD
+STR_MOVEA           24D2
+STR_MOVEM           24D8
+STR_MOVEM_POST      244D
+STR_MOVEM_PRE       242D
+STR_NEG             24DE
+STR_NOP             24E2
+STR_NOT             24E6
+STR_OR              24EA
+STR_ORI             24ED
+STR_PROMPT1         239A
+STR_PROMPT2         23C8
+STR_ROL             24F1
+STR_ROR             24F5
+STR_RTS             24F9
+STR_SCRNFULL        23F6
+STR_SUB             24FD
+STR_SUBA            2501
+STR_SUBI            2506
+STR_SWAP            250B
+STR_UNKNOWN         246D
+TASK1               1
+TASK13              D
+TASK14              E
+TASK2               2
+TEST                1198
+USER_INPUT          1FB0
+WELCOME             1006
+WELCOME0            2340
+WELCOME1            2374
+WORB                1EAC
