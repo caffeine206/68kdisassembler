@@ -1,6 +1,6 @@
 00001000 Starting Address
-Assembler used: EASy68K Editor/Assembler v5.15.00
-Created On: 5/30/2014 5:37:43 PM
+Assembler used: EASy68K Editor/Assembler v5.14.01
+Created On: 6/4/2014 5:55:25 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : 68K Disassembler
@@ -2636,21 +2636,39 @@ Created On: 5/30/2014 5:37:43 PM
 00001690  0CB8 55555555 1234      2632      CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
 00001698  0CB9 55555555 12345678  2633      CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word
 000016A2                          2634     
-000016A2                          2635  
-000016A2                          2636  
-000016A2                          2637  
-000016A2                          2638  SIMHALT             ; halt simulator
-000016A2                          2639      
-000016A2                          2640  * Put variables and constants here
-000016A2                          2641  
-000016A2                          2642      END    START        ; last line of source
+000016A2                          2635  **********************************************************************
+000016A2                          2636  **
+000016A2                          2637  **BCC, BRA, JSR, RTS
+000016A2                          2638  **
+000016A2                          2639  **********************************************************************
+000016A2                          2640  **********************************************************************
+000016A2                          2641      
+Line 2642 ERROR: Undefined symbol
+000016A2  6500 88A4               2642      BCS         SOMEWHERE
+Line 2643 ERROR: Undefined symbol
+000016A6  6C00 88A0               2643      BGE         SOMEWHERE
+Line 2644 ERROR: Undefined symbol
+000016AA  6D00 889C               2644      BLT         SOMEWHERE
+Line 2645 ERROR: Undefined symbol
+000016AE  6800 8898               2645      BVC         SOMEWHERE
+Line 2646 ERROR: Undefined symbol
+000016B2  6000 8894               2646      BRA         SOMEWHERE
+Line 2647 ERROR: Undefined symbol
+000016B6  4EB9 00009F48           2647      JSR         SOMEWHERE
+000016BC  4E75                    2648      RTS         
+000016BE                          2649  
+000016BE                          2650  SIMHALT             ; halt simulator
+000016BE                          2651      
+000016BE                          2652  * Put variables and constants here
+000016BE                          2653  
+000016BE                          2654      END    START        ; last line of source
 
-No errors detected
+6 errors detected
 No warnings generated
 
 
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-SIMHALT             16A2
+SIMHALT             16BE
 START               1000

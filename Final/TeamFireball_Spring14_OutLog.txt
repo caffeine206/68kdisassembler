@@ -1,0 +1,680 @@
+EASy68K output log file: 6/4/2014 6:01:11 PM
+
+Welcome to EASY68K Disassembler by Team FIREBALL!
+ 
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNNMMMMMM
+MMMMMMMMNhymMMMMMMMMMMMNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNNmmmNNNNMMMMMMM
+MMMMMMMMysohMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNNNNNNNmdhhmNNMNMMMMMMMM
+MMMMMMMMNhdNMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNNNNNNNNNmmmmmmdyyydNNNMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNNNNNNmmmmmmmmddhhhysshdmNNMMMMMMMMMMMMM
+MMMMMMMMMMMNMMMMMMMMMMMMMMMMMMMNNNNNNNNNmmmmmmmddddhyyyyo+oydmmNNNNMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNNNmmmmmmddddddhhyyysossyyhdmmNNNNNMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMNNNNNNmmmmmmdddddhhhhhyso+ooosyyhdmmmNNNNNMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMNNNNmmdddddddhhhhhyyyysoo+++ooosyhdmmmNNNNMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMNNNNmmmddhhhhhhhyyyssossso+/://oosyhddmmmNNNNMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMNNNmmdddhhyyyyyyyssoo++oo+/:::/++oshhddmmNNNNNMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMNNmmddhhyyyysssssoo+//++ooo+//++osyhhdddmmNNNNMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMNNNNmmdhhyysssssoooo+///:/++o++/+ooosyhdddmmNNNNMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMNNNmmdhhyssoooo++++++/+oo++++///osssyhhddmmNNNNMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMNNmmdhyysoooo++++++++ooooo+++/+osyyyhhddmmNNNMNMMMMMMMMMMMMNNNNNMMMMMMMMM
+MMMMMMNNmdhyso+++++o++++ooooysso++o+ossyyhhddmmNNNMMMMMMMMMMMMMMmysyyydNMMMMMMMM
+MMMMMNNmdhso+////ooossssyyysoo++++osssyyhhddmNNNMMMMMMMMMMMMMMMmossosydNMMMMMMMM
+MMMMMNmdys+:-:/oyhdhdhysoos++++++oossyyhhdmmNNMMMMMMMMMMMMMMMNMhoysssydNMMMMMMMM
+MMMMNNmhs+-./yydmmNmmmhhyso++++ooossyyhddmNNMMMMMMMMMNNMMMMMMMMmssyhhdNMMMMMMMMM
+MMMMNNdyo:.:shdmNNmmmmhsoo+++ooossyyhddmNNNMMMMMMMMMMMMMMMMMMMMMmhdmNNMMMMMMMMMM
+MMMMMNdyo/.:+sdmmNmmmdooo++++oosyhhddmNNNMMMMMMMMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMNmhs+-.:oshdmmmh++/+++osyyhddmmNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMNmhyo/-:/oyso/:/++osyyhddmmNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMNNmdhso+///+osyyhhddmmNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmMMMMMMMMMMMMM
+MMMMMMMMMMNNNmmddddmmmmNNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNmMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ 
+Enter starting address: ($0 to $00FFFFFE)
+7000
+Enter ending address: (start to $00FFFFE)
+7700
+00007000	MOVE.B    D3,D4
+00007002	MOVE.B    D3,(A4)
+00007004	MOVE.B    D3,(A4)+
+00007006	MOVE.B    D3,-(A4)
+00007008	MOVE.B    D3,$1234
+0000700C	MOVE.B    D3,$12345678
+00007012	MOVE.B    (A3),D4
+00007014	MOVE.B    (A3),(A4)
+00007016	MOVE.B    (A3),(A4)+
+00007018	MOVE.B    (A3),-(A4)
+0000701A	MOVE.B    (A3),$1234
+0000701E	MOVE.B    (A3),$12345678
+00007024	MOVE.B    (A3)+,D4
+00007026	MOVE.B    (A3)+,(A4)
+00007028	MOVE.B    (A3)+,(A4)+
+0000702A	MOVE.B    (A3)+,-(A4)
+0000702C	MOVE.B    (A3)+,$1234
+00007030	MOVE.B    (A3)+,$12345678
+00007036	MOVE.B    -(A3),D4
+00007038	MOVE.B    -(A3),(A4)
+ 
+Press Enter to continue!
+
+0000703A	MOVE.B    -(A3),(A4)+
+0000703C	MOVE.B    -(A3),-(A4)
+0000703E	MOVE.B    -(A3),$1234
+00007042	MOVE.B    -(A3),$12345678
+00007048	MOVE.B    $1234,D4
+0000704C	MOVE.B    $1234,(A4)
+00007050	MOVE.B    $1234,(A4)+
+00007054	MOVE.B    $1234,-(A4)
+00007058	MOVE.B    $1234,$1234
+0000705E	MOVE.B    $1234,$12345678
+00007066	MOVE.B    $12345678,D4
+0000706C	MOVE.B    $12345678,(A4)
+00007072	MOVE.B    $12345678,(A4)+
+00007078	MOVE.B    $12345678,-(A4)
+0000707E	MOVE.B    $12345678,$1234
+00007086	MOVE.B    $12345678,$12345678
+00007090	MOVE.B    #$55,D4
+00007094	MOVE.B    #$55,(A4)
+00007098	MOVE.B    #$55,(A4)+
+0000709C	MOVE.B    #$55,-(A4)
+ 
+Press Enter to continue!
+
+000070A0	MOVE.B    #$55,$1234
+000070A6	MOVE.B    #$55,$12345678
+000070AE	MOVE.W    D3,D4
+000070B0	MOVE.W    D3,(A4)
+000070B2	MOVE.W    D3,(A4)+
+000070B4	MOVE.W    D3,-(A4)
+000070B6	MOVE.W    D3,$1234
+000070BA	MOVE.W    D3,$12345678
+000070C0	MOVE.W    A3,D4
+000070C2	MOVE.W    A3,(A4)
+000070C4	MOVE.W    A3,(A4)+
+000070C6	MOVE.W    A3,-(A4)
+000070C8	MOVE.W    A3,$1234
+000070CC	MOVE.W    A3,$12345678
+000070D2	MOVE.W    (A3),D4
+000070D4	MOVE.W    (A3),(A4)
+000070D6	MOVE.W    (A3),(A4)+
+000070D8	MOVE.W    (A3),-(A4)
+000070DA	MOVE.W    (A3),$1234
+000070DE	MOVE.W    (A3),$12345678
+ 
+Press Enter to continue!
+
+000070E4	MOVE.W    (A3)+,D4
+000070E6	MOVE.W    (A3)+,(A4)
+000070E8	MOVE.W    (A3)+,(A4)+
+000070EA	MOVE.W    (A3)+,-(A4)
+000070EC	MOVE.W    (A3)+,$1234
+000070F0	MOVE.W    (A3)+,$12345678
+000070F6	MOVE.W    -(A3),D4
+000070F8	MOVE.W    -(A3),(A4)
+000070FA	MOVE.W    -(A3),(A4)+
+000070FC	MOVE.W    -(A3),-(A4)
+000070FE	MOVE.W    -(A3),$1234
+00007102	MOVE.W    -(A3),$12345678
+00007108	MOVE.W    $1234,D4
+0000710C	MOVE.W    $1234,(A4)
+00007110	MOVE.W    $1234,(A4)+
+00007114	MOVE.W    $1234,-(A4)
+00007118	MOVE.W    $1234,$1234
+0000711E	MOVE.W    $1234,$12345678
+00007126	MOVE.W    $12345678,D4
+0000712C	MOVE.W    $12345678,(A4)
+ 
+Press Enter to continue!
+
+00007132	MOVE.W    $12345678,(A4)+
+00007138	MOVE.W    $12345678,-(A4)
+0000713E	MOVE.W    $12345678,$1234
+00007146	MOVE.W    $12345678,$12345678
+00007150	MOVE.W    #$5555,D4
+00007154	MOVE.W    #$5555,(A4)
+00007158	MOVE.W    #$5555,(A4)+
+0000715C	MOVE.W    #$5555,-(A4)
+00007160	MOVE.W    #$5555,$1234
+00007166	MOVE.W    #$5555,$12345678
+0000716E	MOVE.L    D3,D4
+00007170	MOVE.L    D3,(A4)
+00007172	MOVE.L    D3,(A4)+
+00007174	MOVE.L    D3,-(A4)
+00007176	MOVE.L    D3,$1234
+0000717A	MOVE.L    D3,$12345678
+00007180	MOVE.L    A3,D4
+00007182	MOVE.L    A3,(A4)
+00007184	MOVE.L    A3,(A4)+
+00007186	MOVE.L    A3,-(A4)
+ 
+Press Enter to continue!
+
+00007188	MOVE.L    A3,$1234
+0000718C	MOVE.L    A3,$12345678
+00007192	MOVE.L    (A3),D4
+00007194	MOVE.L    (A3),(A4)
+00007196	MOVE.L    (A3),(A4)+
+00007198	MOVE.L    (A3),-(A4)
+0000719A	MOVE.L    (A3),$1234
+0000719E	MOVE.L    (A3),$12345678
+000071A4	MOVE.L    (A3)+,D4
+000071A6	MOVE.L    (A3)+,(A4)
+000071A8	MOVE.L    (A3)+,(A4)+
+000071AA	MOVE.L    (A3)+,-(A4)
+000071AC	MOVE.L    (A3)+,$1234
+000071B0	MOVE.L    (A3)+,$12345678
+000071B6	MOVE.L    -(A3),D4
+000071B8	MOVE.L    -(A3),(A4)
+000071BA	MOVE.L    -(A3),(A4)+
+000071BC	MOVE.L    -(A3),-(A4)
+000071BE	MOVE.L    -(A3),$1234
+000071C2	MOVE.L    -(A3),$12345678
+ 
+Press Enter to continue!
+
+000071C8	MOVE.L    $1234,D4
+000071CC	MOVE.L    $1234,(A4)
+000071D0	MOVE.L    $1234,(A4)+
+000071D4	MOVE.L    $1234,-(A4)
+000071D8	MOVE.L    $1234,$1234
+000071DE	MOVE.L    $1234,$12345678
+000071E6	MOVE.L    $12345678,D4
+000071EC	MOVE.L    $12345678,(A4)
+000071F2	MOVE.L    $12345678,(A4)+
+000071F8	MOVE.L    $12345678,-(A4)
+000071FE	MOVE.L    $12345678,$1234
+00007206	MOVE.L    $12345678,$12345678
+00007210	MOVE.L    #$55555555,D4
+00007216	MOVE.L    #$55555555,(A4)
+0000721C	MOVE.L    #$55555555,(A4)+
+00007222	MOVE.L    #$55555555,-(A4)
+00007228	MOVE.L    #$55555555,$1234
+00007230	MOVE.L    #$55555555,$12345678
+0000723A	MOVEA.W   D3,A4
+0000723C	MOVEA.W   A3,A4
+ 
+Press Enter to continue!
+
+0000723E	MOVEA.W   (A3),A4
+00007240	MOVEA.W   (A3)+,A4
+00007242	MOVEA.W   -(A3),A4
+00007244	MOVEA.W   $1234,A4
+00007248	MOVEA.W   $12345678,A4
+0000724E	MOVEA.W   #$5555,A4
+00007252	MOVEA.L   D3,A4
+00007254	MOVEA.L   A3,A4
+00007256	MOVEA.L   (A3),A4
+00007258	MOVEA.L   (A3)+,A4
+0000725A	MOVEA.L   -(A3),A4
+0000725C	MOVEA.L   $1234,A4
+00007260	MOVEA.L   $12345678,A4
+00007266	MOVEA.L   #$55555555,A4
+0000726C	MOVEM.W   A3,(A4)
+00007270	MOVEM.W   A3,-(A4)
+00007274	MOVEM.W   A3,$1234
+0000727A	MOVEM.W   A3,$12345678
+00007282	MOVEM.W   (A3),D4
+00007286	MOVEM.W   (A3),A4
+ 
+Press Enter to continue!
+
+0000728A	MOVEM.L   A3,(A4)
+0000728E	MOVEM.L   A3,-(A4)
+00007292	MOVEM.L   A3,$1234
+00007298	MOVEM.L   A3,$12345678
+000072A0	MOVEM.L   (A3),D4
+000072A4	MOVEM.L   (A3),A4
+000072A8	SUB.B     D3,D4
+000072AA	SUB.B     D3,(A4)
+000072AC	SUB.B     D3,(A4)+
+000072AE	SUB.B     D3,-(A4)
+000072B0	SUB.B     D3,$1234
+000072B4	SUB.B     D3,$12345678
+000072BA	SUB.B     (A3),D4
+000072BC	SUB.B     (A3)+,D4
+000072BE	SUB.B     -(A3),D4
+000072C0	SUB.B     $1234,D4
+000072C4	SUB.B     $12345678,D4
+000072CA	DATA      0404
+000072CC	ORI.W     #$9843,(A5)
+000072D0	DATA      98C3
+ 
+Press Enter to continue!
+
+000072D2	SUB.W     D3,(A4)
+000072D4	SUB.W     D3,(A4)+
+000072D6	SUB.W     D3,-(A4)
+000072D8	SUB.W     D3,$1234
+000072DC	SUB.W     D3,$12345678
+000072E2	SUB.W     A3,D4
+000072E4	SUB.W     (A3),D4
+000072E6	SUB.W     (A3)+,D4
+000072E8	SUB.W     -(A3),D4
+000072EA	SUB.W     $1234,D4
+000072EE	SUB.W     $12345678,D4
+000072F4	DATA      0444
+000072F6	SUBQ.W    #$2,(A5)
+000072F8	SUB.L     D3,D4
+000072FA	SUB.L     A3,D4
+000072FC	SUB.L     (A3),D4
+000072FE	SUB.L     (A3)+,D4
+00007300	SUB.L     -(A3),D4
+00007302	SUB.L     $1234,D4
+00007306	SUB.L     $12345678,D4
+ 
+Press Enter to continue!
+
+0000730C	DATA      0484
+0000730E	SUBQ.W    #$2,(A5)
+00007310	SUBQ.W    #$2,(A5)
+00007312	SUBQ.B    #$5,D4
+00007314	SUBQ.B    #$5,(A4)
+00007316	SUBQ.B    #$5,(A4)+
+00007318	SUBQ.B    #$5,-(A4)
+0000731A	SUBQ.B    #$5,$1234
+0000731E	SUBQ.B    #$5,$12345678
+00007324	SUBQ.W    #$5,D4
+00007326	SUBQ.W    #$5,A4
+00007328	SUBQ.W    #$5,(A4)
+0000732A	SUBQ.W    #$5,(A4)+
+0000732C	SUBQ.W    #$5,-(A4)
+0000732E	SUBQ.W    #$5,$1234
+00007332	SUBQ.W    #$5,$12345678
+00007338	SUBQ.L    #$5,D4
+0000733A	SUBQ.L    #$5,A4
+0000733C	SUBQ.L    #$5,(A4)
+0000733E	SUBQ.L    #$5,(A4)+
+ 
+Press Enter to continue!
+
+00007340	SUBQ.L    #$5,-(A4)
+00007342	SUBQ.L    #$5,$1234
+00007346	SUBQ.L    #$5,$12345678
+0000734C	MULS.W    D3,D4
+0000734E	MULS.W    (A3),D4
+00007350	MULS.W    (A3)+,D4
+00007352	MULS.W    -(A3),D4
+00007354	MULS.W    $1234,D4
+00007358	MULS.W    $12345678,D4
+0000735E	MULS.W    #$5555,D4
+00007362	DIVS.W    D3,D4
+00007364	DIVS.W    (A3),D4
+00007366	DIVS.W    (A3)+,D4
+00007368	DIVS.W    -(A3),D4
+0000736A	DIVS.W    $1234,D4
+0000736E	DIVS.W    $12345678,D4
+00007374	DIVS.W    #$5555,D4
+00007378	LEA       (A3),A4
+0000737A	LEA       $1234,A4
+0000737E	LEA       $12345678,A4
+ 
+Press Enter to continue!
+
+00007384	OR.B      D3,D4
+00007386	OR.B      D3,(A4)
+00007388	OR.B      D3,(A4)+
+0000738A	OR.B      D3,-(A4)
+0000738C	OR.B      D3,$1234
+00007390	OR.B      D3,$12345678
+00007396	OR.B      (A3),D4
+00007398	OR.B      (A3)+,D4
+0000739A	OR.B      -(A3),D4
+0000739C	OR.B      $1234,D4
+000073A0	OR.B      $12345678,D4
+000073A6	OR.B      #$55,D4
+000073AA	OR.W      D3,D4
+000073AC	OR.W      D3,(A4)
+000073AE	OR.W      D3,(A4)+
+000073B0	OR.W      D3,-(A4)
+000073B2	OR.W      D3,$1234
+000073B6	OR.W      D3,$12345678
+000073BC	OR.W      (A3),D4
+000073BE	OR.W      (A3)+,D4
+ 
+Press Enter to continue!
+
+000073C0	OR.W      -(A3),D4
+000073C2	OR.W      $1234,D4
+000073C6	OR.W      $12345678,D4
+000073CC	OR.W      #$5555,D4
+000073D0	OR.L      D3,D4
+000073D2	OR.L      D3,$0004
+000073D6	OR.L      D3,(A4)
+000073D8	OR.L      D3,(A4)+
+000073DA	OR.L      D3,-(A4)
+000073DC	OR.L      D3,$1234
+000073E0	OR.L      D3,$12345678
+000073E6	OR.L      (A3),D4
+000073E8	OR.L      (A3)+,D4
+000073EA	OR.L      -(A3),D4
+000073EC	OR.L      $1234,D4
+000073F0	OR.L      $12345678,D4
+000073F6	OR.L      #$55555555,D4
+000073FC	ORI.B     #$55,D4
+00007400	ORI.B     #$55,(A4)
+00007404	ORI.B     #$55,(A4)+
+ 
+Press Enter to continue!
+
+00007408	ORI.B     #$55,-(A4)
+0000740C	ORI.B     #$55,$1234
+00007412	ORI.B     #$55,$12345678
+0000741A	ORI.W     #$5555,D4
+0000741E	ORI.W     #$5555,(A4)
+00007422	ORI.W     #$5555,(A4)+
+00007426	ORI.W     #$5555,-(A4)
+0000742A	ORI.W     #$5555,$1234
+00007430	ORI.W     #$5555,$12345678
+00007438	ORI.L     #$55555555,D4
+0000743E	ORI.L     #$55555555,(A4)
+00007444	ORI.L     #$55555555,(A4)+
+0000744A	ORI.L     #$55555555,-(A4)
+00007450	ORI.L     #$55555555,$1234
+00007458	ORI.L     #$55555555,$12345678
+00007462	OR.B      D3,D4
+00007464	OR.B      D3,(A4)
+00007466	OR.B      D3,(A4)+
+00007468	OR.B      D3,-(A4)
+0000746A	OR.B      D3,$1234
+ 
+Press Enter to continue!
+
+0000746E	OR.B      D3,$12345678
+00007474	OR.B      (A3),D4
+00007476	OR.B      (A3)+,D4
+00007478	OR.B      -(A3),D4
+0000747A	OR.B      $1234,D4
+0000747E	OR.B      $12345678,D4
+00007484	OR.B      #$55,D4
+00007488	OR.W      D3,D4
+0000748A	OR.W      D3,(A4)
+0000748C	OR.W      D3,(A4)+
+0000748E	OR.W      D3,-(A4)
+00007490	OR.W      D3,$1234
+00007494	OR.W      D3,$12345678
+0000749A	OR.W      (A3),D4
+0000749C	OR.W      (A3)+,D4
+0000749E	OR.W      -(A3),D4
+000074A0	OR.W      $1234,D4
+000074A4	OR.W      $12345678,D4
+000074AA	OR.W      #$5555,D4
+000074AE	OR.L      D3,D4
+ 
+Press Enter to continue!
+
+000074B0	OR.L      D3,$0004
+000074B4	OR.L      D3,(A4)
+000074B6	OR.L      D3,(A4)+
+000074B8	OR.L      D3,-(A4)
+000074BA	OR.L      D3,$1234
+000074BE	OR.L      D3,$12345678
+000074C4	OR.L      (A3),D4
+000074C6	OR.L      (A3)+,D4
+000074C8	OR.L      -(A3),D4
+000074CA	OR.L      $1234,D4
+000074CE	OR.L      $12345678,D4
+000074D4	OR.L      #$55555555,D4
+000074DA	NEG.B     D3
+000074DC	NEG.B     (A3)
+000074DE	NEG.B     (A3)+
+000074E0	NEG.B     -(A3)
+000074E2	NEG.B     $1234
+000074E6	NEG.B     $12345678
+000074EC	NEG.W     D3
+000074EE	NEG.W     (A3)
+ 
+Press Enter to continue!
+
+000074F0	NEG.W     (A3)+
+000074F2	NEG.W     -(A3)
+000074F4	NEG.W     $1234
+000074F8	NEG.W     $12345678
+000074FE	NEG.L     D3
+00007500	NEG.L     (A3)
+00007502	NEG.L     (A3)+
+00007504	NEG.L     -(A3)
+00007506	NEG.L     $1234
+0000750A	NEG.L     $12345678
+00007510	EOR.B     D3,D4
+00007512	EOR.B     D3,(A4)
+00007514	EOR.B     D3,(A4)+
+00007516	EOR.B     D3,-(A4)
+00007518	EOR.B     D3,$1234
+0000751C	EOR.B     D3,$12345678
+00007522	EOR.W     D3,D4
+00007524	EOR.W     D3,(A4)
+00007526	EOR.W     D3,(A4)+
+00007528	EOR.W     D3,-(A4)
+ 
+Press Enter to continue!
+
+0000752A	EOR.W     D3,$1234
+0000752E	EOR.W     D3,$12345678
+00007534	EOR.L     D3,D4
+00007536	EOR.L     D3,(A4)
+00007538	EOR.L     D3,(A4)+
+0000753A	EOR.L     D3,-(A4)
+0000753C	EOR.L     D3,$1234
+00007540	EOR.L     D3,$12345678
+00007546	LSR.B     #$1,D0
+00007548	LSR.B     D1,D0
+0000754A	LSR.W     #$1,D0
+0000754C	LSR.W     D1,D0
+0000754E	LSR.W     (A1)
+00007550	LSR.W     (A1)+
+00007552	LSR.W     -(A1)
+00007554	LSR.W     $1234
+00007558	LSR.W     $55555555
+0000755E	LSR.L     #$1,D0
+00007560	LSR.L     D1,D0
+00007562	LSL.B     #$1,D0
+ 
+Press Enter to continue!
+
+00007564	LSL.B     D1,D0
+00007566	LSL.W     #$1,D0
+00007568	LSL.W     D1,D0
+0000756A	LSL.W     (A1)
+0000756C	LSL.W     (A1)+
+0000756E	LSL.W     -(A1)
+00007570	LSL.W     $1234
+00007574	LSL.W     $55555555
+0000757A	LSL.L     #$1,D0
+0000757C	LSL.L     D1,D0
+0000757E	ASR.B     #$1,D0
+00007580	ASR.B     D1,D0
+00007582	ASR.W     #$1,D0
+00007584	ASR.W     D1,D0
+00007586	ASR.W     (A1)
+00007588	ASR.W     (A1)+
+0000758A	ASR.W     -(A1)
+0000758C	ASR.W     $1234
+00007590	ASR.W     $55555555
+00007596	ASR.L     #$1,D0
+ 
+Press Enter to continue!
+
+00007598	ASR.L     D1,D0
+0000759A	ASL.B     #$1,D0
+0000759C	ASL.B     D1,D0
+0000759E	ASL.W     #$1,D0
+000075A0	ASL.W     D1,D0
+000075A2	ASL.W     (A1)
+000075A4	ASL.W     (A1)+
+000075A6	ASL.W     -(A1)
+000075A8	ASL.W     $1234
+000075AC	ASL.W     $55555555
+000075B2	ASL.L     #$1,D0
+000075B4	ASL.L     D1,D0
+000075B6	ROR.B     #$1,D0
+000075B8	ROR.B     D1,D0
+000075BA	ROR.W     #$1,D0
+000075BC	ROR.W     D1,D0
+000075BE	ROR.W     (A1)
+000075C0	ROR.W     (A1)+
+000075C2	ROR.W     -(A1)
+000075C4	ROR.W     $1234
+ 
+Press Enter to continue!
+
+000075C8	ROR.W     $55555555
+000075CE	ROR.L     #$1,D0
+000075D0	ROR.L     D1,D0
+000075D2	ROL.B     #$1,D0
+000075D4	ROL.B     D1,D0
+000075D6	ROL.W     #$1,D0
+000075D8	ROL.W     D1,D0
+000075DA	ROL.W     (A1)
+000075DC	ROL.W     (A1)+
+000075DE	ROL.W     -(A1)
+000075E0	ROL.W     $1234
+000075E4	ROL.W     $55555555
+000075EA	ROL.L     #$1,D0
+000075EC	ROL.L     D1,D0
+000075EE	BCLR      #$01,D0
+000075F2	BCLR      D1,D0
+000075F4	CMP.B     D3,D4
+000075F6	CMP.B     (A3),D4
+000075F8	CMP.B     (A3)+,D4
+000075FA	CMP.B     -(A3),D4
+ 
+Press Enter to continue!
+
+000075FC	CMP.B     $1234,D4
+00007600	CMP.B     $12345678,D4
+00007606	CMP.B     #$55,D4
+0000760A	CMP.W     D3,D4
+0000760C	CMP.W     A3,D4
+0000760E	CMP.W     (A3),D4
+00007610	CMP.W     (A3)+,D4
+00007612	CMP.W     -(A3),D4
+00007614	CMP.W     $1234,D4
+00007618	CMP.W     $12345678,D4
+0000761E	CMP.W     #$5555,D4
+00007622	CMP.L     D3,D4
+00007624	CMP.L     A3,D4
+00007626	CMP.L     (A3),D4
+00007628	CMP.L     (A3)+,D4
+0000762A	CMP.L     -(A3),D4
+0000762C	CMP.L     $1234,D4
+00007630	CMP.L     $12345678,D4
+00007636	CMP.L     #$55555555,D4
+0000763C	CMPI.B    #$55,D4
+ 
+Press Enter to continue!
+
+00007640	CMPI.B    #$55,(A4)
+00007644	CMPI.B    #$55,(A4)+
+00007648	CMPI.B    #$55,-(A4)
+0000764C	CMPI.B    #$55,$1234
+00007652	CMPI.B    #$55,$12345678
+0000765A	CMPI.W    #$5555,D4
+0000765E	CMPI.W    #$5555,(A4)
+00007662	CMPI.W    #$5555,(A4)+
+00007666	CMPI.W    #$5555,-(A4)
+0000766A	CMPI.W    #$5555,$1234
+00007670	CMPI.W    #$5555,$12345678
+00007678	CMPI.L    #$55555555,D4
+0000767E	CMPI.L    #$55555555,(A4)
+00007684	CMPI.L    #$55555555,(A4)+
+0000768A	CMPI.L    #$55555555,-(A4)
+00007690	CMPI.L    #$55555555,$1234
+00007698	CMPI.L    #$55555555,$12345678
+000076A2	BCS       $000072A8
+000076A6	BGE       $000074DA
+000076AA	BLT       $00007546
+ 
+Press Enter to continue!
+
+000076AE	BVC       $000075F4
+000076B2	BRA       $00007000
+000076B6	JSR       $7000
+000076BA	RTS
+000076BC	DATA      FFFF
+000076BE	DATA      FFFF
+000076C0	DATA      FFFF
+000076C2	DATA      FFFF
+000076C4	DATA      FFFF
+000076C6	DATA      FFFF
+000076C8	DATA      FFFF
+000076CA	DATA      FFFF
+000076CC	DATA      FFFF
+000076CE	DATA      FFFF
+000076D0	DATA      FFFF
+000076D2	DATA      FFFF
+000076D4	DATA      FFFF
+000076D6	DATA      FFFF
+000076D8	DATA      FFFF
+000076DA	DATA      FFFF
+ 
+Press Enter to continue!
+
+000076DC	DATA      FFFF
+000076DE	DATA      FFFF
+000076E0	DATA      FFFF
+000076E2	DATA      FFFF
+000076E4	DATA      FFFF
+000076E6	DATA      FFFF
+000076E8	DATA      FFFF
+000076EA	DATA      FFFF
+000076EC	DATA      FFFF
+000076EE	DATA      FFFF
+000076F0	DATA      FFFF
+000076F2	DATA      FFFF
+000076F4	DATA      FFFF
+000076F6	DATA      FFFF
+000076F8	DATA      FFFF
+000076FA	DATA      FFFF
+000076FC	DATA      FFFF
+000076FE	DATA      FFFF
+ 
+Do you want to run the program again? (Enter Y or y to run again)
+
+ 
+ 
+All done!  See you later!
+ 
+                   `-//.```                                                     
+                   .ooooooo+.  `                                                
+                ```/oooooo+/+/--.`                                              
+               .+ooooo//++:-----.`                                              
+               /soooo+----------.                                               
+               .-sooo/:/:--.`.``                                                
+                 .+++ooo+--.                                                    
+                    `+soo:---`                                                  
+                     .:ooo+--                                                   
+                      `:-:/+-      /::o+:                                       
+                           `::.`  .dhhho//                                      
+                `--/         .:.` :ymmNmy//              `--`                   
+              `-//+.          `..``+mmmmm++/.            :::+                   
+           `-+++:+:.             ` .dmmmmdsh+/`           -+//.`                
+          `+:o+o+:/o             `--dmNNNNosoo.            ++o///:              
+         -:/yhdddh/+:         `/+++sydNNNN+//o`           ://+o+/+-             
+       `:-+hhhdmddh/o.        `/::+mhssyd+::+/+`         .+:oddddy+:`           
+     `-/:shhhhhmmhhy/+           smdddho/:/os/o+.        //sddddddhs+-          
+     -/:+hhhhhhmmhhhso`          /yyyysso+so` -++       -/yddmhdddddho/-`       
+     /:/hhhhhhhdmdhhd+-           ..:dyso//+    `      -:ohhdmhhhhhdddyo/:`     
+    `o+hhhhhhhhdddhhd//--.          .soo+://         `::+hhhmmhhhhhhhhddy++     
+   `+shhhhhhdhhdddhhhs:..::.        .+:/:://       `.///hhhhhmdhhhhhhhhhhhs-    
+   /shhhhhhhddhhdhhhyhhyo/:::`      `+::::// -:.`.-//:+hhhhhhmmhhhhhhhhhhhdo.   
+  :ohhhhhhhhddhhmsosso+hhhhs++-.::.`:/:::::+:s//++++oyhhhhhhhmddhyysyhhhhhhy+.  
+`-+yhhhhhhhdddhhss+/+/:yhhhddho/:/o/++/::::+yoshdddddhhhhhhhhdddysssyhhhhhhd++. 
+.//dhhhhhhhddddds+o+::+dhhhhdhhy/+/:+oo++:::+hhhdddhhhhyhhshhhdmysoo//shhhhhh:+.
+./shhhhhhhhyo//yhmho/::yhhhho-:++::::::::::::/o:+dhhyhd+oo+hsddhyso/--+hhhhhdo/+
+:/hhhhhys/.`   .sdhhy/::+o++::::::///////::::::::yyh-:hoo+++ohhyoo+:-:yhhhhhhdo+
++/dhhy+.        `+hhhy+//++++s::+/:----::/+/:::+os/::/+/+o+:-ossoo/--/syyhhhhd+:
+o+dhs.            -oh:.-.`` :+/+-........../+:::s-:+::://:` /++/o+--/oo:`-ohhdo-
++ohy`             `.::------o/+.............-o/:// -+/:-`  `+/--::--::++`  -ydo.
+:hd-           `.:///::::++soo...............-s::s.`        -/-:+/------    .ho`
+ +y`         `-:-.:+o+oo/--+y-................+/:o//:       `.-o+o--.        oo 
+ `:`        -/:-....:+/...-/y--::----.........o/+:::/+/.`  ``-++y. ``        -. 
+          `+/::::::+/.....::s::::::::::--....-ys/:::::o+/:++so+s:               
+         /s/:::::o-..---::/os:::::::::::::::sh/:::::::s/::/oso-                 
+          `+o+/://s.-:::::/ooss/::::::::::::sh+::::::/+ohssss:`                 
+           `++osssy::/++ossysyooo+::::::/+osso:://++ooos+::-`                   
+            `////::+o/:/+ossss:::/oo:---.`:oosssysssooo.                        
+               `.-/yo::::::+oy/--.         /+:/+oooos+``                        
+                 /-:so//+/++s+             `-o++++s/s/-:-                       
+                 :--o:::+++-/                `/:/--:::o::                       
+                   `+-    -.                   -     .:`                        
+ 

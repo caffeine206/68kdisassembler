@@ -5,7 +5,7 @@
 * Description:
 *-----------------------------------------------------------
 START:          ORG     $7000
-
+SOMEWHERE
     MOVE.B      D3,D4                   *Move byte data from D3 to D4
     MOVE.B      D3,(A4)                 *Move byte data from D3 to object in A4
     MOVE.B      D3,(A4)+                *Move byte data from D3 to object in A4 and increase pointer by 1
@@ -178,7 +178,7 @@ START:          ORG     $7000
      MOVEM.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
      MOVEM.L      (A3),D4                 *Move long word data from (A3) to D4
      MOVEM.L      (A3),A4                 *Move long word data from (A3) to A4
-    
+SOMEWHERE1    
     SUB.B      D3,D4                   *SUB byte data from D3 to D4
     SUB.B      D3,(A4)                 *SUB byte data from D3 to object in A4
     SUB.B      D3,(A4)+                *SUB byte data from D3 to object in A4 and increase pointer by 1
@@ -359,7 +359,7 @@ START:          ORG     $7000
     OR.L      $1234,D4                *OR long word data from $1234 to D4
     OR.L      $12345678,D4            *OR long word data from $12345678 to D4
     OR.L      #$55555555,D4           *OR long word data from #$55555555 to D4
-
+SOMEWHERE2
     NEG.B      D3                      *NEG byte data from D3            
     NEG.B      (A3)                    *NEG immediate address A3
     NEG.B      (A3)+                   *NEG immediate post increment A3
@@ -401,7 +401,7 @@ START:          ORG     $7000
     EOR.L      D3,-(A4)                *EOR long word data from D3 to object in A4 after decrease pointer by 1
     EOR.L      D3,$1234                *EOR long word data from D3 to absolute address word
     EOR.L      D3,$12345678            *EOR long word data from D3 to absolute address LONG word
-
+SOMEWHERE3
     LSR.B       #1,D0
     LSR.B       D1,D0
     
@@ -488,7 +488,7 @@ START:          ORG     $7000
 
     BCLR.L       #1,D0
     BCLR.L       D1,D0
-
+SOMEWHERE4
     CMP.B      D3,D4                   *Move byte data from D3 to D4
     CMP.B      (A3),D4                 *Move byte data from (A3) to D4  
     CMP.B      (A3)+,D4                *Move byte data from (A3)+ to D4
@@ -535,12 +535,21 @@ START:          ORG     $7000
     CMPI.L      #$55555555,-(A4)        *EOR long word data from #$55555555 to object in A4 after decrease pointer by 1
     CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
     CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word  
+    
+    BCS         SOMEWHERE1
+    BGE         SOMEWHERE2
+    BLT         SOMEWHERE3
+    BVC         SOMEWHERE4
+    BRA         SOMEWHERE
+    JSR         SOMEWHERE
+    RTS  
 
 SIMHALT             ; halt simulator
     
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 
