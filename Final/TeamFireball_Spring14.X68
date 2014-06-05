@@ -1984,7 +1984,7 @@ current         DC.W    1                   * Store the current WORD
 line_count      DC.B    1                   * Store the current screen line count
 char_count      DC.B    1                   * Store the instruction characters count    
 start_prompt    DC.B    'Enter starting address: ($7000 to $00FFFFFE)',CR,LF,0
-end_prompt      DC.B    'Enter ending address: (start to $00FFFFE)',CR,LF,0
+end_prompt      DC.B    'Enter ending address: (start to $00FFFFFE)',CR,LF,0
 input_error     DC.B    'There was something wrong with the input',CR,LF,0
 not_even        DC.B    'The specified address was odd',CR,LF,0
 reset_message   DC.B    'Do you want to run the program again? (Enter Y or y to run again)',CR,LF,0
@@ -2075,6 +2075,7 @@ end_message     DC.B    'All done!  See you later!',CR,LF
                 DC.B    ' ',CR,LF,0 
 
     END    START  
+
 
 
 
