@@ -165,19 +165,51 @@ SOMEWHERE
     MOVEA.L      $12345678,A4            *Move long word data from $12345678 to A4
     MOVEA.L      #$55555555,A4           *Move long word data from #$55555555 to A4
 
-     MOVEM.W      A3,(A4)                 *Move word data from A3 to object in A4
-     MOVEM.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
-     MOVEM.W      A3,$1234                *Move word data from A3 to absolute address WORD
-     MOVEM.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD    
-     MOVEM.W      (A3),D4                 *Move word data from (A3) to D4
-     MOVEM.W      (A3),A4                 *Move word data from (A3) to A4
+    MOVEM.W      A3,(A4)                 *Move word data from A3 to object in A4
+    MOVEM.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
+    MOVEM.W      A3,$1234                *Move word data from A3 to absolute address WORD
+    MOVEM.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD    
+    MOVEM.W      (A3),D4                 *Move word data from (A3) to D4
+    MOVEM.W      (A3),A4                 *Move word data from (A3) to A4
 
-     MOVEM.L      A3,(A4)                 *Move long word data from A3 to object in A4
-     MOVEM.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
-     MOVEM.L      A3,$1234                *Move long word data from A3 to absolute address WORD
-     MOVEM.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
-     MOVEM.L      (A3),D4                 *Move long word data from (A3) to D4
-     MOVEM.L      (A3),A4                 *Move long word data from (A3) to A4
+    MOVEM.L      A3,(A4)                 *Move long word data from A3 to object in A4
+    MOVEM.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
+    MOVEM.L      A3,$1234                *Move long word data from A3 to absolute address WORD
+    MOVEM.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
+    MOVEM.L      (A3),D4                 *Move long word data from (A3) to D4
+    MOVEM.L      (A3),A4                 *Move long word data from (A3) to A4
+     
+    ADD.B    D2,D1
+    ADD.B    $1234,D1
+    ADD.B    $020456,D1
+    ADD.B    (A1),D1
+    ADD.B    -(A1),D1
+    ADD.B    (A1)+,D5
+    ADD.B    (A1),D4
+    
+    ADD.W    D2,D1
+    ADD.W    $1234,D1
+    ADD.W    $020456,D1
+    ADD.W    (A1),D1
+    ADD.W    -(A1),D1
+    ADD.W    (A1)+,D5
+    ADD.W    (A1),D4
+      
+    ADD.L    D2,D1
+    ADD.L    $1234,D1
+    ADD.L    $020456,D1
+    ADD.L    (A1),D1
+    ADD.L    -(A1),D1
+    ADD.L    (A1)+,D5
+    ADD.L    (A1),D4
+       
+    ADDA.L  #$40,A1
+    ADDA.W  #$4000,A1
+    ADDA.W  D1,A1
+    ADDA.L  (A2)+,A1
+    ADDA.L  -(A2),A1
+    ADDA.W  (A2),A1
+    ADDA.L  $50005,A1  
 SOMEWHERE1    
     SUB.B      D3,D4                   *SUB byte data from D3 to D4
     SUB.B      D3,(A4)                 *SUB byte data from D3 to object in A4
@@ -216,12 +248,12 @@ SOMEWHERE1
     SUB.L      $12345678,D4            *SUB long word data from $12345678 to D4
     SUB.L      #$55555555,D4           *SUB long word data from #$55555555 to D4
 
-     SUBQ.B      #5,D4                 *SUBQ byte data from #5 to D4
-     SUBQ.B      #5,(A4)               *SUBQ byte data from #5 to object in A4
-     SUBQ.B      #5,(A4)+              *SUBQ byte data from #5 to object in A4 and increase pointer by 1
-     SUBQ.B      #5,-(A4)              *SUBQ byte data from #5 to object in A4 after decrease pointer by 1
-     SUBQ.B      #5,$1234              *SUBQ byte data from #5 to absolute address WORD
-     SUBQ.B      #5,$12345678          *SUBQ byte data from #5 to absolute address LONG WORD
+    SUBQ.B      #5,D4                 *SUBQ byte data from #5 to D4
+    SUBQ.B      #5,(A4)               *SUBQ byte data from #5 to object in A4
+    SUBQ.B      #5,(A4)+              *SUBQ byte data from #5 to object in A4 and increase pointer by 1
+    SUBQ.B      #5,-(A4)              *SUBQ byte data from #5 to object in A4 after decrease pointer by 1
+    SUBQ.B      #5,$1234              *SUBQ byte data from #5 to absolute address WORD
+    SUBQ.B      #5,$12345678          *SUBQ byte data from #5 to absolute address LONG WORD
 
     SUBQ.W      #5,D4               *SUBQ word data from #5 to D4
     SUBQ.W      #5,A4               *SUBQ word data from #5 to A4
@@ -239,25 +271,25 @@ SOMEWHERE1
     SUBQ.L      #5,$1234        *SUBQ long word data from #5 to absolute address WORD
     SUBQ.L      #5,$12345678    *SUBQ long word data from #5 to absolute address LONG WORD
 
-     MULS.W      D3,D4                   *Move word data from D3 to D4
-     MULS.W      (A3),D4                 *Move word data from (A3) to D4
-     MULS.W      (A3)+,D4                *Move word data from (A3)+ to D4
-     MULS.W      -(A3),D4                *Move word data from -(A3) to D4
-     MULS.W      $1234,D4                *Move word data from $1234 to D4
-     MULS.W      $12345678,D4            *Move word data from $12345678 to D4
-     MULS.W      #$5555,D4               *Move word data from #$5555 to D4
+    MULS.W      D3,D4                   *Move word data from D3 to D4
+    MULS.W      (A3),D4                 *Move word data from (A3) to D4
+    MULS.W      (A3)+,D4                *Move word data from (A3)+ to D4
+    MULS.W      -(A3),D4                *Move word data from -(A3) to D4
+    MULS.W      $1234,D4                *Move word data from $1234 to D4
+    MULS.W      $12345678,D4            *Move word data from $12345678 to D4
+    MULS.W      #$5555,D4               *Move word data from #$5555 to D4
     
-     DIVS.W      D3,D4                   *Move word data from D3 to D4
-     DIVS.W      (A3),D4                 *Move word data from (A3) to D4
-     DIVS.W      (A3)+,D4                *Move word data from (A3)+ to D4
-     DIVS.W      -(A3),D4                *Move word data from -(A3) to D4
-     DIVS.W      $1234,D4                *Move word data from $1234 to D4
-     DIVS.W      $12345678,D4            *Move word data from $12345678 to D4
-     DIVS.W      #$5555,D4               *Move word data from #$5555 to D4
+    DIVS.W      D3,D4                   *Move word data from D3 to D4
+    DIVS.W      (A3),D4                 *Move word data from (A3) to D4
+    DIVS.W      (A3)+,D4                *Move word data from (A3)+ to D4
+    DIVS.W      -(A3),D4                *Move word data from -(A3) to D4
+    DIVS.W      $1234,D4                *Move word data from $1234 to D4
+    DIVS.W      $12345678,D4            *Move word data from $12345678 to D4
+    DIVS.W      #$5555,D4               *Move word data from #$5555 to D4
 
-     LEA.L      (A3),A4                 *Move long word data from (A3) to A4
-     LEA.L      $1234,A4                *Move long word data from $1234 to A4
-     LEA.L      $12345678,A4            *Move long word data from $12345678 to A4
+    LEA.L      (A3),A4                 *Move long word data from (A3) to A4
+    LEA.L      $1234,A4                *Move long word data from $1234 to A4
+    LEA.L      $12345678,A4            *Move long word data from $12345678 to A4
 
     OR.B      D3,D4                   *OR byte data from D3 to D4
     OR.B      D3,(A4)                 *OR byte data from D3 to object in A4
@@ -549,6 +581,7 @@ SIMHALT             ; halt simulator
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

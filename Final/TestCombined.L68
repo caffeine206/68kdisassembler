@@ -1,6 +1,6 @@
 00007000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.14.01
-Created On: 6/4/2014 5:57:10 PM
+Created On: 6/4/2014 7:28:55 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : 68K Disassembler
@@ -169,390 +169,422 @@ Created On: 6/4/2014 5:57:10 PM
 00007260  2879 12345678            165      MOVEA.L      $12345678,A4            *Move long word data from $12345678 to A4
 00007266  287C 55555555            166      MOVEA.L      #$55555555,A4           *Move long word data from #$55555555 to A4
 0000726C                           167  
-0000726C  4894 0800                168       MOVEM.W      A3,(A4)                 *Move word data from A3 to object in A4
-00007270  48A4 0010                169       MOVEM.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
-00007274  48B8 0800 1234           170       MOVEM.W      A3,$1234                *Move word data from A3 to absolute address WORD
-0000727A  48B9 0800 12345678       171       MOVEM.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD    
-00007282  4C93 0010                172       MOVEM.W      (A3),D4                 *Move word data from (A3) to D4
-00007286  4C93 1000                173       MOVEM.W      (A3),A4                 *Move word data from (A3) to A4
+0000726C  4894 0800                168      MOVEM.W      A3,(A4)                 *Move word data from A3 to object in A4
+00007270  48A4 0010                169      MOVEM.W      A3,-(A4)                *Move word data from A3 to object in A4 after decrease pointer by 1
+00007274  48B8 0800 1234           170      MOVEM.W      A3,$1234                *Move word data from A3 to absolute address WORD
+0000727A  48B9 0800 12345678       171      MOVEM.W      A3,$12345678            *Move word data from A3 to absolute address LONG WORD    
+00007282  4C93 0010                172      MOVEM.W      (A3),D4                 *Move word data from (A3) to D4
+00007286  4C93 1000                173      MOVEM.W      (A3),A4                 *Move word data from (A3) to A4
 0000728A                           174  
-0000728A  48D4 0800                175       MOVEM.L      A3,(A4)                 *Move long word data from A3 to object in A4
-0000728E  48E4 0010                176       MOVEM.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
-00007292  48F8 0800 1234           177       MOVEM.L      A3,$1234                *Move long word data from A3 to absolute address WORD
-00007298  48F9 0800 12345678       178       MOVEM.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
-000072A0  4CD3 0010                179       MOVEM.L      (A3),D4                 *Move long word data from (A3) to D4
-000072A4  4CD3 1000                180       MOVEM.L      (A3),A4                 *Move long word data from (A3) to A4
-000072A8                           181  SOMEWHERE1    
-000072A8  9803                     182      SUB.B      D3,D4                   *SUB byte data from D3 to D4
-000072AA  9714                     183      SUB.B      D3,(A4)                 *SUB byte data from D3 to object in A4
-000072AC  971C                     184      SUB.B      D3,(A4)+                *SUB byte data from D3 to object in A4 and increase pointer by 1
-000072AE  9724                     185      SUB.B      D3,-(A4)                *SUB byte data from D3 to object in A4 after decrease pointer by 1
-000072B0  9738 1234                186      SUB.B      D3,$1234                *SUB byte data from D3 to absolute address WORD
-000072B4  9739 12345678            187      SUB.B      D3,$12345678            *SUB byte data from D3 to absolute address LONG WORD
-000072BA  9813                     188      SUB.B      (A3),D4                 *SUB byte data from (A3) to D4
-000072BC  981B                     189      SUB.B      (A3)+,D4                *SUB byte data from (A3)+ to D4
-000072BE  9823                     190      SUB.B      -(A3),D4                *SUB byte data from -(A3) to D4
-000072C0  9838 1234                191      SUB.B      $1234,D4                *SUB byte data from $1234 to D4
-000072C4  9839 12345678            192      SUB.B      $12345678,D4            *SUB byte data from $12345678 to D4
-000072CA  0404 0055                193      SUB.B      #$55,D4                 *SUB byte data from #$55 to D4
-000072CE                           194  
-000072CE  9843                     195      SUB.W      D3,D4                   *SUB word data from D3 to D4
-000072D0  98C3                     196      SUB.W      D3,A4                   *SUB word data from D3 to A4
-000072D2  9754                     197      SUB.W      D3,(A4)                 *SUB word data from D3 to object in A4
-000072D4  975C                     198      SUB.W      D3,(A4)+                *SUB word data from D3 to object in A4 and increase pointer by 1
-000072D6  9764                     199      SUB.W      D3,-(A4)                *SUB word data from D3 to object in A4 after decrease pointer by 1
-000072D8  9778 1234                200      SUB.W      D3,$1234                *SUB word data from D3 to absolute address WORD
-000072DC  9779 12345678            201      SUB.W      D3,$12345678            *SUB word data from D3 to absolute address LONG WORD   
-000072E2  984B                     202      SUB.W      A3,D4                   *SUB word data from A3 to D4
-000072E4  9853                     203      SUB.W      (A3),D4                 *SUB word data from (A3) to D4
-000072E6  985B                     204      SUB.W      (A3)+,D4                *SUB word data from (A3)+ to D4
-000072E8  9863                     205      SUB.W      -(A3),D4                *SUB word data from -(A3) to D4
-000072EA  9878 1234                206      SUB.W      $1234,D4                *SUB word data from $1234 to D4
-000072EE  9879 12345678            207      SUB.W      $12345678,D4            *SUB word data from $12345678 to D4
-000072F4  0444 5555                208      SUB.W      #$5555,D4               *SUB word data from #$5555 to D4
-000072F8                           209  
-000072F8  9883                     210      SUB.L      D3,D4                   *SUB long word data from D3 to D4
-000072FA  988B                     211      SUB.L      A3,D4                   *SUB long word data from A3 to D4
-000072FC  9893                     212      SUB.L      (A3),D4                 *SUB long word data from (A3) to D4
-000072FE  989B                     213      SUB.L      (A3)+,D4                *SUB long word data from (A3)+ to D4
-00007300  98A3                     214      SUB.L      -(A3),D4                *SUB long word data from -(A3) to D4
-00007302  98B8 1234                215      SUB.L      $1234,D4                *SUB long word data from $1234 to D4
-00007306  98B9 12345678            216      SUB.L      $12345678,D4            *SUB long word data from $12345678 to D4
-0000730C  0484 55555555            217      SUB.L      #$55555555,D4           *SUB long word data from #$55555555 to D4
-00007312                           218  
-00007312  5B04                     219       SUBQ.B      #5,D4                 *SUBQ byte data from #5 to D4
-00007314  5B14                     220       SUBQ.B      #5,(A4)               *SUBQ byte data from #5 to object in A4
-00007316  5B1C                     221       SUBQ.B      #5,(A4)+              *SUBQ byte data from #5 to object in A4 and increase pointer by 1
-00007318  5B24                     222       SUBQ.B      #5,-(A4)              *SUBQ byte data from #5 to object in A4 after decrease pointer by 1
-0000731A  5B38 1234                223       SUBQ.B      #5,$1234              *SUBQ byte data from #5 to absolute address WORD
-0000731E  5B39 12345678            224       SUBQ.B      #5,$12345678          *SUBQ byte data from #5 to absolute address LONG WORD
-00007324                           225  
-00007324  5B44                     226      SUBQ.W      #5,D4               *SUBQ word data from #5 to D4
-00007326  5B4C                     227      SUBQ.W      #5,A4               *SUBQ word data from #5 to A4
-00007328  5B54                     228      SUBQ.W      #5,(A4)             *SUBQ word data from #5 to object in A4
-0000732A  5B5C                     229      SUBQ.W      #5,(A4)+            *SUBQ word data from #5 to object in A4 and increase pointer by 1
-0000732C  5B64                     230      SUBQ.W      #5,-(A4)            *SUBQ word data from #5 to object in A4 after decrease pointer by 1
-0000732E  5B78 1234                231      SUBQ.W      #5,$1234            *SUBQ word data from #5 to absolute address WORD
-00007332  5B79 12345678            232      SUBQ.W      #5,$12345678        *SUBQ word data from #5 to absolute address LONG WORD
-00007338                           233  
-00007338  5B84                     234      SUBQ.L      #5,D4           *SUBQ long word data from #5 to D4
-0000733A  5B8C                     235      SUBQ.L      #5,A4           *SUBQ long word data from #5 to A4
-0000733C  5B94                     236      SUBQ.L      #5,(A4)         *SUBQ long word data from #5 to object in A4
-0000733E  5B9C                     237      SUBQ.L      #5,(A4)+        *SUBQ long word data from #5 to object in A4 and increase pointer by 1
-00007340  5BA4                     238      SUBQ.L      #5,-(A4)        *SUBQ long word data from #5 to object in A4 after decrease pointer by 1
-00007342  5BB8 1234                239      SUBQ.L      #5,$1234        *SUBQ long word data from #5 to absolute address WORD
-00007346  5BB9 12345678            240      SUBQ.L      #5,$12345678    *SUBQ long word data from #5 to absolute address LONG WORD
+0000728A  48D4 0800                175      MOVEM.L      A3,(A4)                 *Move long word data from A3 to object in A4
+0000728E  48E4 0010                176      MOVEM.L      A3,-(A4)                *Move long word data from A3 to object in A4 after decrease pointer by 1
+00007292  48F8 0800 1234           177      MOVEM.L      A3,$1234                *Move long word data from A3 to absolute address WORD
+00007298  48F9 0800 12345678       178      MOVEM.L      A3,$12345678            *Move long word data from A3 to absolute address LONG WORD
+000072A0  4CD3 0010                179      MOVEM.L      (A3),D4                 *Move long word data from (A3) to D4
+000072A4  4CD3 1000                180      MOVEM.L      (A3),A4                 *Move long word data from (A3) to A4
+000072A8                           181       
+000072A8  D202                     182      ADD.B    D2,D1
+000072AA  D238 1234                183      ADD.B    $1234,D1
+000072AE  D239 00020456            184      ADD.B    $020456,D1
+000072B4  D211                     185      ADD.B    (A1),D1
+000072B6  D221                     186      ADD.B    -(A1),D1
+000072B8  DA19                     187      ADD.B    (A1)+,D5
+000072BA  D811                     188      ADD.B    (A1),D4
+000072BC                           189      
+000072BC  D242                     190      ADD.W    D2,D1
+000072BE  D278 1234                191      ADD.W    $1234,D1
+000072C2  D279 00020456            192      ADD.W    $020456,D1
+000072C8  D251                     193      ADD.W    (A1),D1
+000072CA  D261                     194      ADD.W    -(A1),D1
+000072CC  DA59                     195      ADD.W    (A1)+,D5
+000072CE  D851                     196      ADD.W    (A1),D4
+000072D0                           197        
+000072D0  D282                     198      ADD.L    D2,D1
+000072D2  D2B8 1234                199      ADD.L    $1234,D1
+000072D6  D2B9 00020456            200      ADD.L    $020456,D1
+000072DC  D291                     201      ADD.L    (A1),D1
+000072DE  D2A1                     202      ADD.L    -(A1),D1
+000072E0  DA99                     203      ADD.L    (A1)+,D5
+000072E2  D891                     204      ADD.L    (A1),D4
+000072E4                           205         
+000072E4  D3FC 00000040            206      ADDA.L  #$40,A1
+000072EA  D2FC 4000                207      ADDA.W  #$4000,A1
+000072EE  D2C1                     208      ADDA.W  D1,A1
+000072F0  D3DA                     209      ADDA.L  (A2)+,A1
+000072F2  D3E2                     210      ADDA.L  -(A2),A1
+000072F4  D2D2                     211      ADDA.W  (A2),A1
+000072F6  D3F9 00050005            212      ADDA.L  $50005,A1  
+000072FC                           213  SOMEWHERE1    
+000072FC  9803                     214      SUB.B      D3,D4                   *SUB byte data from D3 to D4
+000072FE  9714                     215      SUB.B      D3,(A4)                 *SUB byte data from D3 to object in A4
+00007300  971C                     216      SUB.B      D3,(A4)+                *SUB byte data from D3 to object in A4 and increase pointer by 1
+00007302  9724                     217      SUB.B      D3,-(A4)                *SUB byte data from D3 to object in A4 after decrease pointer by 1
+00007304  9738 1234                218      SUB.B      D3,$1234                *SUB byte data from D3 to absolute address WORD
+00007308  9739 12345678            219      SUB.B      D3,$12345678            *SUB byte data from D3 to absolute address LONG WORD
+0000730E  9813                     220      SUB.B      (A3),D4                 *SUB byte data from (A3) to D4
+00007310  981B                     221      SUB.B      (A3)+,D4                *SUB byte data from (A3)+ to D4
+00007312  9823                     222      SUB.B      -(A3),D4                *SUB byte data from -(A3) to D4
+00007314  9838 1234                223      SUB.B      $1234,D4                *SUB byte data from $1234 to D4
+00007318  9839 12345678            224      SUB.B      $12345678,D4            *SUB byte data from $12345678 to D4
+0000731E  0404 0055                225      SUB.B      #$55,D4                 *SUB byte data from #$55 to D4
+00007322                           226  
+00007322  9843                     227      SUB.W      D3,D4                   *SUB word data from D3 to D4
+00007324  98C3                     228      SUB.W      D3,A4                   *SUB word data from D3 to A4
+00007326  9754                     229      SUB.W      D3,(A4)                 *SUB word data from D3 to object in A4
+00007328  975C                     230      SUB.W      D3,(A4)+                *SUB word data from D3 to object in A4 and increase pointer by 1
+0000732A  9764                     231      SUB.W      D3,-(A4)                *SUB word data from D3 to object in A4 after decrease pointer by 1
+0000732C  9778 1234                232      SUB.W      D3,$1234                *SUB word data from D3 to absolute address WORD
+00007330  9779 12345678            233      SUB.W      D3,$12345678            *SUB word data from D3 to absolute address LONG WORD   
+00007336  984B                     234      SUB.W      A3,D4                   *SUB word data from A3 to D4
+00007338  9853                     235      SUB.W      (A3),D4                 *SUB word data from (A3) to D4
+0000733A  985B                     236      SUB.W      (A3)+,D4                *SUB word data from (A3)+ to D4
+0000733C  9863                     237      SUB.W      -(A3),D4                *SUB word data from -(A3) to D4
+0000733E  9878 1234                238      SUB.W      $1234,D4                *SUB word data from $1234 to D4
+00007342  9879 12345678            239      SUB.W      $12345678,D4            *SUB word data from $12345678 to D4
+00007348  0444 5555                240      SUB.W      #$5555,D4               *SUB word data from #$5555 to D4
 0000734C                           241  
-0000734C  C9C3                     242       MULS.W      D3,D4                   *Move word data from D3 to D4
-0000734E  C9D3                     243       MULS.W      (A3),D4                 *Move word data from (A3) to D4
-00007350  C9DB                     244       MULS.W      (A3)+,D4                *Move word data from (A3)+ to D4
-00007352  C9E3                     245       MULS.W      -(A3),D4                *Move word data from -(A3) to D4
-00007354  C9F8 1234                246       MULS.W      $1234,D4                *Move word data from $1234 to D4
-00007358  C9F9 12345678            247       MULS.W      $12345678,D4            *Move word data from $12345678 to D4
-0000735E  C9FC 5555                248       MULS.W      #$5555,D4               *Move word data from #$5555 to D4
-00007362                           249      
-00007362  89C3                     250       DIVS.W      D3,D4                   *Move word data from D3 to D4
-00007364  89D3                     251       DIVS.W      (A3),D4                 *Move word data from (A3) to D4
-00007366  89DB                     252       DIVS.W      (A3)+,D4                *Move word data from (A3)+ to D4
-00007368  89E3                     253       DIVS.W      -(A3),D4                *Move word data from -(A3) to D4
-0000736A  89F8 1234                254       DIVS.W      $1234,D4                *Move word data from $1234 to D4
-0000736E  89F9 12345678            255       DIVS.W      $12345678,D4            *Move word data from $12345678 to D4
-00007374  89FC 5555                256       DIVS.W      #$5555,D4               *Move word data from #$5555 to D4
+0000734C  9883                     242      SUB.L      D3,D4                   *SUB long word data from D3 to D4
+0000734E  988B                     243      SUB.L      A3,D4                   *SUB long word data from A3 to D4
+00007350  9893                     244      SUB.L      (A3),D4                 *SUB long word data from (A3) to D4
+00007352  989B                     245      SUB.L      (A3)+,D4                *SUB long word data from (A3)+ to D4
+00007354  98A3                     246      SUB.L      -(A3),D4                *SUB long word data from -(A3) to D4
+00007356  98B8 1234                247      SUB.L      $1234,D4                *SUB long word data from $1234 to D4
+0000735A  98B9 12345678            248      SUB.L      $12345678,D4            *SUB long word data from $12345678 to D4
+00007360  0484 55555555            249      SUB.L      #$55555555,D4           *SUB long word data from #$55555555 to D4
+00007366                           250  
+00007366  5B04                     251       SUBQ.B      #5,D4                 *SUBQ byte data from #5 to D4
+00007368  5B14                     252       SUBQ.B      #5,(A4)               *SUBQ byte data from #5 to object in A4
+0000736A  5B1C                     253       SUBQ.B      #5,(A4)+              *SUBQ byte data from #5 to object in A4 and increase pointer by 1
+0000736C  5B24                     254       SUBQ.B      #5,-(A4)              *SUBQ byte data from #5 to object in A4 after decrease pointer by 1
+0000736E  5B38 1234                255       SUBQ.B      #5,$1234              *SUBQ byte data from #5 to absolute address WORD
+00007372  5B39 12345678            256       SUBQ.B      #5,$12345678          *SUBQ byte data from #5 to absolute address LONG WORD
 00007378                           257  
-00007378  49D3                     258       LEA.L      (A3),A4                 *Move long word data from (A3) to A4
-0000737A  49F8 1234                259       LEA.L      $1234,A4                *Move long word data from $1234 to A4
-0000737E  49F9 12345678            260       LEA.L      $12345678,A4            *Move long word data from $12345678 to A4
-00007384                           261  
-00007384  8803                     262      OR.B      D3,D4                   *OR byte data from D3 to D4
-00007386  8714                     263      OR.B      D3,(A4)                 *OR byte data from D3 to object in A4
-00007388  871C                     264      OR.B      D3,(A4)+                *OR byte data from D3 to object in A4 and increase pointer by 1
-0000738A  8724                     265      OR.B      D3,-(A4)                *OR byte data from D3 to object in A4 after decrease pointer by 1
-0000738C  8738 1234                266      OR.B      D3,$1234                *OR byte data from D3 to absolute address WORD
-00007390  8739 12345678            267      OR.B      D3,$12345678            *OR byte data from D3 to absolute address LONG WORD   
-00007396  8813                     268      OR.B      (A3),D4                 *OR byte data from (A3) to D4
-00007398  881B                     269      OR.B      (A3)+,D4                *OR byte data from (A3)+ to D4
-0000739A  8823                     270      OR.B      -(A3),D4                *OR byte data from -(A3) to D4
-0000739C  8838 1234                271      OR.B      $1234,D4                *OR byte data from $1234 to D4
-000073A0  8839 12345678            272      OR.B      $12345678,D4            *OR byte data from $12345678 to D4
-000073A6  883C 0055                273      OR.B      #$55,D4                 *OR byte data from #$55 to D4
-000073AA                           274  
-000073AA  8843                     275      OR.W      D3,D4                   *OR word data from D3 to D4
-000073AC  8754                     276      OR.W      D3,(A4)                 *OR word data from D3 to object in A4
-000073AE  875C                     277      OR.W      D3,(A4)+                *OR word data from D3 to object in A4 and increase pointer by 1
-000073B0  8764                     278      OR.W      D3,-(A4)                *OR word data from D3 to object in A4 after decrease pointer by 1
-000073B2  8778 1234                279      OR.W      D3,$1234                *OR word data from D3 to absolute address WORD
-000073B6  8779 12345678            280      OR.W      D3,$12345678            *OR word data from D3 to absolute address LONG WORD
-000073BC  8853                     281      OR.W      (A3),D4                 *OR word data from (A3) to D4
-000073BE  885B                     282      OR.W      (A3)+,D4                *OR word data from (A3)+ to D4
-000073C0  8863                     283      OR.W      -(A3),D4                *OR word data from -(A3) to D4
-000073C2  8878 1234                284      OR.W      $1234,D4                *OR word data from $1234 to D4
-000073C6  8879 12345678            285      OR.W      $12345678,D4            *OR word data from $12345678 to D4
-000073CC  887C 5555                286      OR.W      #$5555,D4               *OR word data from #$5555 to D4
-000073D0                           287  
-000073D0  8883                     288      OR.L      D3,D4                   *OR long word data from D3 to D4
-000073D2  87B8 0004                289      OR.L      D3,4                   *OR long word data from D3 to A4
-000073D6  8794                     290      OR.L      D3,(A4)                 *OR long word data from D3 to object in A4
-000073D8  879C                     291      OR.L      D3,(A4)+                *OR long word data from D3 to object in A4 and increase pointer by 1
-000073DA  87A4                     292      OR.L      D3,-(A4)                *OR long word data from D3 to object in A4 after decrease pointer by 1
-000073DC  87B8 1234                293      OR.L      D3,$1234                *OR long word data from D3 to absolute address WORD
-000073E0  87B9 12345678            294      OR.L      D3,$12345678            *OR long word data from D3 to absolute address LONG WORD
-000073E6  8893                     295      OR.L      (A3),D4                 *OR long word data from (A3) to D4
-000073E8  889B                     296      OR.L      (A3)+,D4                *OR long word data from (A3)+ to D4
-000073EA  88A3                     297      OR.L      -(A3),D4                *OR long word data from -(A3) to D4
-000073EC  88B8 1234                298      OR.L      $1234,D4                *OR long word data from $1234 to D4
-000073F0  88B9 12345678            299      OR.L      $12345678,D4            *OR long word data from $12345678 to D4
-000073F6  88BC 55555555            300      OR.L      #$55555555,D4           *OR long word data from #$55555555 to D4
-000073FC                           301   
-000073FC  0004 0055                302      ORI.B      #$55,D4                 *ORI byte data from #$55 to D4
-00007400  0014 0055                303      ORI.B      #$55,(A4)               *ORI byte data from #$55 to object in A4
-00007404  001C 0055                304      ORI.B      #$55,(A4)+              *ORI byte data from #$55 to object in A4 and increase pointer by 1
-00007408  0024 0055                305      ORI.B      #$55,-(A4)              *ORI byte data from #$55 to object in A4 after decrease pointer by 1
-0000740C  0038 0055 1234           306      ORI.B      #$55,$1234              *ORI byte data from #$55 to absolute address WORID
-00007412  0039 0055 12345678       307      ORI.B      #$55,$12345678          *ORI byte data from #$55 to absolute address LONG WORID
-0000741A                           308  
-0000741A  0044 5555                309      ORI.W      #$5555,D4               *ORI wORId data from #$5555 to D4
-0000741E  0054 5555                310      ORI.W      #$5555,(A4)             *ORI wORId data from #$5555 to object in A4
-00007422  005C 5555                311      ORI.W      #$5555,(A4)+            *ORI wORId data from #$5555 to object in A4 and increase pointer by 1
-00007426  0064 5555                312      ORI.W      #$5555,-(A4)            *ORI wORId data from #$5555 to object in A4 after decrease pointer by 1
-0000742A  0078 5555 1234           313      ORI.W      #$5555,$1234            *ORI wORId data from #$5555 to absolute address WORID
-00007430  0079 5555 12345678       314      ORI.W      #$5555,$12345678        *ORI wORId data from #$5555 to absolute address LONG WORID
-00007438                           315  
-00007438  0084 55555555            316      ORI.L      #$55555555,D4           *ORI long wORId data from #$55555555 to D4
-0000743E  0094 55555555            317      ORI.L      #$55555555,(A4)         *ORI long wORId data from #$55555555 to object in A4
-00007444  009C 55555555            318      ORI.L      #$55555555,(A4)+        *ORI long wORId data from #$55555555 to object in A4 and increase pointer by 1
-0000744A  00A4 55555555            319      ORI.L      #$55555555,-(A4)        *ORI long wORId data from #$55555555 to object in A4 after decrease pointer by 1
-00007450  00B8 55555555 1234       320      ORI.L      #$55555555,$1234        *ORI long wORId data from #$55555555 to absolute address WORID
-00007458  00B9 55555555 12345678   321      ORI.L      #$55555555,$12345678    *ORI long wORId data from #$55555555 to absolute address LONG WORID
-00007462                           322  
-00007462  8803                     323      OR.B      D3,D4                   *OR byte data from D3 to D4
-00007464  8714                     324      OR.B      D3,(A4)                 *OR byte data from D3 to object in A4
-00007466  871C                     325      OR.B      D3,(A4)+                *OR byte data from D3 to object in A4 and increase pointer by 1
-00007468  8724                     326      OR.B      D3,-(A4)                *OR byte data from D3 to object in A4 after decrease pointer by 1
-0000746A  8738 1234                327      OR.B      D3,$1234                *OR byte data from D3 to absolute address WORD
-0000746E  8739 12345678            328      OR.B      D3,$12345678            *OR byte data from D3 to absolute address LONG WORD
-00007474  8813                     329      OR.B      (A3),D4                 *OR byte data from (A3) to D4
-00007476  881B                     330      OR.B      (A3)+,D4                *OR byte data from (A3)+ to D4
-00007478  8823                     331      OR.B      -(A3),D4                *OR byte data from -(A3) to D4
-0000747A  8838 1234                332      OR.B      $1234,D4                *OR byte data from $1234 to D4
-0000747E  8839 12345678            333      OR.B      $12345678,D4            *OR byte data from $12345678 to D4
-00007484  883C 0055                334      OR.B      #$55,D4                 *OR byte data from #$55 to D4
-00007488                           335  
-00007488  8843                     336      OR.W      D3,D4                   *OR word data from D3 to D4
-0000748A  8754                     337      OR.W      D3,(A4)                 *OR word data from D3 to object in A4
-0000748C  875C                     338      OR.W      D3,(A4)+                *OR word data from D3 to object in A4 and increase pointer by 1
-0000748E  8764                     339      OR.W      D3,-(A4)                *OR word data from D3 to object in A4 after decrease pointer by 1
-00007490  8778 1234                340      OR.W      D3,$1234                *OR word data from D3 to absolute address WORD
-00007494  8779 12345678            341      OR.W      D3,$12345678            *OR word data from D3 to absolute address LONG WORD
-0000749A  8853                     342      OR.W      (A3),D4                 *OR word data from (A3) to D4
-0000749C  885B                     343      OR.W      (A3)+,D4                *OR word data from (A3)+ to D4
-0000749E  8863                     344      OR.W      -(A3),D4                *OR word data from -(A3) to D4
-000074A0  8878 1234                345      OR.W      $1234,D4                *OR word data from $1234 to D4
-000074A4  8879 12345678            346      OR.W      $12345678,D4            *OR word data from $12345678 to D4 
-000074AA  887C 5555                347      OR.W      #$5555,D4               *OR word data from #$5555 to D4
-000074AE                           348  
-000074AE  8883                     349      OR.L      D3,D4                   *OR long word data from D3 to D4
-000074B0  87B8 0004                350      OR.L      D3,4                   *OR long word data from D3 to A4
-000074B4  8794                     351      OR.L      D3,(A4)                 *OR long word data from D3 to object in A4
-000074B6  879C                     352      OR.L      D3,(A4)+                *OR long word data from D3 to object in A4 and increase pointer by 1
-000074B8  87A4                     353      OR.L      D3,-(A4)                *OR long word data from D3 to object in A4 after decrease pointer by 1
-000074BA  87B8 1234                354      OR.L      D3,$1234                *OR long word data from D3 to absolute address WORD
-000074BE  87B9 12345678            355      OR.L      D3,$12345678            *OR long word data from D3 to absolute address LONG WORD
-000074C4  8893                     356      OR.L      (A3),D4                 *OR long word data from (A3) to D4
-000074C6  889B                     357      OR.L      (A3)+,D4                *OR long word data from (A3)+ to D4
-000074C8  88A3                     358      OR.L      -(A3),D4                *OR long word data from -(A3) to D4
-000074CA  88B8 1234                359      OR.L      $1234,D4                *OR long word data from $1234 to D4
-000074CE  88B9 12345678            360      OR.L      $12345678,D4            *OR long word data from $12345678 to D4
-000074D4  88BC 55555555            361      OR.L      #$55555555,D4           *OR long word data from #$55555555 to D4
-000074DA                           362  SOMEWHERE2
-000074DA  4403                     363      NEG.B      D3                      *NEG byte data from D3            
-000074DC  4413                     364      NEG.B      (A3)                    *NEG immediate address A3
-000074DE  441B                     365      NEG.B      (A3)+                   *NEG immediate post increment A3
-000074E0  4423                     366      NEG.B      -(A3)                   *NEG immediate post decrement A3
-000074E2  4438 1234                367      NEG.B      $1234                   *NEG word address 1234
-000074E6  4439 12345678            368      NEG.B      $12345678               *NEG long word address 12345678
-000074EC                           369  
-000074EC  4443                     370      NEG.W      D3                      *NEG byte data from D3            
-000074EE  4453                     371      NEG.W      (A3)                    *NEG immediate address A3
-000074F0  445B                     372      NEG.W      (A3)+                   *NEG immediate post increment A3
-000074F2  4463                     373      NEG.W      -(A3)                   *NEG immediate post decrement A3
-000074F4  4478 1234                374      NEG.W      $1234                   *NEG word address 1234
-000074F8  4479 12345678            375      NEG.W      $12345678               *NEG long word address 12345678
-000074FE                           376   
-000074FE  4483                     377      NEG.L      D3                      *NEG byte data from D3            
-00007500  4493                     378      NEG.L      (A3)                    *NEG immediate address A3
-00007502  449B                     379      NEG.L      (A3)+                   *NEG immediate post increment A3
-00007504  44A3                     380      NEG.L      -(A3)                   *NEG immediate post decrement A3
-00007506  44B8 1234                381      NEG.L      $1234                   *NEG word address 1234
-0000750A  44B9 12345678            382      NEG.L      $12345678               *NEG long word address 12345678
-00007510                           383  
-00007510  B704                     384      EOR.B      D3,D4                   *EOR byte data from D3 to D4
-00007512  B714                     385      EOR.B      D3,(A4)                 *EOR byte data from D3 to object in A4
-00007514  B71C                     386      EOR.B      D3,(A4)+                *EOR byte data from D3 to object in A4 and increase pointer by 1
-00007516  B724                     387      EOR.B      D3,-(A4)                *EOR byte data from D3 to object in A4 after decrease pointer by 1
-00007518  B738 1234                388      EOR.B      D3,$1234                *EOR byte data from D3 to absolute address WEORD
-0000751C  B739 12345678            389      EOR.B      D3,$12345678            *EOR byte data from D3 to absolute address LONG WEORD
-00007522                           390  
-00007522  B744                     391      EOR.W      D3,D4                   *EOR wEORd data from D3 to D4
-00007524  B754                     392      EOR.W      D3,(A4)                 *EOR wEORd data from D3 to object in A4
-00007526  B75C                     393      EOR.W      D3,(A4)+                *EOR wEORd data from D3 to object in A4 and increase pointer by 1
-00007528  B764                     394      EOR.W      D3,-(A4)                *EOR wEORd data from D3 to object in A4 after decrease pointer by 1
-0000752A  B778 1234                395      EOR.W      D3,$1234                *EOR wEORd data from D3 to absolute address WEORD
-0000752E  B779 12345678            396      EOR.W      D3,$12345678            *EOR wEORd data from D3 to absolute address LONG WEORD
-00007534                           397  
-00007534  B784                     398      EOR.L      D3,D4                   *EOR long worddata from D3 to D4
-00007536  B794                     399      EOR.L      D3,(A4)                 *EOR long word data from D3 to object in A4
-00007538  B79C                     400      EOR.L      D3,(A4)+                *EOR long word data from D3 to object in A4 and increase pointer by 1
-0000753A  B7A4                     401      EOR.L      D3,-(A4)                *EOR long word data from D3 to object in A4 after decrease pointer by 1
-0000753C  B7B8 1234                402      EOR.L      D3,$1234                *EOR long word data from D3 to absolute address word
-00007540  B7B9 12345678            403      EOR.L      D3,$12345678            *EOR long word data from D3 to absolute address LONG word
-00007546                           404  SOMEWHERE3
-00007546  E208                     405      LSR.B       #1,D0
-00007548  E228                     406      LSR.B       D1,D0
-0000754A                           407      
-0000754A  E248                     408      LSR.W       #1,D0
-0000754C  E268                     409      LSR.W       D1,D0
-0000754E  E2D1                     410      LSR.W       (A1)
-00007550  E2D9                     411      LSR.W       (A1)+
-00007552  E2E1                     412      LSR.W       -(A1)
-00007554  E2F8 1234                413      LSR.W       $1234
-00007558  E2F9 55555555            414      LSR.W       $55555555
-0000755E                           415      
-0000755E  E288                     416      LSR.L       #1,D0
-00007560  E2A8                     417      LSR.L       D1,D0
-00007562                           418   
-00007562  E308                     419      LSL.B       #1,D0
-00007564  E328                     420      LSL.B       D1,D0
-00007566                           421      
-00007566  E348                     422      LSL.W       #1,D0
-00007568  E368                     423      LSL.W       D1,D0
-0000756A  E3D1                     424      LSL.W       (A1)
-0000756C  E3D9                     425      LSL.W       (A1)+
-0000756E  E3E1                     426      LSL.W       -(A1)
-00007570  E3F8 1234                427      LSL.W       $1234
-00007574  E3F9 55555555            428      LSL.W       $55555555
-0000757A                           429      
-0000757A  E388                     430      LSL.L       #1,D0
-0000757C  E3A8                     431      LSL.L       D1,D0
-0000757E                           432  
-0000757E  E200                     433      ASR.B       #1,D0
-00007580  E220                     434      ASR.B       D1,D0
-00007582                           435      
-00007582  E240                     436      ASR.W       #1,D0
-00007584  E260                     437      ASR.W       D1,D0
-00007586  E0D1                     438      ASR.W       (A1)
-00007588  E0D9                     439      ASR.W       (A1)+
-0000758A  E0E1                     440      ASR.W       -(A1)
-0000758C  E0F8 1234                441      ASR.W       $1234
-00007590  E0F9 55555555            442      ASR.W       $55555555
-00007596                           443      
-00007596  E280                     444      ASR.L       #1,D0
-00007598  E2A0                     445      ASR.L       D1,D0
-0000759A                           446   
-0000759A  E300                     447      ASL.B       #1,D0
-0000759C  E320                     448      ASL.B       D1,D0
-0000759E                           449      
-0000759E  E340                     450      ASL.W       #1,D0
-000075A0  E360                     451      ASL.W       D1,D0
-000075A2  E1D1                     452      ASL.W       (A1)
-000075A4  E1D9                     453      ASL.W       (A1)+
-000075A6  E1E1                     454      ASL.W       -(A1)
-000075A8  E1F8 1234                455      ASL.W       $1234
-000075AC  E1F9 55555555            456      ASL.W       $55555555
-000075B2                           457      
-000075B2  E380                     458      ASL.L       #1,D0
-000075B4  E3A0                     459      ASL.L       D1,D0
-000075B6                           460   
-000075B6  E218                     461      ROR.B       #1,D0
-000075B8  E238                     462      ROR.B       D1,D0
-000075BA                           463      
-000075BA  E258                     464      ROR.W       #1,D0
-000075BC  E278                     465      ROR.W       D1,D0
-000075BE  E6D1                     466      ROR.W       (A1)
-000075C0  E6D9                     467      ROR.W       (A1)+
-000075C2  E6E1                     468      ROR.W       -(A1)
-000075C4  E6F8 1234                469      ROR.W       $1234
-000075C8  E6F9 55555555            470      ROR.W       $55555555
-000075CE                           471      
-000075CE  E298                     472      ROR.L       #1,D0
-000075D0  E2B8                     473      ROR.L       D1,D0
-000075D2                           474   
-000075D2  E318                     475      ROL.B       #1,D0
-000075D4  E338                     476      ROL.B       D1,D0
-000075D6                           477      
-000075D6  E358                     478      ROL.W       #1,D0
-000075D8  E378                     479      ROL.W       D1,D0
-000075DA  E7D1                     480      ROL.W       (A1)
-000075DC  E7D9                     481      ROL.W       (A1)+
-000075DE  E7E1                     482      ROL.W       -(A1)
-000075E0  E7F8 1234                483      ROL.W       $1234
-000075E4  E7F9 55555555            484      ROL.W       $55555555
-000075EA                           485      
-000075EA  E398                     486      ROL.L       #1,D0
-000075EC  E3B8                     487      ROL.L       D1,D0
-000075EE                           488  
-000075EE  0880 0001                489      BCLR.L       #1,D0
-000075F2  0380                     490      BCLR.L       D1,D0
-000075F4                           491  SOMEWHERE4
-000075F4  B803                     492      CMP.B      D3,D4                   *Move byte data from D3 to D4
-000075F6  B813                     493      CMP.B      (A3),D4                 *Move byte data from (A3) to D4  
-000075F8  B81B                     494      CMP.B      (A3)+,D4                *Move byte data from (A3)+ to D4
-000075FA  B823                     495      CMP.B      -(A3),D4                *Move byte data from -(A3) to D4
-000075FC  B838 1234                496      CMP.B      $1234,D4                *Move byte data from $1234 to D4
-00007600  B839 12345678            497      CMP.B      $12345678,D4            *Move byte data from $12345678 to D4
-00007606  B83C 0055                498      CMP.B      #$55,D4                 *Move byte data from #$55 to D4    
-0000760A                           499  
-0000760A  B843                     500      CMP.W      D3,D4                   *Move word data from D3 to D4    
-0000760C  B84B                     501      CMP.W      A3,D4                   *Move word data from A3 to D4    
-0000760E  B853                     502      CMP.W      (A3),D4                 *Move word data from (A3) to D4    
-00007610  B85B                     503      CMP.W      (A3)+,D4                *Move word data from (A3)+ to D4    
-00007612  B863                     504      CMP.W      -(A3),D4                *Move word data from -(A3) to D4    
-00007614  B878 1234                505      CMP.W      $1234,D4                *Move word data from $1234 to D4   
-00007618  B879 12345678            506      CMP.W      $12345678,D4            *Move word data from $12345678 to D4   
-0000761E  B87C 5555                507      CMP.W      #$5555,D4               *Move word data from #$5555 to D4
-00007622                           508  
-00007622  B883                     509      CMP.L      D3,D4                   *Move long word data from D3 to D4
-00007624  B88B                     510      CMP.L      A3,D4                   *Move long word data from A3 to D4
-00007626  B893                     511      CMP.L      (A3),D4                 *Move long word data from (A3) to D4
-00007628  B89B                     512      CMP.L      (A3)+,D4                *Move long word data from (A3)+ to D4
-0000762A  B8A3                     513      CMP.L      -(A3),D4                *Move long word data from -(A3) to D4
-0000762C  B8B8 1234                514      CMP.L      $1234,D4                *Move long word data from $1234 to D4
-00007630  B8B9 12345678            515      CMP.L      $12345678,D4            *Move long word data from $12345678 to D4
-00007636  B8BC 55555555            516      CMP.L      #$55555555,D4           *Move long word data from #$55555555 to D4
-0000763C                           517  
-0000763C  0C04 0055                518      CMPI.B      #$55,D4                 *EOR byte data from #$55 to D4
-00007640  0C14 0055                519      CMPI.B      #$55,(A4)               *EOR byte data from #$55 to object in A4
-00007644  0C1C 0055                520      CMPI.B      #$55,(A4)+              *EOR byte data from #$55 to object in A4 and increase pointer by 1
-00007648  0C24 0055                521      CMPI.B      #$55,-(A4)              *EOR byte data from #$55 to object in A4 after decrease pointer by 1
-0000764C  0C38 0055 1234           522      CMPI.B      #$55,$1234              *EOR byte data from #$55 to absolute address WEORD
-00007652  0C39 0055 12345678       523      CMPI.B      #$55,$12345678          *EOR byte data from #$55 to absolute address LONG WEORD
-0000765A                           524      
-0000765A  0C44 5555                525      CMPI.W      #$5555,D4               *EOR wEORd data from #$5555 to D4
-0000765E  0C54 5555                526      CMPI.W      #$5555,(A4)             *EOR wEORd data from #$5555 to object in A4
-00007662  0C5C 5555                527      CMPI.W      #$5555,(A4)+            *EOR wEORd data from #$5555 to object in A4 and increase pointer by 1
-00007666  0C64 5555                528      CMPI.W      #$5555,-(A4)            *EOR wEORd data from #$5555 to object in A4 after decrease pointer by 1
-0000766A  0C78 5555 1234           529      CMPI.W      #$5555,$1234            *EOR wEORd data from #$5555 to absolute address WEORD
-00007670  0C79 5555 12345678       530      CMPI.W      #$5555,$12345678        *EOR wEORd data from #$5555 to absolute address LONG WEORD 
-00007678                           531      
-00007678  0C84 55555555            532      CMPI.L      #$55555555,D4           *EOR long word data from #$55555555 to D4
-0000767E  0C94 55555555            533      CMPI.L      #$55555555,(A4)         *EOR long word data from #$55555555 to object in A4
-00007684  0C9C 55555555            534      CMPI.L      #$55555555,(A4)+        *EOR long word data from #$55555555 to object in A4 and increase pointer by 1
-0000768A  0CA4 55555555            535      CMPI.L      #$55555555,-(A4)        *EOR long word data from #$55555555 to object in A4 after decrease pointer by 1
-00007690  0CB8 55555555 1234       536      CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
-00007698  0CB9 55555555 12345678   537      CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word  
-000076A2                           538      
-000076A2  6500 FC04                539      BCS         SOMEWHERE1
-000076A6  6C00 FE32                540      BGE         SOMEWHERE2
-000076AA  6D00 FE9A                541      BLT         SOMEWHERE3
-000076AE  6800 FF44                542      BVC         SOMEWHERE4
-000076B2  6000 F94C                543      BRA         SOMEWHERE
-000076B6  4EB8 7000                544      JSR         SOMEWHERE
-000076BA  4E75                     545      RTS  
-000076BC                           546  
-000076BC                           547  SIMHALT             ; halt simulator
-000076BC                           548      
-000076BC                           549  * Put variables and constants here
-000076BC                           550  
-000076BC                           551      END    START        ; last line of source
+00007378  5B44                     258      SUBQ.W      #5,D4               *SUBQ word data from #5 to D4
+0000737A  5B4C                     259      SUBQ.W      #5,A4               *SUBQ word data from #5 to A4
+0000737C  5B54                     260      SUBQ.W      #5,(A4)             *SUBQ word data from #5 to object in A4
+0000737E  5B5C                     261      SUBQ.W      #5,(A4)+            *SUBQ word data from #5 to object in A4 and increase pointer by 1
+00007380  5B64                     262      SUBQ.W      #5,-(A4)            *SUBQ word data from #5 to object in A4 after decrease pointer by 1
+00007382  5B78 1234                263      SUBQ.W      #5,$1234            *SUBQ word data from #5 to absolute address WORD
+00007386  5B79 12345678            264      SUBQ.W      #5,$12345678        *SUBQ word data from #5 to absolute address LONG WORD
+0000738C                           265  
+0000738C  5B84                     266      SUBQ.L      #5,D4           *SUBQ long word data from #5 to D4
+0000738E  5B8C                     267      SUBQ.L      #5,A4           *SUBQ long word data from #5 to A4
+00007390  5B94                     268      SUBQ.L      #5,(A4)         *SUBQ long word data from #5 to object in A4
+00007392  5B9C                     269      SUBQ.L      #5,(A4)+        *SUBQ long word data from #5 to object in A4 and increase pointer by 1
+00007394  5BA4                     270      SUBQ.L      #5,-(A4)        *SUBQ long word data from #5 to object in A4 after decrease pointer by 1
+00007396  5BB8 1234                271      SUBQ.L      #5,$1234        *SUBQ long word data from #5 to absolute address WORD
+0000739A  5BB9 12345678            272      SUBQ.L      #5,$12345678    *SUBQ long word data from #5 to absolute address LONG WORD
+000073A0                           273  
+000073A0  C9C3                     274       MULS.W      D3,D4                   *Move word data from D3 to D4
+000073A2  C9D3                     275       MULS.W      (A3),D4                 *Move word data from (A3) to D4
+000073A4  C9DB                     276       MULS.W      (A3)+,D4                *Move word data from (A3)+ to D4
+000073A6  C9E3                     277       MULS.W      -(A3),D4                *Move word data from -(A3) to D4
+000073A8  C9F8 1234                278       MULS.W      $1234,D4                *Move word data from $1234 to D4
+000073AC  C9F9 12345678            279       MULS.W      $12345678,D4            *Move word data from $12345678 to D4
+000073B2  C9FC 5555                280       MULS.W      #$5555,D4               *Move word data from #$5555 to D4
+000073B6                           281      
+000073B6  89C3                     282       DIVS.W      D3,D4                   *Move word data from D3 to D4
+000073B8  89D3                     283       DIVS.W      (A3),D4                 *Move word data from (A3) to D4
+000073BA  89DB                     284       DIVS.W      (A3)+,D4                *Move word data from (A3)+ to D4
+000073BC  89E3                     285       DIVS.W      -(A3),D4                *Move word data from -(A3) to D4
+000073BE  89F8 1234                286       DIVS.W      $1234,D4                *Move word data from $1234 to D4
+000073C2  89F9 12345678            287       DIVS.W      $12345678,D4            *Move word data from $12345678 to D4
+000073C8  89FC 5555                288       DIVS.W      #$5555,D4               *Move word data from #$5555 to D4
+000073CC                           289  
+000073CC  49D3                     290       LEA.L      (A3),A4                 *Move long word data from (A3) to A4
+000073CE  49F8 1234                291       LEA.L      $1234,A4                *Move long word data from $1234 to A4
+000073D2  49F9 12345678            292       LEA.L      $12345678,A4            *Move long word data from $12345678 to A4
+000073D8                           293  
+000073D8  8803                     294      OR.B      D3,D4                   *OR byte data from D3 to D4
+000073DA  8714                     295      OR.B      D3,(A4)                 *OR byte data from D3 to object in A4
+000073DC  871C                     296      OR.B      D3,(A4)+                *OR byte data from D3 to object in A4 and increase pointer by 1
+000073DE  8724                     297      OR.B      D3,-(A4)                *OR byte data from D3 to object in A4 after decrease pointer by 1
+000073E0  8738 1234                298      OR.B      D3,$1234                *OR byte data from D3 to absolute address WORD
+000073E4  8739 12345678            299      OR.B      D3,$12345678            *OR byte data from D3 to absolute address LONG WORD   
+000073EA  8813                     300      OR.B      (A3),D4                 *OR byte data from (A3) to D4
+000073EC  881B                     301      OR.B      (A3)+,D4                *OR byte data from (A3)+ to D4
+000073EE  8823                     302      OR.B      -(A3),D4                *OR byte data from -(A3) to D4
+000073F0  8838 1234                303      OR.B      $1234,D4                *OR byte data from $1234 to D4
+000073F4  8839 12345678            304      OR.B      $12345678,D4            *OR byte data from $12345678 to D4
+000073FA  883C 0055                305      OR.B      #$55,D4                 *OR byte data from #$55 to D4
+000073FE                           306  
+000073FE  8843                     307      OR.W      D3,D4                   *OR word data from D3 to D4
+00007400  8754                     308      OR.W      D3,(A4)                 *OR word data from D3 to object in A4
+00007402  875C                     309      OR.W      D3,(A4)+                *OR word data from D3 to object in A4 and increase pointer by 1
+00007404  8764                     310      OR.W      D3,-(A4)                *OR word data from D3 to object in A4 after decrease pointer by 1
+00007406  8778 1234                311      OR.W      D3,$1234                *OR word data from D3 to absolute address WORD
+0000740A  8779 12345678            312      OR.W      D3,$12345678            *OR word data from D3 to absolute address LONG WORD
+00007410  8853                     313      OR.W      (A3),D4                 *OR word data from (A3) to D4
+00007412  885B                     314      OR.W      (A3)+,D4                *OR word data from (A3)+ to D4
+00007414  8863                     315      OR.W      -(A3),D4                *OR word data from -(A3) to D4
+00007416  8878 1234                316      OR.W      $1234,D4                *OR word data from $1234 to D4
+0000741A  8879 12345678            317      OR.W      $12345678,D4            *OR word data from $12345678 to D4
+00007420  887C 5555                318      OR.W      #$5555,D4               *OR word data from #$5555 to D4
+00007424                           319  
+00007424  8883                     320      OR.L      D3,D4                   *OR long word data from D3 to D4
+00007426  87B8 0004                321      OR.L      D3,4                   *OR long word data from D3 to A4
+0000742A  8794                     322      OR.L      D3,(A4)                 *OR long word data from D3 to object in A4
+0000742C  879C                     323      OR.L      D3,(A4)+                *OR long word data from D3 to object in A4 and increase pointer by 1
+0000742E  87A4                     324      OR.L      D3,-(A4)                *OR long word data from D3 to object in A4 after decrease pointer by 1
+00007430  87B8 1234                325      OR.L      D3,$1234                *OR long word data from D3 to absolute address WORD
+00007434  87B9 12345678            326      OR.L      D3,$12345678            *OR long word data from D3 to absolute address LONG WORD
+0000743A  8893                     327      OR.L      (A3),D4                 *OR long word data from (A3) to D4
+0000743C  889B                     328      OR.L      (A3)+,D4                *OR long word data from (A3)+ to D4
+0000743E  88A3                     329      OR.L      -(A3),D4                *OR long word data from -(A3) to D4
+00007440  88B8 1234                330      OR.L      $1234,D4                *OR long word data from $1234 to D4
+00007444  88B9 12345678            331      OR.L      $12345678,D4            *OR long word data from $12345678 to D4
+0000744A  88BC 55555555            332      OR.L      #$55555555,D4           *OR long word data from #$55555555 to D4
+00007450                           333   
+00007450  0004 0055                334      ORI.B      #$55,D4                 *ORI byte data from #$55 to D4
+00007454  0014 0055                335      ORI.B      #$55,(A4)               *ORI byte data from #$55 to object in A4
+00007458  001C 0055                336      ORI.B      #$55,(A4)+              *ORI byte data from #$55 to object in A4 and increase pointer by 1
+0000745C  0024 0055                337      ORI.B      #$55,-(A4)              *ORI byte data from #$55 to object in A4 after decrease pointer by 1
+00007460  0038 0055 1234           338      ORI.B      #$55,$1234              *ORI byte data from #$55 to absolute address WORID
+00007466  0039 0055 12345678       339      ORI.B      #$55,$12345678          *ORI byte data from #$55 to absolute address LONG WORID
+0000746E                           340  
+0000746E  0044 5555                341      ORI.W      #$5555,D4               *ORI wORId data from #$5555 to D4
+00007472  0054 5555                342      ORI.W      #$5555,(A4)             *ORI wORId data from #$5555 to object in A4
+00007476  005C 5555                343      ORI.W      #$5555,(A4)+            *ORI wORId data from #$5555 to object in A4 and increase pointer by 1
+0000747A  0064 5555                344      ORI.W      #$5555,-(A4)            *ORI wORId data from #$5555 to object in A4 after decrease pointer by 1
+0000747E  0078 5555 1234           345      ORI.W      #$5555,$1234            *ORI wORId data from #$5555 to absolute address WORID
+00007484  0079 5555 12345678       346      ORI.W      #$5555,$12345678        *ORI wORId data from #$5555 to absolute address LONG WORID
+0000748C                           347  
+0000748C  0084 55555555            348      ORI.L      #$55555555,D4           *ORI long wORId data from #$55555555 to D4
+00007492  0094 55555555            349      ORI.L      #$55555555,(A4)         *ORI long wORId data from #$55555555 to object in A4
+00007498  009C 55555555            350      ORI.L      #$55555555,(A4)+        *ORI long wORId data from #$55555555 to object in A4 and increase pointer by 1
+0000749E  00A4 55555555            351      ORI.L      #$55555555,-(A4)        *ORI long wORId data from #$55555555 to object in A4 after decrease pointer by 1
+000074A4  00B8 55555555 1234       352      ORI.L      #$55555555,$1234        *ORI long wORId data from #$55555555 to absolute address WORID
+000074AC  00B9 55555555 12345678   353      ORI.L      #$55555555,$12345678    *ORI long wORId data from #$55555555 to absolute address LONG WORID
+000074B6                           354  
+000074B6  8803                     355      OR.B      D3,D4                   *OR byte data from D3 to D4
+000074B8  8714                     356      OR.B      D3,(A4)                 *OR byte data from D3 to object in A4
+000074BA  871C                     357      OR.B      D3,(A4)+                *OR byte data from D3 to object in A4 and increase pointer by 1
+000074BC  8724                     358      OR.B      D3,-(A4)                *OR byte data from D3 to object in A4 after decrease pointer by 1
+000074BE  8738 1234                359      OR.B      D3,$1234                *OR byte data from D3 to absolute address WORD
+000074C2  8739 12345678            360      OR.B      D3,$12345678            *OR byte data from D3 to absolute address LONG WORD
+000074C8  8813                     361      OR.B      (A3),D4                 *OR byte data from (A3) to D4
+000074CA  881B                     362      OR.B      (A3)+,D4                *OR byte data from (A3)+ to D4
+000074CC  8823                     363      OR.B      -(A3),D4                *OR byte data from -(A3) to D4
+000074CE  8838 1234                364      OR.B      $1234,D4                *OR byte data from $1234 to D4
+000074D2  8839 12345678            365      OR.B      $12345678,D4            *OR byte data from $12345678 to D4
+000074D8  883C 0055                366      OR.B      #$55,D4                 *OR byte data from #$55 to D4
+000074DC                           367  
+000074DC  8843                     368      OR.W      D3,D4                   *OR word data from D3 to D4
+000074DE  8754                     369      OR.W      D3,(A4)                 *OR word data from D3 to object in A4
+000074E0  875C                     370      OR.W      D3,(A4)+                *OR word data from D3 to object in A4 and increase pointer by 1
+000074E2  8764                     371      OR.W      D3,-(A4)                *OR word data from D3 to object in A4 after decrease pointer by 1
+000074E4  8778 1234                372      OR.W      D3,$1234                *OR word data from D3 to absolute address WORD
+000074E8  8779 12345678            373      OR.W      D3,$12345678            *OR word data from D3 to absolute address LONG WORD
+000074EE  8853                     374      OR.W      (A3),D4                 *OR word data from (A3) to D4
+000074F0  885B                     375      OR.W      (A3)+,D4                *OR word data from (A3)+ to D4
+000074F2  8863                     376      OR.W      -(A3),D4                *OR word data from -(A3) to D4
+000074F4  8878 1234                377      OR.W      $1234,D4                *OR word data from $1234 to D4
+000074F8  8879 12345678            378      OR.W      $12345678,D4            *OR word data from $12345678 to D4 
+000074FE  887C 5555                379      OR.W      #$5555,D4               *OR word data from #$5555 to D4
+00007502                           380  
+00007502  8883                     381      OR.L      D3,D4                   *OR long word data from D3 to D4
+00007504  87B8 0004                382      OR.L      D3,4                   *OR long word data from D3 to A4
+00007508  8794                     383      OR.L      D3,(A4)                 *OR long word data from D3 to object in A4
+0000750A  879C                     384      OR.L      D3,(A4)+                *OR long word data from D3 to object in A4 and increase pointer by 1
+0000750C  87A4                     385      OR.L      D3,-(A4)                *OR long word data from D3 to object in A4 after decrease pointer by 1
+0000750E  87B8 1234                386      OR.L      D3,$1234                *OR long word data from D3 to absolute address WORD
+00007512  87B9 12345678            387      OR.L      D3,$12345678            *OR long word data from D3 to absolute address LONG WORD
+00007518  8893                     388      OR.L      (A3),D4                 *OR long word data from (A3) to D4
+0000751A  889B                     389      OR.L      (A3)+,D4                *OR long word data from (A3)+ to D4
+0000751C  88A3                     390      OR.L      -(A3),D4                *OR long word data from -(A3) to D4
+0000751E  88B8 1234                391      OR.L      $1234,D4                *OR long word data from $1234 to D4
+00007522  88B9 12345678            392      OR.L      $12345678,D4            *OR long word data from $12345678 to D4
+00007528  88BC 55555555            393      OR.L      #$55555555,D4           *OR long word data from #$55555555 to D4
+0000752E                           394  SOMEWHERE2
+0000752E  4403                     395      NEG.B      D3                      *NEG byte data from D3            
+00007530  4413                     396      NEG.B      (A3)                    *NEG immediate address A3
+00007532  441B                     397      NEG.B      (A3)+                   *NEG immediate post increment A3
+00007534  4423                     398      NEG.B      -(A3)                   *NEG immediate post decrement A3
+00007536  4438 1234                399      NEG.B      $1234                   *NEG word address 1234
+0000753A  4439 12345678            400      NEG.B      $12345678               *NEG long word address 12345678
+00007540                           401  
+00007540  4443                     402      NEG.W      D3                      *NEG byte data from D3            
+00007542  4453                     403      NEG.W      (A3)                    *NEG immediate address A3
+00007544  445B                     404      NEG.W      (A3)+                   *NEG immediate post increment A3
+00007546  4463                     405      NEG.W      -(A3)                   *NEG immediate post decrement A3
+00007548  4478 1234                406      NEG.W      $1234                   *NEG word address 1234
+0000754C  4479 12345678            407      NEG.W      $12345678               *NEG long word address 12345678
+00007552                           408   
+00007552  4483                     409      NEG.L      D3                      *NEG byte data from D3            
+00007554  4493                     410      NEG.L      (A3)                    *NEG immediate address A3
+00007556  449B                     411      NEG.L      (A3)+                   *NEG immediate post increment A3
+00007558  44A3                     412      NEG.L      -(A3)                   *NEG immediate post decrement A3
+0000755A  44B8 1234                413      NEG.L      $1234                   *NEG word address 1234
+0000755E  44B9 12345678            414      NEG.L      $12345678               *NEG long word address 12345678
+00007564                           415  
+00007564  B704                     416      EOR.B      D3,D4                   *EOR byte data from D3 to D4
+00007566  B714                     417      EOR.B      D3,(A4)                 *EOR byte data from D3 to object in A4
+00007568  B71C                     418      EOR.B      D3,(A4)+                *EOR byte data from D3 to object in A4 and increase pointer by 1
+0000756A  B724                     419      EOR.B      D3,-(A4)                *EOR byte data from D3 to object in A4 after decrease pointer by 1
+0000756C  B738 1234                420      EOR.B      D3,$1234                *EOR byte data from D3 to absolute address WEORD
+00007570  B739 12345678            421      EOR.B      D3,$12345678            *EOR byte data from D3 to absolute address LONG WEORD
+00007576                           422  
+00007576  B744                     423      EOR.W      D3,D4                   *EOR wEORd data from D3 to D4
+00007578  B754                     424      EOR.W      D3,(A4)                 *EOR wEORd data from D3 to object in A4
+0000757A  B75C                     425      EOR.W      D3,(A4)+                *EOR wEORd data from D3 to object in A4 and increase pointer by 1
+0000757C  B764                     426      EOR.W      D3,-(A4)                *EOR wEORd data from D3 to object in A4 after decrease pointer by 1
+0000757E  B778 1234                427      EOR.W      D3,$1234                *EOR wEORd data from D3 to absolute address WEORD
+00007582  B779 12345678            428      EOR.W      D3,$12345678            *EOR wEORd data from D3 to absolute address LONG WEORD
+00007588                           429  
+00007588  B784                     430      EOR.L      D3,D4                   *EOR long worddata from D3 to D4
+0000758A  B794                     431      EOR.L      D3,(A4)                 *EOR long word data from D3 to object in A4
+0000758C  B79C                     432      EOR.L      D3,(A4)+                *EOR long word data from D3 to object in A4 and increase pointer by 1
+0000758E  B7A4                     433      EOR.L      D3,-(A4)                *EOR long word data from D3 to object in A4 after decrease pointer by 1
+00007590  B7B8 1234                434      EOR.L      D3,$1234                *EOR long word data from D3 to absolute address word
+00007594  B7B9 12345678            435      EOR.L      D3,$12345678            *EOR long word data from D3 to absolute address LONG word
+0000759A                           436  SOMEWHERE3
+0000759A  E208                     437      LSR.B       #1,D0
+0000759C  E228                     438      LSR.B       D1,D0
+0000759E                           439      
+0000759E  E248                     440      LSR.W       #1,D0
+000075A0  E268                     441      LSR.W       D1,D0
+000075A2  E2D1                     442      LSR.W       (A1)
+000075A4  E2D9                     443      LSR.W       (A1)+
+000075A6  E2E1                     444      LSR.W       -(A1)
+000075A8  E2F8 1234                445      LSR.W       $1234
+000075AC  E2F9 55555555            446      LSR.W       $55555555
+000075B2                           447      
+000075B2  E288                     448      LSR.L       #1,D0
+000075B4  E2A8                     449      LSR.L       D1,D0
+000075B6                           450   
+000075B6  E308                     451      LSL.B       #1,D0
+000075B8  E328                     452      LSL.B       D1,D0
+000075BA                           453      
+000075BA  E348                     454      LSL.W       #1,D0
+000075BC  E368                     455      LSL.W       D1,D0
+000075BE  E3D1                     456      LSL.W       (A1)
+000075C0  E3D9                     457      LSL.W       (A1)+
+000075C2  E3E1                     458      LSL.W       -(A1)
+000075C4  E3F8 1234                459      LSL.W       $1234
+000075C8  E3F9 55555555            460      LSL.W       $55555555
+000075CE                           461      
+000075CE  E388                     462      LSL.L       #1,D0
+000075D0  E3A8                     463      LSL.L       D1,D0
+000075D2                           464  
+000075D2  E200                     465      ASR.B       #1,D0
+000075D4  E220                     466      ASR.B       D1,D0
+000075D6                           467      
+000075D6  E240                     468      ASR.W       #1,D0
+000075D8  E260                     469      ASR.W       D1,D0
+000075DA  E0D1                     470      ASR.W       (A1)
+000075DC  E0D9                     471      ASR.W       (A1)+
+000075DE  E0E1                     472      ASR.W       -(A1)
+000075E0  E0F8 1234                473      ASR.W       $1234
+000075E4  E0F9 55555555            474      ASR.W       $55555555
+000075EA                           475      
+000075EA  E280                     476      ASR.L       #1,D0
+000075EC  E2A0                     477      ASR.L       D1,D0
+000075EE                           478   
+000075EE  E300                     479      ASL.B       #1,D0
+000075F0  E320                     480      ASL.B       D1,D0
+000075F2                           481      
+000075F2  E340                     482      ASL.W       #1,D0
+000075F4  E360                     483      ASL.W       D1,D0
+000075F6  E1D1                     484      ASL.W       (A1)
+000075F8  E1D9                     485      ASL.W       (A1)+
+000075FA  E1E1                     486      ASL.W       -(A1)
+000075FC  E1F8 1234                487      ASL.W       $1234
+00007600  E1F9 55555555            488      ASL.W       $55555555
+00007606                           489      
+00007606  E380                     490      ASL.L       #1,D0
+00007608  E3A0                     491      ASL.L       D1,D0
+0000760A                           492   
+0000760A  E218                     493      ROR.B       #1,D0
+0000760C  E238                     494      ROR.B       D1,D0
+0000760E                           495      
+0000760E  E258                     496      ROR.W       #1,D0
+00007610  E278                     497      ROR.W       D1,D0
+00007612  E6D1                     498      ROR.W       (A1)
+00007614  E6D9                     499      ROR.W       (A1)+
+00007616  E6E1                     500      ROR.W       -(A1)
+00007618  E6F8 1234                501      ROR.W       $1234
+0000761C  E6F9 55555555            502      ROR.W       $55555555
+00007622                           503      
+00007622  E298                     504      ROR.L       #1,D0
+00007624  E2B8                     505      ROR.L       D1,D0
+00007626                           506   
+00007626  E318                     507      ROL.B       #1,D0
+00007628  E338                     508      ROL.B       D1,D0
+0000762A                           509      
+0000762A  E358                     510      ROL.W       #1,D0
+0000762C  E378                     511      ROL.W       D1,D0
+0000762E  E7D1                     512      ROL.W       (A1)
+00007630  E7D9                     513      ROL.W       (A1)+
+00007632  E7E1                     514      ROL.W       -(A1)
+00007634  E7F8 1234                515      ROL.W       $1234
+00007638  E7F9 55555555            516      ROL.W       $55555555
+0000763E                           517      
+0000763E  E398                     518      ROL.L       #1,D0
+00007640  E3B8                     519      ROL.L       D1,D0
+00007642                           520  
+00007642  0880 0001                521      BCLR.L       #1,D0
+00007646  0380                     522      BCLR.L       D1,D0
+00007648                           523  SOMEWHERE4
+00007648  B803                     524      CMP.B      D3,D4                   *Move byte data from D3 to D4
+0000764A  B813                     525      CMP.B      (A3),D4                 *Move byte data from (A3) to D4  
+0000764C  B81B                     526      CMP.B      (A3)+,D4                *Move byte data from (A3)+ to D4
+0000764E  B823                     527      CMP.B      -(A3),D4                *Move byte data from -(A3) to D4
+00007650  B838 1234                528      CMP.B      $1234,D4                *Move byte data from $1234 to D4
+00007654  B839 12345678            529      CMP.B      $12345678,D4            *Move byte data from $12345678 to D4
+0000765A  B83C 0055                530      CMP.B      #$55,D4                 *Move byte data from #$55 to D4    
+0000765E                           531  
+0000765E  B843                     532      CMP.W      D3,D4                   *Move word data from D3 to D4    
+00007660  B84B                     533      CMP.W      A3,D4                   *Move word data from A3 to D4    
+00007662  B853                     534      CMP.W      (A3),D4                 *Move word data from (A3) to D4    
+00007664  B85B                     535      CMP.W      (A3)+,D4                *Move word data from (A3)+ to D4    
+00007666  B863                     536      CMP.W      -(A3),D4                *Move word data from -(A3) to D4    
+00007668  B878 1234                537      CMP.W      $1234,D4                *Move word data from $1234 to D4   
+0000766C  B879 12345678            538      CMP.W      $12345678,D4            *Move word data from $12345678 to D4   
+00007672  B87C 5555                539      CMP.W      #$5555,D4               *Move word data from #$5555 to D4
+00007676                           540  
+00007676  B883                     541      CMP.L      D3,D4                   *Move long word data from D3 to D4
+00007678  B88B                     542      CMP.L      A3,D4                   *Move long word data from A3 to D4
+0000767A  B893                     543      CMP.L      (A3),D4                 *Move long word data from (A3) to D4
+0000767C  B89B                     544      CMP.L      (A3)+,D4                *Move long word data from (A3)+ to D4
+0000767E  B8A3                     545      CMP.L      -(A3),D4                *Move long word data from -(A3) to D4
+00007680  B8B8 1234                546      CMP.L      $1234,D4                *Move long word data from $1234 to D4
+00007684  B8B9 12345678            547      CMP.L      $12345678,D4            *Move long word data from $12345678 to D4
+0000768A  B8BC 55555555            548      CMP.L      #$55555555,D4           *Move long word data from #$55555555 to D4
+00007690                           549  
+00007690  0C04 0055                550      CMPI.B      #$55,D4                 *EOR byte data from #$55 to D4
+00007694  0C14 0055                551      CMPI.B      #$55,(A4)               *EOR byte data from #$55 to object in A4
+00007698  0C1C 0055                552      CMPI.B      #$55,(A4)+              *EOR byte data from #$55 to object in A4 and increase pointer by 1
+0000769C  0C24 0055                553      CMPI.B      #$55,-(A4)              *EOR byte data from #$55 to object in A4 after decrease pointer by 1
+000076A0  0C38 0055 1234           554      CMPI.B      #$55,$1234              *EOR byte data from #$55 to absolute address WEORD
+000076A6  0C39 0055 12345678       555      CMPI.B      #$55,$12345678          *EOR byte data from #$55 to absolute address LONG WEORD
+000076AE                           556      
+000076AE  0C44 5555                557      CMPI.W      #$5555,D4               *EOR wEORd data from #$5555 to D4
+000076B2  0C54 5555                558      CMPI.W      #$5555,(A4)             *EOR wEORd data from #$5555 to object in A4
+000076B6  0C5C 5555                559      CMPI.W      #$5555,(A4)+            *EOR wEORd data from #$5555 to object in A4 and increase pointer by 1
+000076BA  0C64 5555                560      CMPI.W      #$5555,-(A4)            *EOR wEORd data from #$5555 to object in A4 after decrease pointer by 1
+000076BE  0C78 5555 1234           561      CMPI.W      #$5555,$1234            *EOR wEORd data from #$5555 to absolute address WEORD
+000076C4  0C79 5555 12345678       562      CMPI.W      #$5555,$12345678        *EOR wEORd data from #$5555 to absolute address LONG WEORD 
+000076CC                           563      
+000076CC  0C84 55555555            564      CMPI.L      #$55555555,D4           *EOR long word data from #$55555555 to D4
+000076D2  0C94 55555555            565      CMPI.L      #$55555555,(A4)         *EOR long word data from #$55555555 to object in A4
+000076D8  0C9C 55555555            566      CMPI.L      #$55555555,(A4)+        *EOR long word data from #$55555555 to object in A4 and increase pointer by 1
+000076DE  0CA4 55555555            567      CMPI.L      #$55555555,-(A4)        *EOR long word data from #$55555555 to object in A4 after decrease pointer by 1
+000076E4  0CB8 55555555 1234       568      CMPI.L      #$55555555,$1234        *EOR long word data from #$55555555 to absolute address word
+000076EC  0CB9 55555555 12345678   569      CMPI.L      #$55555555,$12345678    *EOR long word data from #$55555555 to absolute address LONG word  
+000076F6                           570      
+000076F6  6500 FC04                571      BCS         SOMEWHERE1
+000076FA  6C00 FE32                572      BGE         SOMEWHERE2
+000076FE  6D00 FE9A                573      BLT         SOMEWHERE3
+00007702  6800 FF44                574      BVC         SOMEWHERE4
+00007706  6000 F8F8                575      BRA         SOMEWHERE
+0000770A  4EB8 7000                576      JSR         SOMEWHERE
+0000770E  4E75                     577      RTS  
+00007710                           578  
+00007710                           579  SIMHALT             ; halt simulator
+00007710                           580      
+00007710                           581  * Put variables and constants here
+00007710                           582  
+00007710                           583      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -561,10 +593,10 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-SIMHALT             76BC
+SIMHALT             7710
 SOMEWHERE           7000
-SOMEWHERE1          72A8
-SOMEWHERE2          74DA
-SOMEWHERE3          7546
-SOMEWHERE4          75F4
+SOMEWHERE1          72FC
+SOMEWHERE2          752E
+SOMEWHERE3          759A
+SOMEWHERE4          7648
 START               7000
